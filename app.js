@@ -18,6 +18,11 @@ app.get('/', (req, res) => {
 app.get('/details', (req, res) => {
     res.render('details', {title: 'Details'});
 }); 
-app.get('/questions', (req, res) => {
-    res.render('questions', {title: 'Questions'});
+app.get('/questions/:id', (req, res) => {
+    res.render('questions', {title: 'Questions',  id : req.params.id});
 }); 
+
+// 404 page
+app.use((req, res) => {
+    res.status(404).render('error', { title: '404' });
+});
