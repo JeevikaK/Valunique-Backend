@@ -150,6 +150,10 @@ footer a{
     outline: none;
 }
 
+.error_message{
+    font-size: 0.8em;
+    color: red;
+}
 .login_submit{
     padding: 0.3em;
     margin-top: 2em;

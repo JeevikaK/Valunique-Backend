@@ -10,14 +10,15 @@
                 <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="login_logo">
             </div>
             <p class="login_heading">Welcome to Volvo</p>
-            <form action="" class="login_form">
+            <form action="/" class="login_form" method="POST">
                 <label class="login_details" for="candidate_id">Candidate Ref. ID</label>
                 <input type="text" name="candidate_id" id="candidate_id" placeholder="Eg: XXXXXXX">
                 <br>
                 <label class="login_details" for="job_id">Job ID</label>
                 <input type="text" name="job_id" id="job_id" placeholder="Eg: XXXXXXX">
+                <div class="error_message"> <%= message %> </div>
+                <input type="submit" class="login_submit" value="Login">
             </form>
-            <input type="submit" class="login_submit" value="Login">
         </div>
 
         <%- include ("./partials/footer.ejs") %>

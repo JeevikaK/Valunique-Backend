@@ -12,21 +12,23 @@
                 </div>
             </nav>
             <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="volvo_logo">
-            <div class="questions_content">
-                <p class="question_num">Question <%= id %></p>
-                <p class="questions_page">What do you know about Volvo?</p>
-                <div class="question_answer">
-                    <label for="answer" class="answer_style">
-                        Answer
-                    </label>
-                    <textarea name="answer" rows="4" id="" class="answer_area"></textarea>
+            <form action="" id="question_submit">
+                <div class="questions_content">
+                    <p class="question_num">Question <%= id %></p>
+                    <p class="questions_page">What do you know about Volvo?</p>
+                    <div class="question_answer">
+                        <label for="answer" class="answer_style">
+                            Answer
+                        </label>
+                        <textarea name="answer" rows="4" id="answer" class="answer_area"></textarea>
+                    </div>
                 </div>
-            </div>
-            <div class="navigate">
-                <a href="#"><i class="fa fa-solid fa-chevron-left arrow"></i></a>
-                <p>3 / 10</p>
-                <a href="#"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
-            </div>
+                <div class="navigate">
+                    <a href="#" id="prev"><i class="fa fa-solid fa-chevron-left arrow"></i></a>
+                    <p>3 / 10</p>
+                    <a href="#" id="next" onclick="myFunction()"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
+                </div>
+            </form>
         </div>
 
         <%- include ("./partials/footer.ejs") %>
@@ -35,6 +37,12 @@
         <script
             src="https://code.jquery.com/jquery-3.6.0.js"
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous">
+        </script>
+        <script>
+            function myFunction() {
+                document.getElementById("question_submit").submit();
+            }
+        </script>
     </body>
 </html>
