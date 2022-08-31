@@ -153,6 +153,7 @@ footer a{
 .error_message{
     font-size: 0.8em;
     color: red;
+    word-wrap: break-word;
 }
 .login_submit{
     padding: 0.3em;
