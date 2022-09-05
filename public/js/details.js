@@ -25,40 +25,89 @@ add_new_skill.addEventListener('click', function(){
     }
 });
 
-//form validation
 
+
+
+//form validation
 const form = document.querySelector('form')
 const whyVolvo = document.getElementById('q1')
 const aboutVolvo = document.getElementById('q2')
 const skills = document.getElementsByClassName('skill')
-skills.forEach(skill => {
+const locate = document.getElementById('location')
+const relocate = document.getElementsByName('relocate')
 
-})
-const location = document.getElementById('location')
-const relocate = document.querySelector('input[name="relocate"]:checked')
-
-whyVolvo.addEventListener("input", event => {
-    if(whyVolvo.validity.valid){
-        document.getElementById('error_whyVolvo').innerHTML=''
+function showError(question){
+    if(question.validity.valueMissing){
+        if(question.id == 'q1')
+            document.getElementById('error_whyVolvo').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please fill this field.'
+        else if(question.id == 'q2')
+            document.getElementById('error_aboutVolvo').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please fill this field.'
+        else if(question.id == 'location')
+            document.getElementById('error_location').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please select a location.'
+        else if(question.className == 'skill')
+            document.getElementById('error_skill').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please select a skill.'
     }
-    else{
-        showError();
+    else if(question.validity.tooLong){
+        if(question.id == 'q1')
+            document.getElementById('error_whyVolvo').innerHTML = '<i class="fa fa-exclamation-circle"></i> Answer should have a maximum of 400 characters'
+        else if(question.id == 'q2')
+            document.getElementById('error_aboutVolvo').innerHTML = '<i class="fa fa-exclamation-circle"></i> Answer should have a maximum of 400 characters'
     }
+}
+
+function indexQs(question){
+    question.addEventListener("input", event => {
+        if(question.validity.valid){
+            if(question.id === 'q1')
+                document.getElementById('error_whyVolvo').innerHTML='';
+            else if(question.id === 'q2')
+                document.getElementById('error_aboutVolvo').innerHTML='';
+            else if(question.id === 'location')
+                document.getElementById('error_location').innerHTML='';
+            else if(question.className == 'skill')
+                document.getElementById('error_skill').innerHTML = ''
+        }
+        else{
+            showError(question);
+            console.log(question)
+        }
+    })
+}
+
+indexQs(whyVolvo);
+indexQs(aboutVolvo);
+for(var i = 0; i < skills.length; i++){
+    indexQs(skills[i]);
+}
+indexQs(locate);
+
+relocate.forEach(option => {
+    option.addEventListener('click', () => {
+        document.getElementById('error_relocate').innerHTML = ''
+    })
 })
 
-form.addEventListener('submit', (event) => {
-
-    if(!q1.validity.valid){
-        showError();
+function relocateCheck(){
+    if(!relocate[0].checked && !relocate[1].checked){
+        document.getElementById('error_relocate').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please select an option.'
         event.preventDefault();
     }
+}
 
-    function showError(){
-        if(q1.validity.valueMissing){
-            document.getElementById('error_whyVolvo').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please fill this field.'
+function formValidation(question){
+    form.addEventListener('submit', (event) => {
+        console.log('submitted')
+        // relocateCheck();
+        if(!question.validity.valid){
+            showError(question);
+            event.preventDefault();
         }
-        else if(q1.validity.tooLong){
-            document.getElementById('error_whyVolvo').innerHTML = '<i class="fa fa-exclamation-circle"></i> Answer should have a maximum of 400 characters'
-        }
-    }
-})
+    })
+}
+
+formValidation(whyVolvo);
+formValidation(aboutVolvo);
+for(var i = 0; i < skills.length; i++){
+    formValidation(skills[i]);
+}
+formValidation(locate);

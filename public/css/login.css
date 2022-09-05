@@ -94,7 +94,7 @@ footer a{
 
 .content_login{
     background: rgba(255, 255, 255, 0.7);
-    width: fit-content;
+    width: 30em;
     padding: 2em;
     border-radius: 10px;
     display: flex;
@@ -151,10 +151,13 @@ footer a{
 }
 
 .error_message{
-    font-size: 0.8em;
+    font-size: 0.7em;
     color: red;
     word-wrap: break-word;
+    line-height: 1.5;
+    font-family: 'Montserrat', sans-serif;
 }
+
 .login_submit{
     padding: 0.3em;
     margin-top: 2em;
@@ -167,10 +170,11 @@ footer a{
 }
 
 /* ----------Login Page Responsive----------*/ 
- @media (max-width: 500px) {
+@media (max-width: 500px) {
     .content_login{
         padding: 1em;
         border-radius: 0;
+        width: 80%;
     }
 } 
 

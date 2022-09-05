@@ -8,14 +8,14 @@
             <nav>
                 <div class="user">
                     <img src="/images/user-img.png" alt="user-icon">
-                    <p>John Doe</p>
+                    <p><%= candidate_id %></p>
                 </div>
             </nav>
             <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="volvo_logo">
             <form action="" id="question_submit">
                 <div class="questions_content">
                     <p class="question_num">Question <%= id %></p>
-                    <p class="questions_page">What do you know about Volvo?</p>
+                    <p class="questions_page"><%= question %></p>
                     <div class="question_answer">
                         <label for="answer" class="answer_style">
                             Answer
@@ -24,9 +24,16 @@
                     </div>
                 </div>
                 <div class="navigate">
-                    <a href="#" id="prev"><i class="fa fa-solid fa-chevron-left arrow"></i></a>
-                    <p>3 / 10</p>
-                    <a href="#" id="next" onclick="myFunction()"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
+                    <% var prev = `/questions/${Number(id)-Number(1)}?candidateId=${candidate_id}&jobId=${jobId}&jobName=${jobName}` %>
+                    <% var prevNo = Number(id)-Number(1) %>
+                    <% if (prevNo < 1) { %>
+                        <% prev = `/details?candidateId=${candidate_id}&jobId=${jobId}&jobName=${jobName}` %>
+                    <% } %>
+                    <a href="<%= prev %>" id="prev" data-id="<%= prevNo %>"><i class="fa fa-solid fa-chevron-left arrow"></i></a>
+                    <p><%= id  %> / <%= questionLength %></p>
+                    <% var next = `/questions/${Number(id)+Number(1)}?candidateId=${candidate_id}&jobId=${jobId}&jobName=${jobName}` %>
+                    <% var nextNo = Number(id)+Number(1) %>
+                    <a href="<%= next %>" id="next" data-id="<%= nextNo %>" onclick="myFunction()"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
                 </div>
             </form>
         </div>
@@ -43,6 +50,11 @@
             function myFunction() {
                 document.getElementById("question_submit").submit();
             }
+
+            if($('#next').data('id') > <%= questionLength %>){
+                $('#next').hide();
+            }
+
         </script>
     </body>
 </html>
