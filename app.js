@@ -18,8 +18,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false 
 }));
-
-
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
     sequelize.sync({force: true}).then(() => {
@@ -60,6 +58,7 @@ app.post('/', async (req, res) => {
                 skills: '',
                 additionalSkills: '',
                 location: '',
+                relocate:'',
                 })
                 .catch(err => {
                     console.log(err);
@@ -111,7 +110,36 @@ app.get('/details', async (req, res) => {
 });
 
 app.post('/details', async (req, res) => {
-    //code
+    const { q1, q2, location, relocate } = req.body
+    const { candidateId, jobId, jobName } = req.query;
+    var skill_keys = Object.keys(req.body).filter(key => key.startsWith('skill'))
+    var add_skill_keys = Object.keys(req.body).filter(key => key.startsWith('add_skill'))
+    var skills =''
+    var add_skills=''
+    skill_keys.forEach(skill => {
+        skills+= req.body[skill]+', '
+    })
+    add_skill_keys.forEach(add_skill =>{
+        add_skills+= req.body[add_skill]+', '
+    })
+    console.log(skills.slice(0, -2), add_skills.slice(0, -2))
+    var applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' }});
+    console.log(location)
+    console.log(applicant, 2)
+    // var update_result = await applicant.update({
+    //     whyVolvo: q1,
+    //     aboutVolvo: q2,
+    //     skills: skill1+', '+skill2+', '+skill3,
+    //     additionalSkills: add_skill1+', '+add_skill2,
+    //     location: location,
+    //     relocate: relocate\sql
+    // })
+    // .catch(err => {
+    //     console.log(err);
+    //     res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+    //     return;
+    // });
+    res.render('details', {title: 'Details', mandatorySkills: {}, jobName, candidate_id: candidateId});
 });
 
 app.get('/questions/:id', (req, res) => {

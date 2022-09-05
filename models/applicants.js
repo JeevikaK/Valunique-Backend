@@ -34,6 +34,10 @@ const Applicant = sequelize.define('Applicant', {
     location:{
         type: DataTypes.STRING,
     }, 
+    relocate: {
+        type:DataTypes.STRING,
+        allowNull: true,
+    },
     appliedOn: {
         type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW
