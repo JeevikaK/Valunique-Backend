@@ -49,16 +49,21 @@ function addDays(date, days) {
     return result;
 }
 
+var date = new Date();
+console.log(date, "today");
+var tom = addDays(date, 0);
+if(tom > date){
+    console.log("tom is greater than date");
+}
+console.log(tom, "tom_form");
+
 // routes
+
 app.get('/', (req, res) => {
-    var date = new Date();
-    console.log(date, "today");
-    var tom = addDays(date, 0);
-    if(tom > date){
-        console.log("tom is greater than date");
-    }
-    console.log(tom, "tom_form");
-    res.render('login', {title: 'Login', message: ""});
+    if(req.session.candidate_id)
+        res.redirect(`/details?candidateId=${req.session.candidate_id}&jobId=${req.session.job_id}&jobName=${req.session.xlData['jobName']}`);
+    else
+        res.render('login', {title: 'Login', message: ""});
 });
 
 app.post('/', async (req, res) => {
@@ -92,6 +97,7 @@ app.post('/', async (req, res) => {
                 console.log("Applicant created");
 
                 req.session.candidate_id = applicant.candidateID
+                req.session.job_id = applicant.jobID
                 req.session.questions = {}
                 req.session.answers = {}
                 req.session.xlData = xlData
@@ -126,6 +132,7 @@ app.get('/details', async (req, res) => {
     const { candidateId, jobId, jobName } = req.query;
     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });
     if(applicant===null){
+        req.session.destroy()
         res.redirect('/');
     }
     else{
