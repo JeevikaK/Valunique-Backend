@@ -6,9 +6,12 @@ const sequelize = require('./db/db.init.js');
 const Applicant = require('./models/applicants.js');
 const readXlsxFile = require('read-excel-file/node')
 const xlcontroller = require('./controllers/excel-controller.js');
+const { Op } = require("sequelize");
 const app = express();
 
 app.set('view engine', 'ejs');
+
+const oneDay = 1000 * 60 * 60 * 24;
 
 // middleware & static files
 app.use(express.static('public'));
@@ -19,8 +22,6 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 
 // creating 24 hours from milliseconds
-const oneDay = 1000 * 60 * 60 * 24;
-
 app.use(session({ 
     secret: '0dc529ba-5051-4cd6-8b67-c9a901bb8bdf',
     resave: false,
@@ -49,14 +50,6 @@ function addDays(date, days) {
     return result;
 }
 
-var date = new Date();
-console.log(date, "today");
-var tom = addDays(date, 0);
-if(tom > date){
-    console.log("tom is greater than date");
-}
-console.log(tom, "tom_form");
-
 // routes
 
 app.get('/', (req, res) => {
@@ -67,15 +60,22 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', async (req, res) => {
-   
     const { candidate_id, job_id } = req.body;
     const format_candidate_id = /^[0-9]+$/;
     const format_job_id = /^[A-Z0-9]+$/;
     if(candidate_id.length==8 && job_id.length == 8 && format_candidate_id.test(candidate_id) && format_job_id.test(job_id)){
         console.log("Format Valid");
-    
         xlcontroller.readXlFile(res, job_id).then( async (xlData) =>{
             console.log("xlData read ");
+            
+            var date = new Date();
+            var expDate = addDays(date, -1);
+            var expiredApplicants = await Applicant.findAll({ where: { appliedOn: { [Op.lt]: expDate }}});
+            if(expiredApplicants.length > 0){
+                expiredApplicants.forEach(async (applicant) => {
+                    await applicant.destroy();
+                });
+            }
             var applicant = await Applicant.findOne({ where: { candidateID: candidate_id, jobID: job_id } });
             if(applicant===null){
                 applicant = await Applicant.create({
@@ -136,7 +136,6 @@ app.get('/details', async (req, res) => {
         res.redirect('/');
     }
     else{
-        
         const xlData = req.session.xlData;
         res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: ""});
     }
