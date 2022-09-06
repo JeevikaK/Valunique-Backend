@@ -207,6 +207,13 @@ app.post('/questions/:id', async (req, res) => {
     
 })
 
+app.get('/logout', async (req,res) => {
+    const applicant = await Applicant.findOne({ where: { candidateID: req.session.candidate_id, jobID: req.session.job_id, status: 'Applying' } });
+    console.log(applicant)
+    req.session.destroy();
+    res.redirect('/');
+});
+
 // 404 page
 app.use((req, res) => {
     res.status(404).render('error', { title: '404', message: 'Page not found' });
