@@ -6,7 +6,8 @@ const sequelize = require('./db/db.init.js');
 const Applicant = require('./models/applicants.js');
 const readXlsxFile = require('read-excel-file/node')
 const xlcontroller = require('./controllers/excel-controller.js');
-const { Op } = require("sequelize");
+const { Op, DataTypes } = require("sequelize");
+const queryInterface = sequelize.getQueryInterface();
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -190,6 +191,10 @@ app.get('/questions/:id', async (req, res) => {
         res.redirect('/');
     }
     else{
+        var answer = req.session.answers[`answer${req.params.id}`];
+        if(answer===undefined){
+            answer = '';
+        }
         const xlData = req.session.xlData;
         const context = {
                 title: 'Questions',  
@@ -199,7 +204,8 @@ app.get('/questions/:id', async (req, res) => {
                 candidate_id: candidateId, 
                 jobId, 
                 jobName ,
-                message: ""
+                message: "",
+                value: answer
             }
         res.render('questions', context);
     }  
@@ -209,14 +215,93 @@ app.post('/questions/:id', async (req, res) => {
     const { candidateId, jobId, jobName } = req.query;
     const { answer } = req.body;
 
-    console.log(req.body, "req");
-    console.log(answer, "answer");
-
     req.session.questions[`question${req.params.id}`] = req.session.xlData['questions'][req.params.id-1];
     req.session.answers[`answer${req.params.id}`] = answer;
     console.log(req.session.questions, "questions");
     console.log(req.session.answers, "answers");
-    res.redirect(`/questions/${parseInt(req.params.id)+1}?candidateId=${candidateId}&jobId=${jobId}&jobName=${jobName}`);
+    if(answer===''){
+        const context = {
+            title: 'Questions',  
+            id : req.params.id, 
+            question: req.session.xlData['questions'][req.params.id-1], 
+            questionLength: req.session.xlData['questions'].length, 
+            candidate_id: candidateId, 
+            jobId, 
+            jobName ,
+            message: `<i class="fa fa-exclamation-circle"></i> Please fill the field`,
+            value: ''
+        }
+        res.render('questions', context);
+    }
+    else{
+        if(Number(req.params.id) === Number(req.session.xlData['questions'].length)){
+            console.log("All questions submitted")
+            var flag = 0;
+            for(var question in req.session.questions){
+                if(req.session.questions[question]===undefined){
+                    flag = 1;
+                    break;
+                }
+            }
+            if(flag===1){
+                const context = {
+                    title: 'Questions',  
+                    id : req.params.id, 
+                    question: req.session.xlData['questions'][req.params.id-1], 
+                    questionLength: req.session.xlData['questions'].length, 
+                    candidate_id: candidateId, 
+                    jobId, 
+                    jobName ,
+                    message: `<i class="fa fa-exclamation-circle"></i> Please fill all Answer fields`,
+                    value: ''
+                }
+                res.render('questions', context);
+            }
+            else{
+                var response = queryInterface.createTable(candidateId, {
+                    serialNumber:{
+                        type: DataTypes.INTEGER,
+                        primaryKey: true,
+                    },
+                    question: {
+                        type: DataTypes.STRING,
+                        allowNull: false
+                    },
+                    answer: {
+                        type: DataTypes.STRING,
+                        allowNull: false
+                    }
+                });
+                response.then(async () => {
+                    console.log("Table created");
+                    for(var i=1; i<=req.session.xlData['questions'].length; i++){
+                        var insertResult = await sequelize.query("INSERT INTO `"+candidateId+"` (serialNumber, question, answer) VALUES ('"+ i +"', '"+ req.session.questions[`question${i}`] +"', '"+req.session.answers[`answer${i}`]+"')");
+                    }
+                    console.log("Data inserted");
+                    const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });
+                    var updateResult = applicant.update({
+                        status: 'Applied',
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+                        return;
+                    });
+                    console.log("Applicant updated");
+                    req.session.destroy();
+                    res.redirect('/');
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+                    return;
+                });          
+            }
+        }    
+        else
+            res.redirect(`/questions/${parseInt(req.params.id)+1}?candidateId=${candidateId}&jobId=${jobId}&jobName=${jobName}`);
+    }
+        
 })
 
 app.get('/logout', async (req,res) => {

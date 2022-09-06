@@ -26,8 +26,6 @@ add_new_skill.addEventListener('click', function(){
 });
 
 
-
-
 //form validation
 const form = document.querySelector('form')
 const whyVolvo = document.getElementById('q1')
@@ -97,7 +95,6 @@ function relocateCheck(){
 function formValidation(question){
     form.addEventListener('submit', (event) => {
         console.log('submitted')
-        // relocateCheck();
         if(!question.validity.valid){
             showError(question);
             event.preventDefault();

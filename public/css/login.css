@@ -196,6 +196,7 @@ footer a{
     font-family: 'Montserrat';
     font-style: normal;
     padding-right: 1em;
+    padding-left: 1em;
 }
 
 .question_num{
@@ -243,6 +244,7 @@ footer a{
     align-items: center;
     justify-content: center;
     top: -1em;
+    flex-direction: row;
 }
 
 .arrow{
@@ -266,6 +268,15 @@ footer a{
     font-family: 'Montserrat', sans-serif;
     position: relative;
     left: 12em;
+}
+
+.error{
+    width: 70%;
+    color: red;
+    font-size: 0.8em;
+    line-height: 1.5;
+    padding: 1em;
+    font-family: 'Montserrat', sans-serif;
 }
 
 /*-------------Questions Responsive------------*/

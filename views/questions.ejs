@@ -17,7 +17,7 @@
                 </div>
             </nav>
             <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="volvo_logo">
-            <form action="" id="question_submit" method="post">
+            <form action="" id="question_submit" method="post" novalidate>
                 <div class="questions_content">
                     <p class="question_num">Question <%= id %></p>
                     <p class="questions_page"><%= question %></p>
@@ -25,7 +25,8 @@
                         <label for="answer" class="answer_style">
                             Answer
                         </label>
-                        <textarea name="answer" rows="4" id="answer" class="answer_area"></textarea>
+                        <textarea name="answer" rows="4" id="answer" class="answer_area" required maxlength="400" ><%= value %></textarea>
+                        <span class="error" aria-live="polite" id="answer_error"><%- message %></span>
                     </div>
                 </div>
                 <div class="navigate">
@@ -38,6 +39,8 @@
                     <p><%= id  %> / <%= questionLength %></p>
                     <% var nextNo = Number(id)+Number(1) %>
                     <a href="#" id="next" data-id="<%= nextNo %>" onclick="myFunction()"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
+                </div>
+                <div class="confirm_submit">
                     <input type="submit" value="submit" id="question-submit">
                 </div>
             </form>
@@ -52,13 +55,47 @@
             crossorigin="anonymous">
         </script>
         <script>
-            function myFunction() {
-                document.getElementById("question_submit").submit();
-            }
+
             if($('#next').data('id') > <%= questionLength %>){
                 $('#next').hide();
                 $('#question-submit').show();
             }
+
+
+            //form validation
+            const form = document.querySelector('form')
+            const answer = document.getElementById('answer')
+
+            function myFunction() {
+                console.log('submitted')
+                if(!answer.validity.valid){
+                    console.log('invalid')
+                    showError();
+                    event.preventDefault();
+                }
+                else
+                    document.getElementById("question_submit").submit();
+            }
+                
+            function showError(){
+                if(answer.validity.valueMissing){
+                    document.getElementById('answer_error').innerHTML='<i class="fa fa-exclamation-circle"></i> Please fill this field.';
+                }
+                else if(answer.validity.tooLong){
+                    document.getElementById('answer_error').innerHTML='<i class="fa fa-exclamation-circle"></i> Answer should be less than 400 characters';
+                }
+            }
+
+            answer.addEventListener("input", event => {
+                if(answer.validity.valid){
+                    document.getElementById('answer_error').innerHTML='';
+                }
+                else{
+                    showError();
+                }
+            })
+
+            
 
         </script>
     </body>
