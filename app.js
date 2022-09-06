@@ -94,6 +94,8 @@ app.post('/', async (req, res) => {
                 req.session.candidate_id = applicant.candidateID
                 req.session.questions = {}
                 req.session.answers = {}
+                req.session.xlData = xlData
+                console.log(xlData);
                 res.redirect(`/details?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);
             }
             else{
@@ -127,13 +129,9 @@ app.get('/details', async (req, res) => {
         res.redirect('/');
     }
     else{
-        xlcontroller.readXlFile(res, jobId).then( xlData =>{
-            res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: ""});
-        })
-        .catch((err) => {
-            console.log(err);
-            res.render('login', {title: 'Login', message:`<i class="fa fa-exclamation-circle"></i> Either the job id doesn't exist<br> or the required file is not attached for the job id.<br> Please check with the admin`});
-        })
+        console.log(req.session);
+        const xlData = req.session.xlData;
+        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: ""});
     }
 });
 
@@ -153,32 +151,27 @@ app.post('/details', async (req, res) => {
     })
     console.log(skills.slice(0, -2), add_skills.slice(0, -2))
     var applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' }});
-    xlcontroller.readXlFile(res, jobId).then( xlData =>{
-        if(q1=='' || q2=='' || location=='' || relocate==''|| skills=='' ){
-            res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: `<i class="fa fa-exclamation-circle"></i> Please fill all the fields`});
-        }
-        else{
-            var updateResult = applicant.update({
-                whyVolvo: q1,
-                aboutVolvo: q2,
-                skills: skills.slice(0, -2),
-                additionalSkills: add_skills.slice(0, -2),
-                location: location,
-                relocate: relocate,
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).render('error', {title: '500', message: "Internal Server Error"});
-                return;
-            });
-            console.log("Applicant updated");
-            res.redirect(`/questions/1?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-        res.render('login', {title: 'Login', message:`<i class="fa fa-exclamation-circle"></i> Either the job id doesn't exist<br> or the required file is not attached for the job id.<br> Please check with the admin`});
-    })
+    const xlData = req.session.xlData;
+    if(q1=='' || q2=='' || location=='' || relocate==''|| skills=='' ){
+        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: `<i class="fa fa-exclamation-circle"></i> Please fill all the fields`});
+    }
+    else{
+        var updateResult = applicant.update({
+            whyVolvo: q1,
+            aboutVolvo: q2,
+            skills: skills.slice(0, -2),
+            additionalSkills: add_skills.slice(0, -2),
+            location: location,
+            relocate: relocate,
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+            return;
+        });
+        console.log("Applicant updated");
+        res.redirect(`/questions/1?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);
+    }
 });
 
 app.get('/questions/:id', async (req, res) => {
@@ -188,8 +181,9 @@ app.get('/questions/:id', async (req, res) => {
         res.redirect('/');
     }
     else{
-        xlcontroller.readXlFile(res, jobId).then( xlData =>{
-            const context = {title: 'Questions',  
+        const xlData = req.session.xlData;
+        const context = {
+                title: 'Questions',  
                 id : req.params.id, 
                 question: xlData['questions'][req.params.id-1], 
                 questionLength: xlData['questions'].length, 
@@ -199,11 +193,6 @@ app.get('/questions/:id', async (req, res) => {
                 message: ""
             }
             res.render('questions', context);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.render('login', {title: 'Login', message:`<i class="fa fa-exclamation-circle"></i> Either the job id doesn't exist<br> or the required file is not attached for the job id.<br> Please check with the admin`});
-        })
     }  
 }); 
 
