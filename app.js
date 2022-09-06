@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cookieParser = require("cookie-parser");
 var session = require('express-session');
 const sequelize = require('./db/db.init.js');
 const Applicant = require('./models/applicants.js');
@@ -13,11 +14,17 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+
+// creating 24 hours from milliseconds
+const oneDay = 1000 * 60 * 60 * 24;
+
 app.use(session({ 
     secret: '0dc529ba-5051-4cd6-8b67-c9a901bb8bdf',
     resave: false,
-    saveUninitialized: false 
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay }, 
 }));
+
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
     sequelize.sync({force: true}).then(() => {
