@@ -256,6 +256,16 @@ footer a{
 
 #question-submit{
     display: none;
+    padding: 0.3em;
+    margin-top: 2em;
+    width: 8em;
+    border: none;
+    background: rgba(18, 152, 181, 0.3);
+    border-radius: 7px;
+    color: rgba(83, 86, 90, 0.9);
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
+    left: 12em;
 }
 
 /*-------------Questions Responsive------------*/
