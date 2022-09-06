@@ -256,16 +256,19 @@ footer a{
 
 #question-submit{
     display: none;
-    padding: 0.3em;
-    margin-top: 2em;
-    width: 8em;
+    padding: 0.4em;
+    width: fit-content;
     border: none;
     background: rgba(18, 152, 181, 0.3);
     border-radius: 7px;
     color: rgba(83, 86, 90, 0.9);
     font-family: 'Montserrat', sans-serif;
-    position: relative;
-    left: 12em;
+}
+
+.confirm_submit{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1em;
 }
 
 /*-------------Questions Responsive------------*/
@@ -307,6 +310,18 @@ footer a{
 
     .answer_style{
         text-align: center;
+    }
+
+    .content_questions form{
+        padding-right: 0;
+    }
+
+    .confirm_submit{
+        align-items: center;
+    }
+
+    .navigate{
+        flex-direction: row;
     }
 }
 
