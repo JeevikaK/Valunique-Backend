@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require("cookie-parser");
-var session = require('express-session');
+const session = require('express-session');
 const sequelize = require('./db/db.init.js');
 const Applicant = require('./models/applicants.js');
 const readXlsxFile = require('read-excel-file/node')
@@ -95,7 +95,6 @@ app.post('/', async (req, res) => {
                 req.session.questions = {}
                 req.session.answers = {}
                 req.session.xlData = xlData
-                console.log(xlData);
                 res.redirect(`/details?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);
             }
             else{
@@ -123,13 +122,14 @@ app.post('/', async (req, res) => {
 }); 
 
 app.get('/details', async (req, res) => {
+    console.log(req.session);
     const { candidateId, jobId, jobName } = req.query;
     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });
     if(applicant===null){
         res.redirect('/');
     }
     else{
-        console.log(req.session);
+        
         const xlData = req.session.xlData;
         res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: ""});
     }
