@@ -70,7 +70,7 @@ app.post('/', async (req, res) => {
             
             var date = new Date();
             var expDate = addDays(date, -1);
-            var expiredApplicants = await Applicant.findAll({ where: { appliedOn: { [Op.lt]: expDate }}});
+            var expiredApplicants = await Applicant.findAll({ where: { status: 'Applying', appliedOn: { [Op.lt]: expDate }}});
             if(expiredApplicants.length > 0){
                 expiredApplicants.forEach(async (applicant) => {
                     await applicant.destroy();
@@ -208,6 +208,7 @@ app.post('/questions/:id', async (req, res) => {
 
 app.get('/logout', async (req,res) => {
     const applicant = await Applicant.findOne({ where: { candidateID: req.session.candidate_id, jobID: req.session.job_id, status: 'Applying' } });
+    const delete_result = await applicant.destroy();
     console.log(applicant)
     req.session.destroy();
     res.redirect('/');
