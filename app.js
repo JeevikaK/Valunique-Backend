@@ -15,6 +15,9 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
+// cookie parser middleware
+app.use(cookieParser());
+
 // creating 24 hours from milliseconds
 const oneDay = 1000 * 60 * 60 * 24;
 
@@ -87,6 +90,10 @@ app.post('/', async (req, res) => {
                     return;
                 });
                 console.log("Applicant created");
+
+                req.session.candidate_id = applicant.candidateID
+                req.session.questions = {}
+                req.session.answers = {}
                 res.redirect(`/details?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);
             }
             else{
@@ -187,7 +194,6 @@ app.get('/questions/:id', async (req, res) => {
                 question: xlData['questions'][req.params.id-1], 
                 questionLength: xlData['questions'].length, 
                 candidate_id: candidateId, 
-
                 jobId, 
                 jobName ,
                 message: ""
@@ -202,7 +208,7 @@ app.get('/questions/:id', async (req, res) => {
 }); 
 
 app.post('/questions/:id', async (req, res) => {
-    //code
+    
 })
 
 // 404 page
