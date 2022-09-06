@@ -294,3 +294,247 @@ footer a{
         text-align: center;
     }
 }
+
+/*------------Admin Page--------------*/
+.content_admin{
+    font-family: 'Montserrat';
+    padding-left: 3.4vw;
+}
+
+
+nav .btn:focus, nav .btn:hover{
+    background: rgba(18, 152, 181, 0.29);
+}
+
+.dropdown-toggle::after{
+    margin-top: 0.6em;
+}
+
+.logo_admin_page img{
+    width: 8em;
+    position: relative;
+    top: -2.5em;
+}
+
+.admin_choices{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin_choices label{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    padding-right: 0.5em;
+    color: #53565A;
+}
+
+.admin_choices input{
+    padding: 0.3em;
+    color: #53565A;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.8em;
+    width: 10em;
+}
+
+.nav_admin{
+    display: flex;
+    justify-content: space-between;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.nav_admin > div{
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
+
+.nav_admin .access_level{
+    border-left: 1px solid #53565A;
+    border-right: 1px solid #53565A;
+}
+
+.nav_admin div > a:hover{
+    color: #1298B5;
+}
+
+.nav_admin a{
+    color: #53565A;
+    text-decoration: none;
+}
+
+.dropdowns{
+    display: flex;
+}
+
+.dropdowns > .dropdown{
+    margin-right: 2em;
+}
+
+.btn.show, .btn, .btn:focus{
+    border: none;
+}
+
+.btn:focus, .btn:hover{
+    background: inherit;
+}
+
+.dropdowns > .dropdown > a{
+    color: #53565A;
+}
+
+.positions{
+    padding-top: 3em;
+}
+
+.position{
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.position_heading{
+    font-size: 1.6em;
+    color: #53565A;
+}
+
+.position_heading::after{
+    content: '';
+    display: block;
+    width: 4em;
+    height: 1.5px;
+    margin: 0.3em;
+    background: #1298B5;
+    opacity: 0.5;
+}
+
+.position_heading a > img{
+    width: 1em;
+    margin-left: 0.8em;
+}
+
+.card-img-top{
+    width: 11em;
+}
+
+.cards{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card{
+    background-color: #FFFFFF;
+    width: 12em;
+    margin: 2em;
+    box-shadow: -4px 4px 15px -3px rgba(0, 0, 0, 0.25);
+}
+
+.card-body{
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-text{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.7em;
+    margin: 0;
+    padding: 0;
+}
+
+.icon{
+    height: 60%;
+    position: relative;
+    display: flex;
+}
+
+.icon a{
+    color: inherit
+}
+
+.icon .fa-download{
+    position: absolute;
+    top: 0.9em;
+    left: -1.4em;
+}
+
+.icon .fa-trash, .icon .delete-confirm{
+    position: absolute;
+    top: 0.9em;
+    right: -1.4em;
+}
+
+.icon .delete-confirm{
+    font-size: 0.6em;
+    top: 1.2em;
+    right: -3em;
+    font-weight: 500;
+    color: red;
+    border: 1px solid red;
+}
+
+.text{
+    height: 40%;
+    width: 100%;
+    background-color: #E1DFDD;
+}
+
+.text_style{
+    padding: 1em;
+}
+
+.icon img{
+    align-self: flex-end;
+    width: 4em;
+    margin: 1.5em;
+}
+
+/* -----------Admin Page Responsive----------- */
+
+@media (max-width: 950px) {
+    .admin_choices{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .admin_choices div{
+        margin: 0.4em;
+    }
+    
+    .nav_admin a{
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 670px) {
+    .cards{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@media (max-width: 450px) {
+    .logo_admin_page img{
+        width: 6em;
+    }
+
+    .search label, .applicant a, .access_level a, .job_questions a, .dropdown a  {
+        font-size: 0.8em;
+    }
+
+    .dropdowns > .dropdown{
+        margin-right: 0;
+    } 
+    
+}
+@media (max-width: 420px) {
+    .nav_admin > div{
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+}
