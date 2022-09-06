@@ -237,6 +237,10 @@ footer a{
     top: -3em;
 }
 
+.content_questions form{
+    padding-right: 5.5vw;
+}
+
 .navigate{
     display: flex;
     position: relative;
@@ -279,7 +283,7 @@ footer a{
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 770px) {
     .content_questions{
         padding-left: 0;
     }

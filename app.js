@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const session = require('express-session');
 const sequelize = require('./db/db.init.js');
 const Applicant = require('./models/applicants.js');
-const readXlsxFile = require('read-excel-file/node')
 const xlcontroller = require('./controllers/excel-controller.js');
 const { Op, DataTypes } = require("sequelize");
 const queryInterface = sequelize.getQueryInterface();
