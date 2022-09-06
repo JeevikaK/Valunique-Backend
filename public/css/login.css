@@ -189,12 +189,13 @@ footer a{
 }
 
 .questions_page{
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 350;
     margin-bottom: 1em;
     color: #53565A;
     font-family: 'Montserrat';
     font-style: normal;
+    padding-right: 1em;
 }
 
 .question_num{
@@ -222,7 +223,7 @@ footer a{
 
 .answer_area{
     background: rgba(245, 245, 245, 0.6);
-    width: 65%;
+    width: 70%;
     border-radius: 10px;
     border: none;
     box-shadow: 6px 7px 19px -6px rgba(0, 0, 0, 0.25);
