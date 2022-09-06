@@ -253,6 +253,11 @@ footer a{
     color: #53565A;
     font-size: 1.3em;
 }
+
+#question-submit{
+    display: none;
+}
+
 /*-------------Questions Responsive------------*/
 
 @media (max-width: 960px){

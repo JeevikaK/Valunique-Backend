@@ -31,12 +31,13 @@ app.use(session({
 
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
-    sequelize.sync({force: true}).then(() => {
+    sequelize.sync({ force: true }).then(() => {
         console.log('Drop and Resync with { force: true }');
     }); 
     server = app.listen(3000, () => {
         const host = server.address().address;
         const port = server.address().port;
+
         console.log(`Server is listening at port ${port}`);
     });
 }).catch(err => {
@@ -153,7 +154,8 @@ app.post('/details', async (req, res) => {
         skills+= req.body[skill]+', '
     })
     add_skill_keys.forEach(add_skill =>{
-        add_skills+= req.body[add_skill]+', '
+        if(req.body[add_skill]!=='')
+            add_skills+= req.body[add_skill]+', '
     })
     console.log(skills.slice(0, -2), add_skills.slice(0, -2))
     var applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' }});
@@ -184,6 +186,7 @@ app.get('/questions/:id', async (req, res) => {
     const { candidateId, jobId, jobName } = req.query;
     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });
     if(applicant===null){
+        req.session.destroy()
         res.redirect('/');
     }
     else{
@@ -198,12 +201,22 @@ app.get('/questions/:id', async (req, res) => {
                 jobName ,
                 message: ""
             }
-            res.render('questions', context);
+        res.render('questions', context);
     }  
 }); 
 
 app.post('/questions/:id', async (req, res) => {
-    
+    const { candidateId, jobId, jobName } = req.query;
+    const { answer } = req.body;
+
+    console.log(req.body, "req");
+    console.log(answer, "answer");
+
+    req.session.questions[`question${req.params.id}`] = req.session.xlData['questions'][req.params.id-1];
+    req.session.answers[`answer${req.params.id}`] = answer;
+    console.log(req.session.questions, "questions");
+    console.log(req.session.answers, "answers");
+    res.redirect(`/questions/${parseInt(req.params.id)+1}?candidateId=${candidateId}&jobId=${jobId}&jobName=${jobName}`);
 })
 
 app.get('/logout', async (req,res) => {

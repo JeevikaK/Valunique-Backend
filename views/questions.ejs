@@ -17,7 +17,7 @@
                 </div>
             </nav>
             <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="volvo_logo">
-            <form action="" id="question_submit">
+            <form action="" id="question_submit" method="post">
                 <div class="questions_content">
                     <p class="question_num">Question <%= id %></p>
                     <p class="questions_page"><%= question %></p>
@@ -36,9 +36,9 @@
                     <% } %>
                     <a href="<%= prev %>" id="prev" data-id="<%= prevNo %>"><i class="fa fa-solid fa-chevron-left arrow"></i></a>
                     <p><%= id  %> / <%= questionLength %></p>
-                    <% var next = `/questions/${Number(id)+Number(1)}?candidateId=${candidate_id}&jobId=${jobId}&jobName=${jobName}` %>
                     <% var nextNo = Number(id)+Number(1) %>
-                    <a href="<%= next %>" id="next" data-id="<%= nextNo %>" onclick="myFunction()"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
+                    <a href="#" id="next" data-id="<%= nextNo %>" onclick="myFunction()"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
+                    <input type="submit" value="submit" id="question-submit">
                 </div>
             </form>
         </div>
@@ -58,6 +58,7 @@
 
             if($('#next').data('id') > <%= questionLength %>){
                 $('#next').hide();
+                $('#question-submit').show();
             }
 
         </script>
