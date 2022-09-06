@@ -18,6 +18,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false 
 }));
+
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
     sequelize.sync({force: true}).then(() => {
@@ -33,12 +34,26 @@ sequelize.authenticate().then(() => {
 });
 
 
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(date.getDate() + days);
+    return result;
+}
+
 // routes
 app.get('/', (req, res) => {
+    var date = new Date();
+    console.log(date, "today");
+    var tom = addDays(date, 0);
+    if(tom > date){
+        console.log("tom is greater than date");
+    }
+    console.log(tom, "tom_form");
     res.render('login', {title: 'Login', message: ""});
 });
 
 app.post('/', async (req, res) => {
+   
     const { candidate_id, job_id } = req.body;
     const format_candidate_id = /^[0-9]+$/;
     const format_job_id = /^[A-Z0-9]+$/;
@@ -166,6 +181,7 @@ app.get('/questions/:id', async (req, res) => {
                 question: xlData['questions'][req.params.id-1], 
                 questionLength: xlData['questions'].length, 
                 candidate_id: candidateId, 
+
                 jobId, 
                 jobName ,
                 message: ""

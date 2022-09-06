@@ -49,3 +49,4 @@ const Applicant = sequelize.define('Applicant', {
 );
 
 module.exports = Applicant;
+
