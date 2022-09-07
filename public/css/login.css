@@ -230,6 +230,21 @@ footer a{
     padding: 1.5em;
 }
 
+.upload{
+    display: flex;
+    flex-direction: column;
+}
+
+#files, .upload-label{
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    font-family: 'Montserrat';
+}
+
+#files{
+    font-weight: 300;
+}
+
 .questions_content{
     display: flex;
     flex-direction: column;
@@ -314,6 +329,10 @@ footer a{
 
     .answer_style{
         text-align: center;
+    }
+
+    .upload{
+        align-items: center;
     }
 
     .content_questions form{

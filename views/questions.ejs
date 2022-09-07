@@ -17,7 +17,7 @@
                 </div>
             </nav>
             <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="volvo_logo">
-            <form action="" id="question_submit" method="post" novalidate>
+            <form action="" id="question_submit" method="post" novalidate enctype="multipart/form-data">
                 <div class="questions_content">
                     <p class="question_num">Question <%= id %></p>
                     <p class="questions_page"><%= question %></p>
@@ -27,6 +27,10 @@
                         </label>
                         <textarea name="answer" rows="4" id="answer" class="answer_area" required maxlength="400" ><%= value %></textarea>
                         <span class="error" aria-live="polite" id="answer_error"><%- message %></span>
+                    </div>
+                    <div class="upload">
+                        <label for="files" class="upload-label">Upload relevent file.</label>
+                        <input type="file" id="files" name="myfile" />
                     </div>
                 </div>
                 <div class="navigate">
