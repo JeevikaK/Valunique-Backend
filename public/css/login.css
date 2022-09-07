@@ -314,7 +314,6 @@ footer a{
 
     .volvo_logo {
         width: 150px;
-        margin-left: 7vw;
         margin-top: 2.5em;
     }
 
@@ -345,6 +344,11 @@ footer a{
 
     .navigate{
         flex-direction: row;
+    }
+
+    input[type="file"]{
+        position: relative;
+        left: 4em;
     }
 }
 
