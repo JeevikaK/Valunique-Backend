@@ -7,6 +7,7 @@ const Applicant = require('./models/applicants.js');
 const xlcontroller = require('./controllers/excel-controller.js');
 const upload = require('./middleware/upload-middleware.js');
 const { Op, DataTypes } = require("sequelize");
+const fs = require('fs')
 const queryInterface = sequelize.getQueryInterface();
 const app = express();
 
@@ -192,6 +193,17 @@ app.get('/questions/:id', async (req, res) => {
     }
     else{
         var answer = req.session.answers[`answer${req.params.id}`];
+        const dir = fs.opendirSync('./public/resources/uploads')
+        let dirent
+        let filename = ""
+        while ((dirent = dir.readSync()) !== null) {
+            console.log(dirent.name)
+            if(dirent.name.startsWith(`${req.session.candidate_id}_Q${req.params.id}`)){
+                console.log("Found file");
+                filename = dirent.name
+            }
+        }
+        dir.closeSync()
         if(answer===undefined){
             answer = '';
         }
@@ -205,7 +217,8 @@ app.get('/questions/:id', async (req, res) => {
                 jobId, 
                 jobName ,
                 message: "",
-                value: answer
+                value: answer,
+                filename
             }
         res.render('questions', context);
     }  
@@ -215,12 +228,27 @@ app.post('/questions/:id', upload, async (req, res) => {
 
     const { candidateId, jobId, jobName } = req.query;
     const { answer } = req.body;
+    let filename
+    if(req.file!=undefined){
+        filename = req.file.filename
+        if(filename.startsWith(`${req.session.candidate_id}_Q${req.params.id}`)){
+            const dir = fs.opendirSync('./public/resources/uploads')
+            let dirent
+            while ((dirent = dir.readSync()) !== null) {
+                console.log(dirent.name)
+                if(dirent.name.startsWith(`${req.session.candidate_id}_Q${req.params.id}`) && dirent.name!==filename){
+                    console.log("Deleting file");
+                    fs.unlinkSync(`./public/resources/uploads/${dirent.name}`)
+                }
+            }
+            dir.closeSync()
+        }
+    }
+    else filename = ""
 
-    console.log(req.file);
+
     req.session.questions[`question${req.params.id}`] = req.session.xlData['questions'][req.params.id-1];
     req.session.answers[`answer${req.params.id}`] = answer;
-    console.log(req.session.questions, "questions");
-    console.log(req.session.answers, "answers");
     if(answer===''){
         const context = {
             title: 'Questions',  
@@ -231,7 +259,8 @@ app.post('/questions/:id', upload, async (req, res) => {
             jobId, 
             jobName ,
             message: `<i class="fa fa-exclamation-circle"></i> Please fill the field`,
-            value: ''
+            value: '',
+            filename
         }
         res.render('questions', context);
     }
@@ -255,11 +284,13 @@ app.post('/questions/:id', upload, async (req, res) => {
                     jobId, 
                     jobName ,
                     message: `<i class="fa fa-exclamation-circle"></i> Please fill all Answer fields`,
-                    value: ''
+                    value: '',
+                    filename
                 }
                 res.render('questions', context);
             }
             else{
+                await sequelize.query("DROP TABLE IF EXISTS `"+candidateId+"`;");
                 var response = queryInterface.createTable(candidateId, {
                     serialNumber:{
                         type: DataTypes.INTEGER,
@@ -272,12 +303,38 @@ app.post('/questions/:id', upload, async (req, res) => {
                     answer: {
                         type: DataTypes.STRING,
                         allowNull: false
-                    }
+                    },
+                    filename: {
+                        type: DataTypes.STRING,
+                    },
+                    filedata: {
+                        type: DataTypes.BLOB("long"),
+                    },
                 });
                 response.then(async () => {
                     console.log("Table created");
                     for(var i=1; i<=req.session.xlData['questions'].length; i++){
-                        var insertResult = await sequelize.query("INSERT INTO `"+candidateId+"` (serialNumber, question, answer) VALUES ('"+ i +"', '"+ req.session.questions[`question${i}`] +"', '"+req.session.answers[`answer${i}`]+"')");
+                        const dir = fs.opendirSync('./public/resources/uploads')
+                        let dirent
+                        let data = null
+                        let filename = null
+                        while ((dirent = dir.readSync()) !== null) {
+                            if(dirent.name.startsWith(`${req.session.candidate_id}_Q${i}-`)){
+                                console.log("Found file");
+                                data = fs.readFileSync(
+                                    process.cwd() + '/public/resources/uploads/' + dirent.name,
+                                )
+                                filename = dirent.name
+                                if(dirent.name.startsWith(`${req.session.candidate_id}_Q1-`)){
+                                    console.log(data, "data");
+                                }
+                                // console.log(data, "data");
+                                // console.log(filename, "filename");
+                            }
+                        }
+                        dir.closeSync()
+                        // var insertResult = await sequelize.query("INSERT INTO `"+candidateId+"` (serialNumber, question, answer, filename, filedata) VALUES ('"+ i +"', '"+ req.session.questions[`question${i}`] +"', '"+req.session.answers[`answer${i}`]+"', '"+ filename +"', '"+ data + "')");
+                        var insertResult = await sequelize.query("INSERT INTO `"+candidateId+"` (serialNumber, question, answer, filename, filedata) VALUES ('"+ i +"', '"+ req.session.questions[`question${i}`] +"', '"+req.session.answers[`answer${i}`]+"', '"+ filename +"', 'LOAD_FILE(`"+ process.cwd() + '/public/resources/uploads/' + filename + "`)')");
                     }
                     console.log("Data inserted");
                     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });

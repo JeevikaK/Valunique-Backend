@@ -280,13 +280,17 @@ select option{
     margin-bottom: 1em
 }
 
-.error{
+.error, .file-upload-message{
     width: 70%;
     color: red;
     font-size: 0.8em;
     line-height: 1.5;
     padding: 1em;
     font-family: 'Montserrat', sans-serif;
+}
+
+.file-upload-message{
+    padding-left: 0;
 }
 
 /* responsive----------------------------------------------- */
@@ -348,7 +352,7 @@ select option{
         margin: auto;
     }
 
-    .error{
+    .error, .file-upload-message{
         width: 65%;
         text-align: center;
         align-self: center;

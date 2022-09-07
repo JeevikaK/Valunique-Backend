@@ -31,6 +31,10 @@
                     <div class="upload">
                         <label for="files" class="upload-label">Upload relevent file (Size limit: 8MB).</label>
                         <input type="file" id="files" name="myfile" />
+                        <% if(filename) {%>
+                            <% filename = filename + ' uploaded.' %>
+                        <% } %>
+                        <span class="file-upload-message" aria-live="polite" id="file-upload-msg"><%= filename %></span>
                     </div>
                 </div>
                 <div class="navigate">
