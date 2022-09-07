@@ -25,7 +25,7 @@
                         <label for="answer" class="answer_style">
                             Answer
                         </label>
-                        <textarea name="answer" rows="4" id="answer" class="answer_area" required maxlength="400" ><%= value %></textarea>
+                        <textarea name="answer" rows="4" id="answer" class="answer_area" required maxlength="400" ondrop="return false;" onpaste="return false;" oncopy="return false;"><%= value %></textarea>
                         <span class="error" aria-live="polite" id="answer_error"><%- message %></span>
                     </div>
                 </div>
