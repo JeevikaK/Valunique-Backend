@@ -5,6 +5,7 @@ const session = require('express-session');
 const sequelize = require('./db/db.init.js');
 const Applicant = require('./models/applicants.js');
 const xlcontroller = require('./controllers/excel-controller.js');
+const upload = require('./middleware/upload-middleware.js');
 const { Op, DataTypes } = require("sequelize");
 const queryInterface = sequelize.getQueryInterface();
 const app = express();
@@ -210,10 +211,12 @@ app.get('/questions/:id', async (req, res) => {
     }  
 }); 
 
-app.post('/questions/:id', async (req, res) => {
+app.post('/questions/:id', upload, async (req, res) => {
+
     const { candidateId, jobId, jobName } = req.query;
     const { answer } = req.body;
 
+    console.log(req.file);
     req.session.questions[`question${req.params.id}`] = req.session.xlData['questions'][req.params.id-1];
     req.session.answers[`answer${req.params.id}`] = answer;
     console.log(req.session.questions, "questions");
