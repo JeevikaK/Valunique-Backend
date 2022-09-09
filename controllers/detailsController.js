@@ -11,14 +11,14 @@ const getDetails = async (req, res) => {
         var q1 = req.session.answers['question1']
         var q2 = req.session.answers['question2']
         var location = req.session.answers['location']
-        var relocate = req.session.answers['location']
+        var Relocate = req.session.answers['location']
 
         const xlData = req.session.xlData;
-        if(q1===undefined || q2===undefined || location===undefined || relocate===undefined){
-            q1 = q2 ='';
+        if(q1===undefined || q2===undefined || location===undefined || Relocate===undefined){
+            q1 = q2 = Relocate = '';
             location = 'Select'
         }
-        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: "", whyVolvo: q1, aboutVolvo: q2, select_location: location});
+        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: "", whyVolvo: q1, aboutVolvo: q2, select_location: location, relocate: Relocate});
     }
     
 }
@@ -26,7 +26,7 @@ const getDetails = async (req, res) => {
 const postDetails = async (req, res) => {
     const { q1, q2, location, relocate } = req.body
     const { candidateId, jobId, jobName } = req.query;
-
+    console.log(req.body)
     var skill_keys = Object.keys(req.body).filter(key => key.startsWith('skill'))
     var add_skill_keys = Object.keys(req.body).filter(key => key.startsWith('add_skill'))
     var skills =''

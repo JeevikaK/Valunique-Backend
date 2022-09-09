@@ -331,9 +331,17 @@
                             Will you be willing to relocate?
                         </p>
                         <div>
-                            <input type="radio" id="yes" name="relocate" value="yes">
+                            <input type="radio" id="yes" name="relocate" value="yes" 
+                                <% if(relocate=="yes"){ %>
+                                   <%= "checked" %>
+                                <% } %>    
+                            >
                             <label for="yes"> Yes</label><br>
-                            <input type="radio" id="No" name="relocate" value="no">
+                            <input type="radio" id="No" name="relocate" value="no"
+                                <% if(relocate=="no"){ %>
+                                    <%= "checked" %>
+                                <% } %> 
+                            >
                             <label for="no"> No</label><br>
                         </div>
                         <span class="error" aria-live="polite" id="error_relocate"></span>
