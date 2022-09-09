@@ -14,10 +14,11 @@ const getDetails = async (req, res) => {
         var relocate = req.session.answers['location']
 
         const xlData = req.session.xlData;
-        if(q1===undefined || q2===undefined || location===undefined || relocate===undefined)
-            q1 = q2 = location = relocate=''
-        
-        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: "", value1: q1, value2: q2});
+        if(q1===undefined || q2===undefined || location===undefined || relocate===undefined){
+            q1 = q2 ='';
+            location = 'Select'
+        }
+        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: "", whyVolvo: q1, aboutVolvo: q2, select_location: location});
     }
     
 }
