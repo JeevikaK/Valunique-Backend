@@ -14,6 +14,7 @@ getQuestions = async (req, res) => {
     }
     else{
         var answer = req.session.answers[`answer${req.params.id}`];
+        console.log(answer)
         const dir = fs.opendirSync('./public/resources/uploads')
         let dirent
         let filename = ""

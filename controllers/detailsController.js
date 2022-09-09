@@ -8,14 +8,24 @@ const getDetails = async (req, res) => {
         res.redirect('/');
     }
     else{
+        var q1 = req.session.answers['question1']
+        var q2 = req.session.answers['question2']
+        var location = req.session.answers['location']
+        var relocate = req.session.answers['location']
+
         const xlData = req.session.xlData;
-        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: ""});
+        if(q1===undefined || q2===undefined || location===undefined || relocate===undefined)
+            q1 = q2 = location = relocate=''
+        
+        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: "", value1: q1, value2: q2});
     }
+    
 }
 
 const postDetails = async (req, res) => {
     const { q1, q2, location, relocate } = req.body
     const { candidateId, jobId, jobName } = req.query;
+
     var skill_keys = Object.keys(req.body).filter(key => key.startsWith('skill'))
     var add_skill_keys = Object.keys(req.body).filter(key => key.startsWith('add_skill'))
     var skills =''
@@ -31,9 +41,14 @@ const postDetails = async (req, res) => {
     var applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' }});
     const xlData = req.session.xlData;
     if(q1=='' || q2=='' || location=='' || relocate==''|| skills=='' ){
-        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: `<i class="fa fa-exclamation-circle"></i> Please fill all the fields`});
+        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: `<i class="fa fa-exclamation-circle"></i> Please fill all the fields`, value1: q1, value2: q2});
     }
     else{
+        req.session.answers['question1'] = q1
+        req.session.answers['question2'] = q2
+        req.session.answers['location'] = location
+        req.session.answers['relocate'] = relocate
+
         var updateResult = applicant.update({
             whyVolvo: q1,
             aboutVolvo: q2,

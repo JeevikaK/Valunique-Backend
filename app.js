@@ -57,4 +57,3 @@ app.get('/logout', logoutController);
 app.use((req, res) => {
     res.status(404).render('error', { title: '404', message: 'Page not found' });
 });
-
