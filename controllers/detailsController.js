@@ -12,13 +12,16 @@ const getDetails = async (req, res) => {
         var q2 = req.session.answers['question2']
         var location = req.session.answers['location']
         var Relocate = req.session.answers['location']
+        var skills_mandatory = req.session.answers['Skills']
+        var skill_count = req.session.answers['Skill_Count']
 
         const xlData = req.session.xlData;
-        if(q1===undefined || q2===undefined || location===undefined || Relocate===undefined){
+        if(q1===undefined || q2===undefined || location===undefined || Relocate===undefined || skills_mandatory==undefined){
             q1 = q2 = Relocate = '';
             location = 'Select'
+            skills_mandatory = []
         }
-        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: "", whyVolvo: q1, aboutVolvo: q2, select_location: location, relocate: Relocate});
+        res.render('details', {title: 'Details', mandatorySkills: xlData['mandatorySkills'], jobName, candidate_id: candidateId, message: "", whyVolvo: q1, aboutVolvo: q2, select_location: location, relocate: Relocate, skill_list: skills_mandatory, Skill_Count: skill_count});
     }
     
 }
@@ -31,9 +34,13 @@ const postDetails = async (req, res) => {
     var add_skill_keys = Object.keys(req.body).filter(key => key.startsWith('add_skill'))
     var skills =''
     var add_skills=''
+    var skill_count = 0
     skill_keys.forEach(skill => {
         skills+= req.body[skill]+', '
+        skill_count++;
     })
+    const skill_list = skills.slice(0, -2).split(", ")
+    console.log(skill_list)
     add_skill_keys.forEach(add_skill =>{
         if(req.body[add_skill]!=='')
             add_skills+= req.body[add_skill]+', '
@@ -49,6 +56,8 @@ const postDetails = async (req, res) => {
         req.session.answers['question2'] = q2
         req.session.answers['location'] = location
         req.session.answers['relocate'] = relocate
+        req.session.answers['Skills'] = skill_list
+        req.session.answers['Skill_Count'] = skill_count
 
         var updateResult = applicant.update({
             whyVolvo: q1,
