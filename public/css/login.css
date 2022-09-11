@@ -88,6 +88,14 @@ footer a{
 
 /*---------Login Page----------*/
 
+.notification{
+    position: relative;
+    background: red;
+    text-align: center;
+    font-size: 1.2em;
+    font-family: 'Inter';
+}
+
 .login_logo{
     width: 10em;
 }

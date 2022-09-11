@@ -12,17 +12,14 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
+// creating 24 hours from milliseconds
 const oneDay = 1000 * 60 * 60 * 24;
 
 // middleware & static files
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
-
-// cookie parser middleware
 app.use(cookieParser());
-
-// creating 24 hours from milliseconds
 app.use(session({ 
     secret: '0dc529ba-5051-4cd6-8b67-c9a901bb8bdf',
     resave: false,
@@ -30,6 +27,8 @@ app.use(session({
     cookie: { maxAge: oneDay }, 
 }));
 
+
+//listening to port 3000 only if db is connected
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
     sequelize.sync({ force: true }).then(() => {
@@ -44,6 +43,7 @@ sequelize.authenticate().then(() => {
     console.error('Unable to connect to the database:', err);
 });
 
+
 // routes
 app.get('/', loginController.getLogin);
 app.post('/', loginController.postLogin); 
@@ -51,7 +51,9 @@ app.get('/details', detailsController.getDetails);
 app.post('/details', detailsController.postDetails);
 app.get('/questions/:id', questionsController.getQuestions); 
 app.post('/questions/:id', upload, questionsController.postQuestions);
+app.delete('/questions/:id', questionsController.deleteQuestionFiles);
 app.get('/logout', logoutController);
+
 
 // 404 page
 app.use((req, res) => {

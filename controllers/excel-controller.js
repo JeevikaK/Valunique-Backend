@@ -4,11 +4,13 @@ exports.readXlFile = async(res, job_id) => {
     var xlData = {};
     const filepath = process.cwd() + '/job_questions/' + job_id + '.xlsx';
     const data = await readXlsxFile(filepath).then(rows => { 
-        mandatorySkills = {};
 
+        mandatorySkills = {};
         const job_name = rows[0][0];
+
         rows = rows.slice(2);
 
+        // retrieving the skills from the excel file
         function collectSkill(rowIndex){
             var type = `skill${rowIndex}`;
             var skills=[]
@@ -21,11 +23,15 @@ exports.readXlFile = async(res, job_id) => {
         for(var i=1; i<rows[0].length; i++){
             collectSkill(i);
         }
+
+        // retrieving the questions from the excel file
         var questions = []
         rows.forEach(row => {
             if(row[0]!==null)
                 questions.push(row[0]);
         });
+
+        // retrieving the other details from the excel file and storing them in xlData object
         xlData['jobName'] = job_name;
         xlData['questions'] = questions;
         xlData['mandatorySkills'] = mandatorySkills;

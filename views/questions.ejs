@@ -29,12 +29,12 @@
                         <span class="error" aria-live="polite" id="answer_error"><%- message %></span>
                     </div>
                     <div class="upload">
-                        <label for="files" class="upload-label">Upload relevent file (Size limit: 8MB).</label>
+                        <label for="files" class="upload-label">Upload relevent file if any (Size limit: 8MB).</label>
                         <input type="file" id="files" name="myfile" />
                         <% if(filename) {%>
-                            <% filename = filename + ' uploaded.' %>
+                            <% var notify = filename.replace(`${candidate_id}_Q${id}-`,"") + ' uploaded succesfully. ' + '<a href="#" id="delete" data-file=' + filename +' title="remove uploaded file"><i class="fa fa-trash"></i></a>' %>
                         <% } %>
-                        <span class="file-upload-message" aria-live="polite" id="file-upload-msg"><%= filename %></span>
+                        <span class="file-upload-message" aria-live="polite" id="file-upload-msg"><%- notify %></span>
                     </div>
                 </div>
                 <div class="navigate">
@@ -43,10 +43,10 @@
                     <% if (prevNo < 1) { %>
                         <% prev = `/details?candidateId=${candidate_id}&jobId=${jobId}&jobName=${jobName}` %>
                     <% } %>
-                    <a href="<%= prev %>" id="prev" data-id="<%= prevNo %>"><i class="fa fa-solid fa-chevron-left arrow"></i></a>
+                    <a href="<%= prev %>" id="prev" data-id="<%= prevNo %>" title="Previous"><i class="fa fa-solid fa-chevron-left arrow"></i></a>
                     <p><%= id  %> / <%= questionLength %></p>
                     <% var nextNo = Number(id)+Number(1) %>
-                    <a href="#" id="next" data-id="<%= nextNo %>" onclick="myFunction()"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
+                    <a href="#" id="next" data-id="<%= nextNo %>" onclick="myFunction()" title="Save and next"><i class=" fa fa-solid fa-chevron-right arrow"></i></a>
                 </div>
                 <div class="confirm_submit">
                     <input type="submit" value="Confirm Submit" id="question-submit">
@@ -63,11 +63,89 @@
             crossorigin="anonymous">
         </script>
         <script>
-
+            //removing next button once last question is reached
             if($('#next').data('id') > <%= questionLength %>){
                 $('#next').hide();
                 $('#question-submit').show();
             }
+
+        
+
+
+            // Delete uploaded file
+            $('#delete').click(deleteUpload)
+
+            function deleteUpload(e){
+                e.preventDefault();
+                var file = $(this).data('file');
+                console.log(file);
+                var candidate_id = '<%= candidate_id %>';
+                var jobId = '<%= jobId %>';
+                var jobName = '<%= jobName %>';
+                var id = '<%= id %>';
+                $.ajax({
+                    //send delete request to server
+                    url: `/questions/${id}?candidateId=${candidate_id}&jobId=${jobId}&jobName=${jobName}`,
+                    type: 'DELETE',
+                    dataType: 'json',
+                    data: {
+                            file: file,
+                            answer: $('#answer').val(),
+                        },
+
+                    //if successful
+                    success: function(response){
+
+                        //if file is found and deleted
+                        if(response.found)
+                            $('.file-upload-message').html('');
+
+                        //if file is not found just reload
+                        else
+                            location.reload();
+                    },           
+                    error: function(error) {
+                        console.log("some error in deleting file");
+                        $('#answer_error').html('<i class="fa fa-exclamation-circle"></i> Error in deleting file');
+                    }
+                });
+            }
+
+
+            // File upload notification
+
+            $('#files').on('change', function(){
+                //get the file path
+                var file = $('#files').val();
+                console.log(file);
+
+                // if file is uploaded
+                if(file){
+                    var fileSize = this.files[0].size/1000000;  
+                    var filename = file.replace(/^.*[\\\/]/, '');
+                    var candidate_id = '<%= candidate_id %>';
+                    var id = '<%= id %>';
+                    var notify = filename + ' uploaded succesfully. ' + '<a href="#" id="delete" onclick="deleteUpload(event)" data-file=' + candidate_id + '_Q' + id + '-' + filename +' title="remove uploaded file"><i class="fa fa-trash"></i></a>';
+                    //if file size is greater than 8MB
+                    if(fileSize > 9){
+                        $('.file-upload-message').html('<i class="fa fa-exclamation-circle"></i>&nbsp;File size exceeds 8MB');
+                        $('.file-upload-message').css({'color':'red'});
+                        $('#files').val('');
+                    }
+                    // send notitifications if file uploaded successfully
+                    else if(filename != ""){
+                        $('.file-upload-message').html(notify);
+                        $('.file-upload-message').css({'color':'green'});
+                        $('#delete').click(deleteUpload)
+                    }                
+                }
+                
+                //if file is not uploaded
+                else{
+                    console.log("no file selected");
+                    $('.file-upload-message').html('');
+                }
+            })
 
 
             //form validation
@@ -76,19 +154,23 @@
 
             function myFunction() {
                 console.log('submitted')
+                //if answer is invalid
                 if(!answer.validity.valid){
                     console.log('invalid')
                     showError();
                     event.preventDefault();
                 }
+                //if answer is valid
                 else
                     document.getElementById("question_submit").submit();
             }
                 
             function showError(){
+                //if answer is empty
                 if(answer.validity.valueMissing){
                     document.getElementById('answer_error').innerHTML='<i class="fa fa-exclamation-circle"></i> Please fill this field.';
                 }
+                //if answer is long
                 else if(answer.validity.tooLong){
                     document.getElementById('answer_error').innerHTML='<i class="fa fa-exclamation-circle"></i> Answer should be less than 400 characters';
                 }
