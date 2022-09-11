@@ -47,26 +47,31 @@
                                     Skills:
                                 </label>
                                 <div class="skills" >
-                                    <% var i = 0; %>
-                                    <% for(var type in mandatorySkills) { %>
+                                   <% for(var type in mandatorySkills) { %>
                                         <select name= "<%= type %>" id="<%= type %>" required class="skill">
+                                            <% var index = type.slice(-1) %>
                                             <% if(skill_list.length==0){ %>
-                                                    <option value=""><%= "Select" %></option>
+                                                <option value="" selected disabled hidden>Select</option>
                                             <% } else{ %>
-                                                <% while(i < skill_list.length){ %>
-                                                    <option value=""><%= skill_list[i] %></option>
-                                                    <% i++; %> 
-                                                <% } %>
+                                                <option value="<%= skill_list[Number(index)-1] %>" selected hidden><%= skill_list[Number(index)-1] %></option>
                                             <% } %>
-                                            <% for (var i=0; i < mandatorySkills[type].length; i++) { %>
-                                                <option value="<%= mandatorySkills[type][i] %>"><%= mandatorySkills[type][i] %></option>
-                                            <% } %>
+                                        <% for (var i=0; i < mandatorySkills[type].length; i++) { %>
+                                            <option value="<%= mandatorySkills[type][i] %>"><%= mandatorySkills[type][i] %></option>
+                                        <% } %>
                                         </select>
                                     <% } %>
                                     <span class="error" aria-live="polite" id="error_skill"></span>
                                 </div>
+
                                 <label>Additional Skills:</label>
                                 <div class="new_skills">
+                                    <% for(var i = 0; i < add_skill_list.length; i++){ %>
+                                        <div>
+                                            <% var skill_type = "add_skill" + Number(i+1) %>
+                                            <input type="text" name="<%= skill_type %>" id="<%= skill_type %>" class="addit_skill" value="<%= add_skill_list[i] %>">
+                                            <img src="/images/dustbin.png" alt="delete" class="delete_skill">
+                                        </div>
+                                    <% } %>
                                 </div>
                                 <div>
                                     <img src="/images/add.png" alt="add_new_skill" id="add_skill">
@@ -86,7 +91,11 @@
                             Country:
                         </label>
                         <select name="location" id="location" required>
-                            <option value=""><%= select_location %></option>
+                            <% if(select_location=="Select"){ %>
+                                <option value="" selected disabled hidden><%= select_location %></option>
+                            <% } else{ %>
+                                <option value="<%= select_location %>" selected hidden><%= select_location %></option>
+                            <% } %>
                             <option value="Afghanistan">Afghanistan</option>
                             <option value="Åland Islands">Åland Islands</option>
                             <option value="Albania">Albania</option>
