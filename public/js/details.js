@@ -25,6 +25,14 @@ add_new_skill.addEventListener('click', function(){
     }
 });
 
+var delete_skill = document.getElementsByClassName('delete_skill');
+for(var i = 0; i < delete_skill.length; i++){
+    console.log(i)
+    delete_skill[i].addEventListener('click', function(){
+        console.log("clicked")
+        this.parentElement.remove();
+    });
+}
 
 //form validation
 const form = document.querySelector('form')

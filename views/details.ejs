@@ -32,14 +32,14 @@
                                 <label for="q1">
                                     Why do you want to work for us?
                                 </label>
-                                <textarea name="q1" rows="1" id="q1" required maxlength="400" ondrop="return false;" onpaste="return false;" oncopy="return false;"></textarea>
+                                <textarea name="q1" rows="1" id="q1" required maxlength="400" ondrop="return false;" onpaste="return false;" oncopy="return false;"><%= whyVolvo %></textarea>
                                 <span class="error" aria-live="polite" id="error_whyVolvo"></span>
                             </div>
                             <div class="question">
                                 <label for="q2">
                                     What do you know about Volvo?
                                 </label>
-                                <textarea name="q2" rows="1"  id="q2" required maxlength="400" ondrop="return false;" onpaste="return false;" oncopy="return false;"></textarea>
+                                <textarea name="q2" rows="1"  id="q2" required maxlength="400" ondrop="return false;" onpaste="return false;" oncopy="return false;"><%= aboutVolvo %></textarea>
                                 <span class="error" aria-live="polite" id="error_aboutVolvo"></span>
                             </div>
                             <div class="question" id="skill">
@@ -47,9 +47,14 @@
                                     Skills:
                                 </label>
                                 <div class="skills" >
-                                    <% for(var type in mandatorySkills) { %>
+                                   <% for(var type in mandatorySkills) { %>
                                         <select name= "<%= type %>" id="<%= type %>" required class="skill">
-                                            <option value="">Select</option>
+                                            <% var index = type.slice(-1) %>
+                                            <% if(skill_list.length==0){ %>
+                                                <option value="" selected disabled hidden>Select</option>
+                                            <% } else{ %>
+                                                <option value="<%= skill_list[Number(index)-1] %>" selected hidden><%= skill_list[Number(index)-1] %></option>
+                                            <% } %>
                                         <% for (var i=0; i < mandatorySkills[type].length; i++) { %>
                                             <option value="<%= mandatorySkills[type][i] %>"><%= mandatorySkills[type][i] %></option>
                                         <% } %>
@@ -57,8 +62,16 @@
                                     <% } %>
                                     <span class="error" aria-live="polite" id="error_skill"></span>
                                 </div>
+
                                 <label>Additional Skills:</label>
                                 <div class="new_skills">
+                                    <% for(var i = 0; i < add_skill_list.length; i++){ %>
+                                        <div>
+                                            <% var skill_type = "add_skill" + Number(i+1) %>
+                                            <input type="text" name="<%= skill_type %>" id="<%= skill_type %>" class="addit_skill" value="<%= add_skill_list[i] %>">
+                                            <img src="/images/dustbin.png" alt="delete" class="delete_skill">
+                                        </div>
+                                    <% } %>
                                 </div>
                                 <div>
                                     <img src="/images/add.png" alt="add_new_skill" id="add_skill">
@@ -78,7 +91,11 @@
                             Country:
                         </label>
                         <select name="location" id="location" required>
-                            <option value="">Select</option>
+                            <% if(select_location=="Select"){ %>
+                                <option value="" selected disabled hidden><%= select_location %></option>
+                            <% } else{ %>
+                                <option value="<%= select_location %>" selected hidden><%= select_location %></option>
+                            <% } %>
                             <option value="Afghanistan">Afghanistan</option>
                             <option value="Åland Islands">Åland Islands</option>
                             <option value="Albania">Albania</option>
@@ -331,9 +348,17 @@
                             Will you be willing to relocate?
                         </p>
                         <div>
-                            <input type="radio" id="yes" name="relocate" value="yes">
+                            <input type="radio" id="yes" name="relocate" value="yes" 
+                                <% if(relocate=="yes"){ %>
+                                   <%= "checked" %>
+                                <% } %>    
+                            >
                             <label for="yes"> Yes</label><br>
-                            <input type="radio" id="No" name="relocate" value="no">
+                            <input type="radio" id="No" name="relocate" value="no"
+                                <% if(relocate=="no"){ %>
+                                    <%= "checked" %>
+                                <% } %> 
+                            >
                             <label for="no"> No</label><br>
                         </div>
                         <span class="error" aria-live="polite" id="error_relocate"></span>
