@@ -7,6 +7,12 @@ const logout = async (req,res) => {
         const delete_result = await applicant.destroy();
         req.session.destroy();     
     }
+
+    //destroy admin session if admin login
+    if(req.session.admin){
+        req.session.destroy();
+    }
+
     res.redirect('/');
 }
 

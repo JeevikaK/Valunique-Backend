@@ -10,6 +10,8 @@ const questionsController = require('./controllers/questionsController.js');
 const logoutController = require('./controllers/logoutController.js');
 const app = express();
 
+const Admin = require('./models/admin.js');
+
 app.set('view engine', 'ejs');
 
 // creating 24 hours from milliseconds
@@ -44,7 +46,7 @@ sequelize.authenticate().then(() => {
 });
 
 
-// routes
+// applicant routes
 app.get('/', loginController.getLogin);
 app.post('/', loginController.postLogin); 
 app.get('/details', detailsController.getDetails);
@@ -53,6 +55,30 @@ app.get('/questions/:id', questionsController.getQuestions);
 app.post('/questions/:id', upload, questionsController.postQuestions);
 app.delete('/questions/:id', questionsController.deleteQuestionFiles);
 app.get('/logout', logoutController);
+
+// admin routes
+app.get('/admin', async (req, res) => {
+    const insertResult = Admin.bulkCreate([{name: "Owais", email: "owaisiqbal2013@gmail.com", access: "HR"},
+                    {name: "Jeevika", email: "jeevika.kiran@gmail.com", access: "Hiring Manager"},
+                    {name: "Ayaan", email: "ayaan.ali@6362185244@gmail.com", access: "Recruiter"}])
+                    .catch(err => {
+                        console.log(err)
+                        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+                        return;
+                    });
+    const {adminEmail, adminName} = req.query; 
+    console.log(adminEmail, adminName)
+    const admin = await Admin.findOne({where: {email: adminEmail}});
+    if(admin === null){
+        res.redirect('/');
+        return
+    }
+    console.log(admin)
+    req.session.admin = admin;
+    res.render('admin', {title: 'Admin', adminName: admin.name, adminEmail: admin.email, adminAccess: admin.access});
+});
+
+// /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=OwaisIqbal
 
 
 // 404 page
