@@ -8,6 +8,7 @@ const loginController = require('./controllers/loginController.js');
 const detailsController = require('./controllers/detailsController.js');
 const questionsController = require('./controllers/questionsController.js');
 const logoutController = require('./controllers/logoutController.js');
+const Candidate_ID_Verify = require('./models/candidate_id.js')
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -33,6 +34,14 @@ sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
     sequelize.sync({ force: true }).then(() => {
         console.log('Drop and Resync with { force: true }');
+
+        Candidate_ID_Verify.bulkCreate([
+            { candidateID: "12345678" },
+            { candidateID: "10111213" },
+            { candidateID: "14151617" },
+            { candidateID: "18192021" },
+          ]).then(() => console.log("Candidate ID data has been saved"));
+
     }); 
     server = app.listen(3000, () => {
         const host = server.address().address;
