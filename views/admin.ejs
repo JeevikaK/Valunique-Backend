@@ -2,7 +2,6 @@
 <html lang="en">
     <%- include ("./partials/head.ejs") %>
 
-
 <body>
     <%- include ("./partials/background.ejs") %>
 
@@ -28,7 +27,7 @@
             </div>
             <div class="nav_admin">
                 <div class="applicant">
-                    <a href="/admin/applicant">Applicant</a>
+                    <a href="<%= `/admin?adminEmail=${adminEmail}&adminName=${adminName}` %>"> Applicant</a>
                 </div>
                 <div class="access_level">
                     <a href="/admin/access_level">Access Level</a>
@@ -43,9 +42,9 @@
                         Applicants
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Position 1</a></li>
-                        <li><a class="dropdown-item" href="#">Position 2</a></li>
-                        <li><a class="dropdown-item" href="#">Position 3</a></li>
+                        <% jobIDs.forEach(jobID => { %>
+                            <li><a class="dropdown-item" href="#<%= jobID.jobID %>"><%= jobID.jobID %></a></li>
+                        <% }) %>
                     </ul>
                 </div>
                 
@@ -54,223 +53,38 @@
         <div class="positions">
 
             <!-- --------Position 1 ---------->
+            <% var index = 0 %>
+            <% applicants.forEach(applicantsPerJobID => { %>
 
-            <div class="position_1 position">
-                <p class="position_heading">Position 1 <a href="#" title="Add a position"><img src="/images/add.png" alt="add_position"></a></p>
-                <div class="cards">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#" id="delete1"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No : 12345678</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position : </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
+                <div class="position_1 position">
+                    <p class="position_heading" id="<%= jobIDs[index].jobID %>"> <%= jobIDs[index].jobID %> <a href="#" title="Add a position"><img src="/images/add.png" alt="add_position"></a></p>
 
-            <!-- ------------Position 2----------- -->
-
-            <div class="position_2 position">
-                <p class="position_heading">Position 2<a href="#" title="Add a position"><img src="/images/add.png" alt="add_position"></a></p>
-                <div class="cards">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#delete2" id="#delete2"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
+                    <div class="cards">
+                        <% applicantsPerJobID.forEach(applicant => { %>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="icon">
+                                        <a href="#"><i class="fa fa-download"></i></a>
+                                        <a href="#" id="delete1"><i class="fa fa-trash"></i></a>
+                                        <img src="/images/applicant.png" alt="User-icon">
+                                    </div>
+                                    <div class="text">
+                                        <div class="text_style">
+                                            <p class="card-text"><span>Candidate No. </span>: <%= applicant.candidateID %></p>
+                                            <p class="card-text"><span>Skills </span>: <%= applicant.skills %></p>
+                                            <p class="card-text"><span>Status </span>: <%= applicant.status %></p>
+                                            <p class="card-text"><span>Applied On </span>: <%= applicant.appliedOn %></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
+                        <% }) %>
                     </div>
                 </div>
-            </div>
-
-            <!-- ------------Postion 3------------ -->
-
-            <div class="position_3 position">
-                <p class="position_heading">Position 3<a href="#" title="Add a position"><img src="/images/add.png" alt="add_position"></a></p>
-                <div class="cards">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="icon">
-                                <a href="#"><i class="fa fa-download"></i></a>
-                                <a href="#"><i class="fa fa-trash"></i></a>
-                                <img src="/images/applicant.png" alt="User-icon">
-                            </div>
-                            <div class="text">
-                                <div class="text_style">
-                                    <p class="card-text">Candidate No. :</p>
-                                    <p class="card-text">Skills :</p>
-                                    <p class="card-text">Position :</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <% index++ %>
+            <% }) %>
+            
         </div>
-    </div>
 
         <%- include ("./partials/footer.ejs") %>
 

@@ -543,9 +543,13 @@ nav .btn:focus, nav .btn:hover{
 }
 
 .text{
-    height: 40%;
+    height: 50%;
     width: 100%;
     background-color: #E1DFDD;
+}
+
+.text span{
+    font-weight: 600;
 }
 
 .text_style{

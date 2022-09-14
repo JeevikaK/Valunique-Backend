@@ -28,17 +28,21 @@ getQuestions = async (req, res) => {
         }
 
         //Cycle through the uploads directory to find the file uploaded to the question IF IT EXISTS
-        const dir = fs.opendirSync('./public/resources/uploads')
-        let dirent
-        let filename = ""
-        while ((dirent = dir.readSync()) !== null) {
-            console.log(dirent.name)
-            if(dirent.name.startsWith(`${req.session.candidate_id}_Q${req.params.id}-`)){ //verifying if file belongs to the current question and current candidate
-                console.log("Found file");
-                filename = dirent.name
+        let filename = "";
+        try { 
+            if (fs.existsSync('./public/resources/uploads/'+ req.session.job_id)) {
+                const dir = fs.opendirSync('./public/resources/uploads/'+ req.session.job_id)
+                let dirent
+                while ((dirent = dir.readSync()) !== null) {
+                    if(dirent.name.startsWith(`${req.session.candidate_id}_Q${req.params.id}-`)){ //verifying if file belongs to the current question and current candidate
+                        filename = dirent.name
+                    }
+                }
+                dir.closeSync()
             }
+        } catch (err) {
+            console.error(err);
         }
-        dir.closeSync()
         
         const xlData = req.session.xlData; //retrieve the Excel data from the session
         const context = {
@@ -74,18 +78,24 @@ postQuestions = async (req, res) => {
     let filename
 
     //IF the user uploaded a file, retrieve the filename and delete the old files IF THEY EXIST
-    if(req.file!=undefined){
-        filename = req.file.filename
-        if(filename.startsWith(`${req.session.candidate_id}_Q${req.params.id}-`)){
-            const dir = fs.opendirSync('./public/resources/uploads')
-            let dirent
-            while ((dirent = dir.readSync()) !== null) {
-                if(dirent.name.startsWith(`${req.session.candidate_id}_Q${req.params.id}`) && dirent.name!==filename){ //verifying if file belongs to the current question and current candidate
-                    console.log("Deleting file");
-                    fs.unlinkSync(`./public/resources/uploads/${dirent.name}`)
+    if(req.file){
+        try { 
+            if (fs.existsSync('./public/resources/uploads/'+ req.session.job_id)) {
+                filename = req.file.filename
+                if(filename.startsWith(`${req.session.candidate_id}_Q${req.params.id}-`)){
+                    const dir = fs.opendirSync('./public/resources/uploads/'+ req.session.job_id)
+                    let dirent
+                    while ((dirent = dir.readSync()) !== null) {
+                        if(dirent.name.startsWith(`${req.session.candidate_id}_Q${req.params.id}`) && dirent.name!==filename){ //verifying if file belongs to the current question and current candidate
+                            console.log("Deleting file");
+                            fs.unlinkSync(`./public/resources/uploads/${dirent.name}`)
+                        }
+                    }
+                    dir.closeSync()
                 }
             }
-            dir.closeSync()
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -165,19 +175,27 @@ postQuestions = async (req, res) => {
                     for(var i=1; i<=req.session.xlData['questions'].length; i++){
 
                         // retrieve the file data for the question 'i' IF IT EXISTS and belongs to the current candidate
-                        const dir = fs.opendirSync('./public/resources/uploads')
-                        let dirent
                         let data = null
                         let filename = null
-                        while ((dirent = dir.readSync()) !== null) {
-                            if(dirent.name.startsWith(`${req.session.candidate_id}_Q${i}-`)){ //verifying if file belongs to the current question and current candidate
-                                data = fs.readFileSync(
-                                    process.cwd() + '/public/resources/uploads/' + dirent.name,
-                                )
-                                filename = dirent.name
+                        try {  
+                            if (fs.existsSync('./public/resources/uploads/'+ req.session.job_id)) {
+                                const dir = fs.opendirSync('./public/resources/uploads/'+ req.session.job_id)
+                                let dirent
+                                while ((dirent = dir.readSync()) !== null) {
+                                    if(dirent.name.startsWith(`${req.session.candidate_id}_Q${i}-`)){ //verifying if file belongs to the current question and current candidate
+                                        data = fs.readFileSync(
+                                            process.cwd() + `/public/resources/uploads/${req.session.job_id}/${dirent.name}`,
+                                        )
+                                        filename = dirent.name
+                                    }
+                                }
+                                dir.closeSync()
                             }
+                        } catch (err) {
+                            console.error(err);
+                            res.status(500).render('error', {title: '500', message: "Internal Server Error"});
                         }
-                        dir.closeSync()  
+                          
                         
                         // Inserting the answer for the question 'i' to the database
                         var insertResult = await sequelize.query('INSERT INTO `' + candidateId + '` VALUES ( $serialNumber, $question, $answer, $filename, $filedata )', 
@@ -199,10 +217,13 @@ postQuestions = async (req, res) => {
                     // temp folder in the public/resources folder contains the confirmation files from the database
                     var fileQuestions = await sequelize.query("SELECT * FROM `"+candidateId+"` WHERE `filename` IS NOT NULL", { type: QueryTypes.SELECT });
                     fileQuestions.forEach(async (file) => {
-                        fs.writeFileSync(`./public/resources/temp/CONFIRMED${file.filename}`, file.filedata)
+                        if (!fs.existsSync(process.cwd() +'/public/resources/temp/'+req.session.job_id)) {
+                            fs.mkdirSync(process.cwd() +'/public/resources/temp/'+req.session.job_id);
+                        }
+                        fs.writeFileSync(process.cwd()+`/public/resources/temp/${req.session.job_id}/CONFIRMED${file.filename}`, file.filedata)
                     });
-
                     console.log("Data inserted");
+
                     // change the status of the candidate to 'Applied'
                     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });
                     var updateResult = applicant.update({
@@ -239,16 +260,23 @@ deleteQuestionFiles = (req, res) => {
     req.session.answers[`answer${req.params.id}`] = req.body.answer;
 
     //cycle through the files in the uploads folder
-    const dir = fs.opendirSync('./public/resources/uploads')
-    let dirent
-    var found = false //flag to check if the file has been found
-    while ((dirent = dir.readSync()) !== null) {
-        if(dirent.name === req.body.file){
-            found = true
-            fs.unlinkSync(`./public/resources/uploads/${dirent.name}`)
+    try{
+        if (fs.existsSync('./public/resources/uploads/'+ req.session.job_id)) {
+            const dir = fs.opendirSync('./public/resources/uploads/' + req.session.job_id)
+            let dirent
+            var found = false //flag to check if the file has been found
+            while ((dirent = dir.readSync()) !== null) {
+                if(dirent.name === req.body.file){
+                    found = true
+                    fs.unlinkSync(`./public/resources/uploads/${req.session.job_id}/${dirent.name}`)
+                }
+            }
+            dir.closeSync()
         }
-    }
-    dir.closeSync()
+    } catch (err) {
+        console.error(err);
+    }   
+    
     console.log("Deleting uploaded file...");
     res.json({message: "File deleted", found});
 }

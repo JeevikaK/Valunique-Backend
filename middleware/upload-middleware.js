@@ -1,9 +1,17 @@
 const multer = require('multer');
+const fs = require('fs');
 
 var maxSize = 9000000; // 9MB
 var storage = multer.diskStorage({  
     destination: function (req, file, cb) {  // Destination to store uploaded files
-        cb(null, process.cwd() +'/public/resources/uploads/');
+        try {
+            if (!fs.existsSync(process.cwd() +'/public/resources/uploads/'+req.session.job_id)) {
+              fs.mkdirSync(process.cwd() +'/public/resources/uploads/'+req.session.job_id);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        cb(null, process.cwd() + '/public/resources/uploads/' + req.session.job_id+ '/');
     },
     filename: function (req, file, cb) {  //name of uploaded file
         cb(null, `${req.session.candidate_id}_Q${req.params.id}-${file.originalname}`);

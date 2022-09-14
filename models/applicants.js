@@ -2,10 +2,15 @@ const sequelize = require('../db/db.init');
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
 const Applicant = sequelize.define('Applicant', {
+    id:{
+        type: DataTypes.INTEGER(8),
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
     candidateID:{
         type: DataTypes.INTEGER(8),
         allowNull: false,
-        primaryKey: true
     },
     jobID:{
         type: DataTypes.STRING(8),

@@ -8,11 +8,13 @@ const loginController = require('./controllers/loginController.js');
 const detailsController = require('./controllers/detailsController.js');
 const questionsController = require('./controllers/questionsController.js');
 const logoutController = require('./controllers/logoutController.js');
+const Sequelize = require("sequelize");
 const app = express();
 
 const Admin = require('./models/admin.js');
 const Applicant = require('./models/applicants.js');
-const ValidCandidateID = require('./models/candidate_id.js')
+const ValidCandidateID = require('./models/candidate_id.js');
+
 
 app.set('view engine', 'ejs');
 
@@ -83,7 +85,17 @@ app.get('/admin', async (req, res) => {
     }
     console.log(admin)
     req.session.admin = admin;
-    res.render('admin', {title: 'Admin', adminName: admin.name, adminEmail: admin.email, adminAccess: admin.access});
+    var applicants = []
+    const jobIDs = await Applicant.findAll({
+        attributes: [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'],
+    });
+    for(var i = 0; i < jobIDs.length; i++){
+        console.log(jobIDs[i].dataValues.jobID)
+        applicantsPerJobID = await Applicant.findAll({where: {jobID: jobIDs[i].dataValues.jobID}});
+        console.log(applicantsPerJobID)
+        applicants.push(applicantsPerJobID);
+    }
+    res.render('admin', {title: 'Admin', applicants, jobIDs ,adminName: admin.name, adminEmail: admin.email, adminAccess: admin.access});
 });
 
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=OwaisIqbal
