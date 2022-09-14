@@ -1,7 +1,7 @@
 const sequelize = require('../db/db.init');
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
-const Candidate_ID_Verify = sequelize.define('Candidate_ID_Verify', {
+const ValidCandidateID = sequelize.define('ValidCandidateID', {
     candidateID:{
         type: DataTypes.INTEGER(8),
         allowNull: false,
@@ -13,5 +13,5 @@ const Candidate_ID_Verify = sequelize.define('Candidate_ID_Verify', {
 } 
 );
 
-module.exports = Candidate_ID_Verify;
+module.exports = ValidCandidateID;
 

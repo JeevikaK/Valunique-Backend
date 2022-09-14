@@ -195,7 +195,7 @@ postQuestions = async (req, res) => {
                         );
                     }
 
-                    // verification code to check if the file data has been rightfully inserted into the database
+                    // verification to check if the file data has been rightfully inserted into the database
                     // temp folder in the public/resources folder contains the confirmation files from the database
                     var fileQuestions = await sequelize.query("SELECT * FROM `"+candidateId+"` WHERE `filename` IS NOT NULL", { type: QueryTypes.SELECT });
                     fileQuestions.forEach(async (file) => {
@@ -207,6 +207,7 @@ postQuestions = async (req, res) => {
                     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });
                     var updateResult = applicant.update({
                         status: 'Applied',
+                        appliedOn: new Date()
                     })
                     .catch(err => {
                         console.log(err);

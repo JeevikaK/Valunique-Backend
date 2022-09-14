@@ -1,5 +1,5 @@
 const Applicant = require('../models/applicants.js');
-const Candidate_ID_Verify = require('../models/candidate_id.js')
+const ValidCandidateID = require('../models/candidate_id.js')
 const { Op } = require("sequelize");
 const xlcontroller = require('./excel-controller.js');
 
@@ -27,8 +27,8 @@ const postLogin = async (req, res) => {
         console.log("Format Valid");
 
         //comparing with verified candidate id from db
-        const candidate_id_verify = await Candidate_ID_Verify.findOne({ where: {candidateID: candidate_id}});
-        if(candidate_id_verify!=null){
+        const validCandidateID = await ValidCandidateID.findOne({ where: {candidateID: candidate_id}});
+        if(validCandidateID!=null){
             xlcontroller.readXlFile(res, job_id).then( async (xlData) =>{
 
                 // removing all candidates from the database whose application is incomplete for more than a day.
@@ -39,6 +39,18 @@ const postLogin = async (req, res) => {
                     expiredApplicants.forEach(async (applicant) => {
                         await applicant.destroy();
                     });
+                }
+
+                // add applicant details to session
+                req.session.candidate_id = candidate_id
+                req.session.job_id = job_id
+                
+                const appliedCandidate = await Applicant.findOne({ where: {candidateID: candidate_id, jobID: job_id, status: 'Applied'}});
+
+                // if candidate has already applied for the job, redirect to details page
+                if(appliedCandidate != null){
+                    res.render('login', {title: 'Login', message: "You have already applied for this job"});
+                    return
                 }
     
                 // entering candidate details in the database if not already present
@@ -59,10 +71,6 @@ const postLogin = async (req, res) => {
                     return;
                 });
                 console.log("Applicant created");
-    
-                // add applicant details to session
-                req.session.candidate_id = applicant.candidateID
-                req.session.job_id = applicant.jobID
                 req.session.questions = {}
                 req.session.answers = {}
                 req.session.xlData = xlData

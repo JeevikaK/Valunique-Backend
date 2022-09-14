@@ -8,10 +8,11 @@ const loginController = require('./controllers/loginController.js');
 const detailsController = require('./controllers/detailsController.js');
 const questionsController = require('./controllers/questionsController.js');
 const logoutController = require('./controllers/logoutController.js');
-const Candidate_ID_Verify = require('./models/candidate_id.js')
 const app = express();
 
 const Admin = require('./models/admin.js');
+const Applicant = require('./models/applicants.js');
+const ValidCandidateID = require('./models/candidate_id.js')
 
 app.set('view engine', 'ejs');
 
@@ -34,17 +35,23 @@ app.use(session({
 //listening to port 3000 only if db is connected
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
-    sequelize.sync({ force: true }).then(() => {
+    Applicant.sync({ force: false }).then(() => {
         console.log('Drop and Resync with { force: true }');
-
-        Candidate_ID_Verify.bulkCreate([
-            { candidateID: "12345678" },
-            { candidateID: "10111213" },
-            { candidateID: "14151617" },
-            { candidateID: "18192021" },
-          ]).then(() => console.log("Candidate ID data has been saved"));
-
     }); 
+    Admin.sync({ force: true }).then(async () => {
+        await Admin.bulkCreate([{name: "Owais", email: "owaisiqbal2013@gmail.com", access: "HR"},
+                    {name: "Jeevika", email: "jeevika.kiran@gmail.com", access: "Hiring Manager"},
+                    {name: "Ayaan", email: "ayaan.ali@6362185244@gmail.com", access: "Recruiter"}])
+    });
+    ValidCandidateID.sync({ force: true }).then(async () => {
+        await ValidCandidateID.bulkCreate([
+            { candidateID: "12345678" },
+            { candidateID: "12345679" },
+            { candidateID: "12345677" },
+            { candidateID: "12345676" },
+          ]).then(() => console.log("Candidate ID data has been saved"));
+    });
+
     server = app.listen(3000, () => {
         const host = server.address().address;
         const port = server.address().port;
@@ -63,18 +70,10 @@ app.post('/details', detailsController.postDetails);
 app.get('/questions/:id', questionsController.getQuestions); 
 app.post('/questions/:id', upload, questionsController.postQuestions);
 app.delete('/questions/:id', questionsController.deleteQuestionFiles);
-app.get('/logout', logoutController);
+
 
 // admin routes
 app.get('/admin', async (req, res) => {
-    const insertResult = Admin.bulkCreate([{name: "Owais", email: "owaisiqbal2013@gmail.com", access: "HR"},
-                    {name: "Jeevika", email: "jeevika.kiran@gmail.com", access: "Hiring Manager"},
-                    {name: "Ayaan", email: "ayaan.ali@6362185244@gmail.com", access: "Recruiter"}])
-                    .catch(err => {
-                        console.log(err)
-                        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
-                        return;
-                    });
     const {adminEmail, adminName} = req.query; 
     console.log(adminEmail, adminName)
     const admin = await Admin.findOne({where: {email: adminEmail}});
@@ -89,6 +88,7 @@ app.get('/admin', async (req, res) => {
 
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=OwaisIqbal
 
+app.get('/logout', logoutController);
 
 // 404 page
 app.use((req, res) => {
