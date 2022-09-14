@@ -1,4 +1,5 @@
 const Applicant = require('../models/applicants.js');
+const Candidate_ID_Verify = require('../models/candidate_id.js')
 const { Op } = require("sequelize");
 const xlcontroller = require('./excel-controller.js');
 
@@ -22,57 +23,65 @@ const postLogin = async (req, res) => {
     const format_candidate_id = /^[0-9]+$/;
     const format_job_id = /^[A-Z0-9]+$/;
 
-    
     if(candidate_id.length==8 && job_id.length == 8 && format_candidate_id.test(candidate_id) && format_job_id.test(job_id)){ //On validating candidate id and job id format
         console.log("Format Valid");
 
-        xlcontroller.readXlFile(res, job_id).then( async (xlData) =>{
+        //comparing with verified candidate id from db
+        const candidate_id_verify = await Candidate_ID_Verify.findOne({ where: {candidateID: candidate_id}});
+        if(candidate_id_verify!=null){
+            xlcontroller.readXlFile(res, job_id).then( async (xlData) =>{
 
-            // removing all candidates from the database whose application is incomplete for more than a day.
-            var date = new Date();
-            var expDate = addDays(date, -1);
-            var expiredApplicants = await Applicant.findAll({ where: { status: 'Applying', appliedOn: { [Op.lt]: expDate }}});
-            if(expiredApplicants.length > 0){
-                expiredApplicants.forEach(async (applicant) => {
-                    await applicant.destroy();
+                // removing all candidates from the database whose application is incomplete for more than a day.
+                var date = new Date();
+                var expDate = addDays(date, -1);
+                var expiredApplicants = await Applicant.findAll({ where: { status: 'Applying', appliedOn: { [Op.lt]: expDate }}});
+                if(expiredApplicants.length > 0){
+                    expiredApplicants.forEach(async (applicant) => {
+                        await applicant.destroy();
+                    });
+                }
+    
+                // entering candidate details in the database if not already present
+                var applicant = await Applicant.create({
+                candidateID: Number(candidate_id),
+                jobID: job_id,
+                status: 'Applying',
+                whyVolvo: '',
+                aboutVolvo: '',
+                skills: '',
+                additionalSkills: '',
+                location: '',
+                relocate:'',
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+                    return;
                 });
-            }
-
-            // entering candidate details in the database if not already present
-            var applicant = await Applicant.create({
-            candidateID: Number(candidate_id),
-            jobID: job_id,
-            status: 'Applying',
-            whyVolvo: '',
-            aboutVolvo: '',
-            skills: '',
-            additionalSkills: '',
-            location: '',
-            relocate:'',
+                console.log("Applicant created");
+    
+                // add applicant details to session
+                req.session.candidate_id = applicant.candidateID
+                req.session.job_id = applicant.jobID
+                req.session.questions = {}
+                req.session.answers = {}
+                req.session.xlData = xlData
+                res.redirect(`/details?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);      
             })
-            .catch(err => {
+            .catch((err) => {
+                // if job id is invalid
                 console.log(err);
-                res.status(500).render('error', {title: '500', message: "Internal Server Error"});
-                return;
-            });
-            console.log("Applicant created");
-
-            // add applicant details to session
-            req.session.candidate_id = applicant.candidateID
-            req.session.job_id = applicant.jobID
-            req.session.questions = {}
-            req.session.answers = {}
-            req.session.xlData = xlData
-            res.redirect(`/details?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);      
-        })
-        .catch((err) => {
-            // if job id is invalid
-            console.log(err);
-            res.render('login', {title: 'Login', message: `<i class="fa fa-exclamation-circle"></i> Either the job id doesn't exist<br> or the required file is not attached for the job id.<br> Please contact the admin`});
-        })
+                res.render('login', {title: 'Login', message: `<i class="fa fa-exclamation-circle"></i> Either the job id doesn't exist<br> or the required file is not attached for the job id.<br> Please contact the admin`});
+            })
+        }
+        else{
+            //if candidate id is invalid
+            var message = '<i class="fa fa-exclamation-circle"></i> Incorrect Candidate ID';
+            res.render('login', {title: 'Login', message});
+        }
     } 
     else{
-        // if candidate id or job id is invalid
+        // if candidate id or job id is of invalid format
         var message = '<i class="fa fa-exclamation-circle"></i> Incorrect format for Candidate ID or Job ID';
         res.render('login', {title: 'Login', message});
     }
