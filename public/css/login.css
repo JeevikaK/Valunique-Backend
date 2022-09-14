@@ -603,3 +603,134 @@ nav .btn:focus, nav .btn:hover{
         padding-right: 1em;
     }
 }
+
+/* -----------Status Page----------- */
+
+.status_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.status{
+    margin-top: 1.5em;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.status_main, .candidate_id, .job_id{
+    display: flex;
+}
+
+.status_heading{
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+.status_text{
+    width: 100%;
+    margin-left: 1em;
+    font-weight: 500;
+}
+
+.status_text > p{
+    font-size: 1.1em;
+}
+
+.candidate_id, .job_id{
+    font-size: 0.9em;
+}
+
+.candidate_id_heading, .job_id_heading{
+    font-weight: 500;
+}
+
+.candidate_id_text, .job_id_text{
+    margin-left: 0.5em;
+}
+
+.stepper-wrapper {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-top: 2em;
+    width: 80%;
+}
+
+.stepper-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+  
+.stepper-item::before {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+    top: 20px;
+    left: -50%;
+    z-index: 2;
+}
+  
+.stepper-item::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+    top: 20px;
+    left: 50%;
+    z-index: 2;
+}
+  
+.stepper-item .step-counter {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ccc;
+    margin-bottom: 6px;
+}
+  
+  .stepper-item.active {
+    font-weight: bold;
+}
+  
+.stepper-item.completed .step-counter {
+    background-color: #009900;
+}
+  
+.stepper-item.completed::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #009900;
+    width: 100%;
+    top: 20px;
+    left: 50%;
+    z-index: 3;
+}
+
+.stepper-item:first-child::before {
+    content: none;
+}
+.stepper-item:last-child::after {
+  content: none;
+}
+
+.step-name{
+    font-size: 0.8em;
+}
+
+.status_end{
+    font-size: 1em;
+    margin-top: 1em;
+    font-weight: 600;
+}

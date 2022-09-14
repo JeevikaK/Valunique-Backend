@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include ("./partials/head.ejs") %>
+
+    <body>        
+        <%- include ("./partials/background.ejs") %>
+        <div class="background">
+            <div id="circle1"></div>
+            <div id="circle2"></div>
+            <div id="circle3"></div>
+            <div id="circle4"></div>
+            <div id="circle5"></div>
+            <div id="circle6"></div>
+        </div>
+        <div class="content content_login content_status">
+            <div class="login_logo">
+                <img src="/static/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="login_logo">
+            </div>
+            <p class="login_heading">Welcome to Volvo</p>
+            <div class="status_container">
+                <div class="status">
+                    <div class="status_main">
+                        <p class="status_heading">Status:</p>
+                        <div class="status_text">
+                            <p>Your application has been submittied!</p>
+                        </div>
+                    </div>
+                    <div class="candidate_id">
+                        <p class="candidate_id_heading">Candidate ID : </p>
+                        <p class="candidate_id_text">12345678</p>
+                    </div>
+                    <div class="job_id">
+                        <p class="job_id_heading">Job ID : </p>
+                        <p class="job_id_text">1B2A5678</p>
+                    </div>
+                </div>
+                <div class="stepper-wrapper">
+                    <div class="stepper-item completed">
+                      <div class="step-counter">1</div>
+                      <div class="step-name">Applying</div>
+                    </div>
+                    <div class="stepper-item completed">
+                      <div class="step-counter">2</div>
+                      <div class="step-name">Applied</div>
+                    </div>
+                    <div class="stepper-item">
+                      <div class="step-counter">3</div>
+                      <div class="step-name">Review</div>
+                    </div>
+                    <div class="stepper-item">
+                      <div class="step-counter">4</div>
+                      <div class="step-name">Interview</div>
+                    </div>
+                  </div>
+                  <div class="status_end">
+                    <p>We will get back to you shortly!</p>
+                  </div>
+            </div>
+    
+        </div>
+
+        <%- include ("./partials/footer.ejs") %>
+
+    </body>
+</html>
