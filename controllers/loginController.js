@@ -57,6 +57,7 @@ const postLogin = async (req, res) => {
                 var applicant = await Applicant.create({
                 candidateID: Number(candidate_id),
                 jobID: job_id,
+                jobName: xlData['jobName'],
                 status: 'Applying',
                 whyVolvo: '',
                 aboutVolvo: '',

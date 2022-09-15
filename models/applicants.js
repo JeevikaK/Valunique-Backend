@@ -16,6 +16,9 @@ const Applicant = sequelize.define('Applicant', {
         type: DataTypes.STRING(8),
         allowNull: false,
     },
+    jobName:{
+        type: DataTypes.STRING(50),
+    },
     status:{
         type: DataTypes.ENUM,
         values: ['Applying', 'Applied', 'Rejected', 'Shortlisted'],

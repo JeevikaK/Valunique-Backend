@@ -51,7 +51,7 @@ sequelize.authenticate().then(() => {
             { candidateID: "12345679" },
             { candidateID: "12345677" },
             { candidateID: "12345676" },
-          ]).then(() => console.log("Candidate ID data has been saved"));
+        ]).then(() => console.log("Candidate ID data has been saved"));
     });
 
     server = app.listen(3000, () => {
@@ -75,7 +75,7 @@ app.delete('/questions/:id', questionsController.deleteQuestionFiles);
 
 
 // admin routes
-app.get('/admin', async (req, res) => {
+app.get('/admin/:page', async (req, res) => {
     const {adminEmail, adminName} = req.query; 
     console.log(adminEmail, adminName)
     const admin = await Admin.findOne({where: {email: adminEmail}});
@@ -85,20 +85,20 @@ app.get('/admin', async (req, res) => {
     }
     console.log(admin)
     req.session.admin = admin;
-    var applicants = []
-    const jobIDs = await Applicant.findAll({
-        attributes: [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'],
+    const jobs = await Applicant.findAll({
+        attributes: [
+            [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'], 
+            'jobName'
+        ],
+        order: [['jobID', 'ASC']]
     });
-    for(var i = 0; i < jobIDs.length; i++){
-        console.log(jobIDs[i].dataValues.jobID)
-        applicantsPerJobID = await Applicant.findAll({where: {jobID: jobIDs[i].dataValues.jobID}});
-        console.log(applicantsPerJobID)
-        applicants.push(applicantsPerJobID);
-    }
-    res.render('admin', {title: 'Admin', applicants, jobIDs ,adminName: admin.name, adminEmail: admin.email, adminAccess: admin.access});
+    console.log(jobs)
+    applicants = await Applicant.findAll({where: {status: "Applied"}, order: [['jobID', 'ASC']]});
+    console.log(applicants)
+    res.render('admin', {title: 'Admin', applicants, jobs ,adminName: admin.name, adminEmail: admin.email, adminAccess: admin.access});
 });
 
-// /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=OwaisIqbal
+// /admin/1?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
 app.get('/logout', logoutController);
 
