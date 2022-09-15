@@ -426,6 +426,10 @@ nav .btn:focus, nav .btn:hover{
     color: #1298B5;
 }
 
+.selected{
+    color: #1298B5!important;
+}
+
 .nav_admin a{
     color: #53565A;
     text-decoration: none;
@@ -521,13 +525,13 @@ nav .btn:focus, nav .btn:hover{
     color: inherit
 }
 
-.icon .fa-download{
+/* .icon .fa-download{
     position: absolute;
     top: 0.9em;
     left: -1.4em;
-}
+} */
 
-.icon .fa-trash, .icon .delete-confirm{
+.icon .fa-trash, .icon .delete-confirm, .icon .fa-download{
     position: absolute;
     top: 0.9em;
     right: -1.4em;

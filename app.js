@@ -77,7 +77,7 @@ app.get('/status', getStatus);
 
 
 // admin routes
-app.get('/admin/:page', async (req, res) => {
+app.get('/admin', async (req, res) => {
     const {adminEmail, adminName} = req.query; 
     console.log(adminEmail, adminName)
     const admin = await Admin.findOne({where: {email: adminEmail}});
@@ -95,9 +95,47 @@ app.get('/admin/:page', async (req, res) => {
         order: [['jobID', 'ASC']]
     });
     console.log(jobs)
-    applicants = await Applicant.findAll({where: {status: "Applied"}, order: [['jobID', 'ASC']]});
+    const applicants = await Applicant.findAll({where: {status: "Applied"}, order: [['jobID', 'ASC']]});
     console.log(applicants)
-    res.render('admin', {title: 'Admin', applicants, jobs ,adminName: admin.name, adminEmail: admin.email, adminAccess: admin.access});
+    const context = {
+        title: 'Admin', 
+        applicants, 
+        jobs,
+        adminName: admin.name, 
+        adminEmail: admin.email, 
+        adminAccess: admin.access, 
+        type: "applicants"
+    }
+    res.render('admin', context);
+});
+
+app.get('/admin/access', async (req, res) => {
+    if(req.session.admin === undefined){
+        res.redirect('/');
+        return
+    }
+    const adminEmail = req.session.admin.email;
+    const adminName = req.session.admin.name;
+    console.log(adminEmail, adminName)
+    const access_levels = await Admin.findAll({
+        attributes: [
+            [Sequelize.fn('DISTINCT', Sequelize.col('access')), 'access'], 
+        ],
+        order: [['access', 'ASC']]
+    });
+    console.log(access_levels)
+    const admins = await Admin.findAll({order: [['access', 'ASC']]});
+    console.log(admins)
+    const context = {
+        title: 'Admin', 
+        admins, 
+        access_levels,
+        adminName: adminName, 
+        adminEmail: adminEmail, 
+        adminAccess: req.session.admin.access,
+        type: "access"
+    }
+    res.render('admin', context);
 });
 
 // /admin/1?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais

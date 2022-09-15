@@ -27,63 +27,116 @@
             </div>
             <div class="nav_admin">
                 <div class="applicant">
-                    <a href="<%= `/admin/1?adminEmail=${adminEmail}&adminName=${adminName}` %>"> Applicant</a>
+                    <a href="<%= `/admin?adminEmail=${adminEmail}&adminName=${adminName}` %>"
+                        <% if(type=="applicants"){ %>
+                           class= "<%= "selected" %>"
+                        <% } %>     
+                    > Applicant</a>
                 </div>
-                <div class="access_level">
-                    <a href="/admin/access_level">Access Level</a>
+                <div class="access">
+                    <a href="/admin/access"
+                        <% if(type=="access"){ %>
+                            class= "<%= "selected" %>"
+                        <% } %>
+                    >Access Level</a>
                 </div>
                 <div class="job_questions">
                     <a href="/admin/job_questions">Job Questions</a>
                 </div>
             </div>
             <div class="dropdowns">
-                <div class="dropdown">
-                    <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Applicants
-                    </a>
-                    <ul class="dropdown-menu">
-                        <% jobs.forEach(job => { %>
-                            <li><a class="dropdown-item" href="#<%= job.jobID %>"><%= job.jobID %></a></li>
-                        <% }) %>
-                    </ul>
-                </div>
-                
+                <% if(type==="applicants") {%>
+                    <div class="dropdown">
+                        <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Applicants
+                        </a>
+                        <ul class="dropdown-menu">
+                            <% jobs.forEach(job => { %>
+                                <li><a class="dropdown-item" href="#<%= job.jobID %>"><%= job.jobName %></a></li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                <%} else if(type==="access") {%>
+                    <div class="dropdown">
+                        <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Access Level
+                        </a>
+                        <ul class="dropdown-menu">
+                            <% access_levels.forEach(level => { %>
+                                <li><a class="dropdown-item" href="#<%= level.access %>"><%= level.access %></a></li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                <% } %>
             </div>
         </div>
         <div class="positions">
 
             <!-- -------- Applications ---------->
-            <% jobs.forEach( job => { %>
-                <div class="position_1 position">
-                    <p class="position_heading" id="<%= job.jobID %>"> <%= `${job.jobName} - ${job.jobID}` %> <a href="#" title="Add a position"><img src="/images/add.png" alt="add_position"></a></p>
-                    <div class="cards">
-                        <% applicants.forEach( applicant => { %>
-                            <% if(applicant.jobID === job.jobID) {%>
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="icon">
-                                            <a href="#"><i class="fa fa-download"></i></a>
-                                            <a href="#" id="delete1"><i class="fa fa-trash"></i></a>
-                                            <img src="/images/applicant.png" alt="User-icon">
-                                        </div>
-                                        <div class="text">
-                                            <div class="text_style">
-                                                <p class="card-text"><span>Candidate No. </span>: <%= applicant.candidateID %></p>
-                                                <p class="card-text"><span>Skills </span>: <%= applicant.skills %></p>
-                                                <p class="card-text"><span>Status </span>: <%= applicant.status %></p>
-                                                <p class="card-text"><span>Applied On </span>: <%= applicant.appliedOn %></p>
+
+            <% if(type==="applicants") {%>
+                <% jobs.forEach( job => { %>
+                    <div class="position_1 position">
+                        <p class="position_heading" id="<%= job.jobID %>"> <%= `${job.jobName} - ${job.jobID}` %> </p>
+                        <div class="cards">
+                            <% applicants.forEach( applicant => { %>
+                                <% if(applicant.jobID === job.jobID) {%>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="icon">
+                                                <a href="#"><i class="fa fa-download"></i></a>
+                                                <img src="/images/applicant.png" alt="User-icon">
+                                            </div>
+                                            <div class="text">
+                                                <div class="text_style">
+                                                    <p class="card-text"><span>Candidate No. </span>: <%= applicant.candidateID %></p>
+                                                    <p class="card-text"><span>Skills </span>: <%= applicant.skills %></p>
+                                                    <p class="card-text"><span>Status </span>: <%= applicant.status %></p>
+                                                    <p class="card-text"><span>Applied On </span>: <%= applicant.appliedOn %></p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            <% } %>
-                        <% }) %>
+                                <% } %>
+                            <% }) %>
+                        </div>
                     </div>
-                </div>
-            <% }) %>
+                <% }) %>
+            <% } %>
 
             <!--------------- access levels ------------>
+
+            <% if(type==="access") {%>
+                <% access_levels.forEach( level => { %>
+                    <div class="position_1 position">
+                        <p class="position_heading" id="<%= level.access %>"> <%= level.access %> <a href="#" title="Add admin access"><img src="/images/add.png" alt="Add_access"></a></p>
+                        <div class="cards">
+                            <% admins.forEach( admin => { %>
+                                <% if(admin.access === level.access) {%>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="icon">
+                                                <a href="#" id="delete1"><i class="fa fa-trash" title="Revoke Access"></i></a>
+                                                <img src="/images/applicant.png" alt="User-icon">
+                                            </div>
+                                            <div class="text">
+                                                <div class="text_style">
+                                                    <p class="card-text"><span>Name </span>: <%= admin.name %></p>
+                                                    <p class="card-text"><span>Email </span>: <%= admin.email %></p>
+                                                    <p class="card-text"><span>Access </span>: <%= admin.access %></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+
         </div>
+    </div>
 
         <%- include ("./partials/footer.ejs") %>
 
