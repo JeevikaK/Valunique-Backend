@@ -238,8 +238,7 @@ postQuestions = async (req, res) => {
 
                     // redirect to the status page
                     console.log("Applicant updated");
-                    req.session.destroy();
-                    res.redirect('/');
+                    res.redirect('/status');
                 })
                 .catch(err => {
                     console.log(err);

@@ -8,6 +8,7 @@ const loginController = require('./controllers/loginController.js');
 const detailsController = require('./controllers/detailsController.js');
 const questionsController = require('./controllers/questionsController.js');
 const logoutController = require('./controllers/logoutController.js');
+const getStatus = require('./controllers/statusController.js');
 const Sequelize = require("sequelize");
 const app = express();
 
@@ -72,6 +73,7 @@ app.post('/details', detailsController.postDetails);
 app.get('/questions/:id', questionsController.getQuestions); 
 app.post('/questions/:id', upload, questionsController.postQuestions);
 app.delete('/questions/:id', questionsController.deleteQuestionFiles);
+app.get('/status', getStatus);
 
 
 // admin routes

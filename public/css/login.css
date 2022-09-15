@@ -623,7 +623,26 @@ nav .btn:focus, nav .btn:hover{
     width: 100%;
 }
 
-.status_main, .candidate_id, .job_id{
+.logoutStatus{
+    text-decoration: none;
+    color: inherit;
+    align-self: end;
+    margin-top: 1em;
+    padding: 0.4em;
+    background-color: #0dcaf0;
+    border-radius: 0.3em;
+    color: aliceblue;
+}
+
+.logoutStatus:hover{
+    color: #ccc;
+}
+
+.logoutStatus h6{
+    margin: 0;
+}
+
+.status_main, .candidate_id, .job_id, .ApplyDate{
     display: flex;
 }
 
@@ -642,15 +661,15 @@ nav .btn:focus, nav .btn:hover{
     font-size: 1.1em;
 }
 
-.candidate_id, .job_id{
+.candidate_id, .job_id, .ApplyDate{
     font-size: 0.9em;
 }
 
-.candidate_id_heading, .job_id_heading{
+.ApplyDate_heading, .candidate_id_heading, .job_id_heading{
     font-weight: 500;
 }
 
-.candidate_id_text, .job_id_text{
+.ApplyDate_text, .candidate_id_text, .job_id_text{
     margin-left: 0.5em;
 }
 

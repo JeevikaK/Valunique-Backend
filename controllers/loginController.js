@@ -46,10 +46,10 @@ const postLogin = async (req, res) => {
                 req.session.job_id = job_id
                 
                 const appliedCandidate = await Applicant.findOne({ where: {candidateID: candidate_id, jobID: job_id, status: 'Applied'}});
-
+                
                 // if candidate has already applied for the job, redirect to details page
                 if(appliedCandidate != null){
-                    res.render('login', {title: 'Login', message: "You have already applied for this job"});
+                    res.redirect('/status', );
                     return
                 }
     
