@@ -29,7 +29,7 @@
                         <span class="error" aria-live="polite" id="answer_error"><%- message %></span>
                     </div>
                     <div class="upload">
-                        <label for="files" class="upload-label">Upload relevent file if any (Size limit: 8MB).</label>
+                        <label for="files" class="upload-label">Upload relevent file if any (Size limit: 8MB, Type: PDF).</label>
                         <input type="file" id="files" name="myfile" />
                         <% if(filename) {%>
                             <% var notify = filename.replace(`${candidate_id}_Q${id}-`,"") + ' uploaded succesfully. ' + '<a href="#" id="delete" data-file=' + filename +' title="remove uploaded file"><i class="fa fa-trash"></i></a>' %>
@@ -121,12 +121,19 @@
                 if(file){
                     var fileSize = this.files[0].size/1000000;  
                     var filename = file.replace(/^.*[\\\/]/, '');
+                    var extension = filename.split('.').pop();
                     var candidate_id = '<%= candidate_id %>';
                     var id = '<%= id %>';
                     var notify = filename + ' uploaded succesfully. ' + '<a href="#" id="delete" onclick="deleteUpload(event)" data-file=' + candidate_id + '_Q' + id + '-' + filename +' title="remove uploaded file"><i class="fa fa-trash"></i></a>';
                     //if file size is greater than 8MB
                     if(fileSize > 9){
                         $('.file-upload-message').html('<i class="fa fa-exclamation-circle"></i>&nbsp;File size exceeds 8MB');
+                        $('.file-upload-message').css({'color':'red'});
+                        $('#files').val('');
+                    }
+                    //if file is not pdf
+                    else if(extension != 'pdf'){
+                        $('.file-upload-message').html('<i class="fa fa-exclamation-circle"></i>&nbsp;Only pdf files are allowed');
                         $('.file-upload-message').css({'color':'red'});
                         $('#files').val('');
                     }

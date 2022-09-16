@@ -443,12 +443,12 @@ nav .btn:focus, nav .btn:hover{
     margin-right: 2em;
 }
 
-.btn.show, .btn, .btn:focus{
+.dropdown.btn.show, .dropdown .btn, .btn:focus{
     border: none;
 }
 
-.btn:focus, .btn:hover{
-    background: inherit;
+.admin_choices .btn:focus, .admin_choices .btn:hover{
+    background-color: inherit;
 }
 
 .dropdowns > .dropdown > a{
@@ -524,12 +524,6 @@ nav .btn:focus, nav .btn:hover{
 .icon a{
     color: inherit
 }
-
-/* .icon .fa-download{
-    position: absolute;
-    top: 0.9em;
-    left: -1.4em;
-} */
 
 .icon .fa-trash, .icon .delete-confirm, .icon .fa-download{
     position: absolute;
@@ -677,6 +671,14 @@ nav .btn:focus, nav .btn:hover{
     margin-left: 0.5em;
 }
 
+.modal form > div{
+    display: block;
+}
+
+.modal-footer {
+    display: flex!important;
+}
+/* 
 .stepper-wrapper {
     margin-top: auto;
     display: flex;
@@ -760,4 +762,4 @@ nav .btn:focus, nav .btn:hover{
     font-size: 1em;
     margin-top: 1em;
     font-weight: 600;
-}
+} */
