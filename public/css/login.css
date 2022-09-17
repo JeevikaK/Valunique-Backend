@@ -405,6 +405,10 @@ nav .btn:focus, nav .btn:hover{
     width: 10em;
 }
 
+.admin_choices input::placeholder{
+    font-style: italic;
+}
+
 .nav_admin{
     display: flex;
     justify-content: space-between;
@@ -484,6 +488,11 @@ nav .btn:focus, nav .btn:hover{
     margin-left: 0.8em;
 }
 
+.download-all{
+    font-size: 0.7em;
+    padding: 0.3em;
+}
+
 .card-img-top{
     width: 11em;
 }
@@ -513,6 +522,26 @@ nav .btn:focus, nav .btn:hover{
     font-size: 0.7em;
     margin: 0;
     padding: 0;
+}
+
+.card-text select{
+    width: fit-content;
+    background-color: inherit;
+    border: none;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+}
+
+.card-text input:focus{
+    outline: none;
+}
+
+.saveStatus{
+    font-size: 0.9em;
+    padding: 0.2em;
 }
 
 .icon{
@@ -558,6 +587,20 @@ nav .btn:focus, nav .btn:hover{
     align-self: flex-end;
     width: 4em;
     margin: 1.5em;
+}
+
+.modal form > div{
+    display: block;
+}
+
+.modal-footer {
+    display: flex!important;
+}
+
+.no_results{
+    display: none;
+    justify-content: center;
+
 }
 
 /* -----------Admin Page Responsive----------- */
@@ -671,14 +714,8 @@ nav .btn:focus, nav .btn:hover{
     margin-left: 0.5em;
 }
 
-.modal form > div{
-    display: block;
-}
 
-.modal-footer {
-    display: flex!important;
-}
-/* 
+
 .stepper-wrapper {
     margin-top: auto;
     display: flex;
@@ -762,4 +799,4 @@ nav .btn:focus, nav .btn:hover{
     font-size: 1em;
     margin-top: 1em;
     font-weight: 600;
-} */
+}

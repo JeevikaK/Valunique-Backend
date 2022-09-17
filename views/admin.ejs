@@ -6,82 +6,91 @@
     <%- include ("./partials/background.ejs") %>
 
     <div class="content content_admin">
-        <nav>
-            <div class="dropdown">
-                <a class="btn dropdown-toggle user" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="/images/user-img.png" alt="user-icon">
-                    <p><%= adminName %></p>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/logout">Sign Out</a></li>
-                </ul>
+        <div class="nav-bar">
+            <nav>
+                <div class="dropdown">
+                    <a class="btn dropdown-toggle user" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="/images/user-img.png" alt="user-icon">
+                        <p><%= adminName %></p>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/logout">Sign Out</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="logo_admin_page">
+                <img src="/images/Volvo-Logo-2020.png" alt="logo">
             </div>
-        </nav>
-        <div class="logo_admin_page">
-            <img src="/images/Volvo-Logo-2020.png" alt="logo">
-        </div>
-        <div class="admin_choices">
-            <div class="search">
-                <label for="search">Search:</label>
-                <input type="text" name="search" id="" placeholder=" Eg: XXXXXX">
-            </div>
-            <div class="nav_admin">
-                <div class="applicant">
-                    <a href="<%= `/admin?adminEmail=${adminEmail}&adminName=${adminName}` %>"
+            <div class="admin_choices">
+                <div class="search">
+                    <label for="search">Search:</label>
+                    <input type="text" name="search" id="search" 
                         <% if(type=="applicants"){ %>
-                           class= "<%= "selected" %>"
-                        <% } %>     
-                    > Applicant</a>
-                </div>
-                <div class="access">
-                    <a href="/admin/access"
-                        <% if(type=="access"){ %>
-                            class= "<%= "selected" %>"
+                            placeholder=" By Candidate No."
+                        <% } else if(type=="access") {%> 
+                            placeholder=" By Admin Name"
                         <% } %>
-                    >Access Level</a>
+                    >
                 </div>
-                <div class="job_questions">
-                    <a href="/admin/job_questions">Job Questions</a>
+                <div class="nav_admin">
+                    <div class="applicant">
+                        <a href="<%= `/admin?adminEmail=${adminEmail}&adminName=${adminName}` %>"
+                            <% if(type=="applicants"){ %>
+                               class= "<%= "selected" %>"
+                            <% } %>     
+                        > Applicant</a>
+                    </div>
+                    <div class="access">
+                        <a href="/admin/access"
+                            <% if(type=="access"){ %>
+                                class= "<%= "selected" %>"
+                            <% } %>
+                        >Access Level</a>
+                    </div>
+                    <div class="job_questions">
+                        <a href="/admin/job_questions">Job Questions</a>
+                    </div>
                 </div>
-            </div>
-            <div class="dropdowns">
-                <% if(type==="applicants") {%>
-                    <div class="dropdown">
-                        <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Applicants
-                        </a>
-                        <ul class="dropdown-menu">
-                            <% jobs.forEach(job => { %>
-                                <li><a class="dropdown-item" href="#<%= job.jobID %>"><%= job.jobName %></a></li>
-                            <% }) %>
-                        </ul>
-                    </div>
-                <%} else if(type==="access") {%>
-                    <div class="dropdown">
-                        <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Access Level
-                        </a>
-                        <ul class="dropdown-menu">
-                            <% access_levels.forEach(level => { %>
-                                <li><a class="dropdown-item" href="#<%= level.access %>"><%= level.access %></a></li>
-                            <% }) %>
-                        </ul>
-                    </div>
-                <% } %>
+                <div class="dropdowns">
+                    <% if(type==="applicants") {%>
+                        <div class="dropdown">
+                            <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Applicants
+                            </a>
+                            <ul class="dropdown-menu">
+                                <% jobs.forEach(job => { %>
+                                    <li><a class="dropdown-item" href="#<%= job.jobID %>"><%= job.jobName %></a></li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <%} else if(type==="access") {%>
+                        <div class="dropdown">
+                            <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Access Level
+                            </a>
+                            <ul class="dropdown-menu">
+                                <% access_levels.forEach(level => { %>
+                                    <li><a class="dropdown-item" href="#<%= level.access %>"><%= level.access %></a></li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <% } %>
+                </div>
             </div>
         </div>
+        
         <div class="positions">
 
             <!-- -------- Applications ---------->
-
             <% if(type==="applicants") {%>
                 <% jobs.forEach( job => { %>
                     <div class="position_1 position">
                         <p class="position_heading" id="<%= job.jobID %>"> <%= `${job.jobName} - ${job.jobID}` %> </p>
+                        <button class="btn btn-info download-all">Download Applicantions</button>
                         <div class="cards">
                             <% applicants.forEach( applicant => { %>
                                 <% if(applicant.jobID === job.jobID) {%>
-                                    <div class="card">
+                                    <div class="card" id="<%= applicant.candidateID %>">
                                         <div class="card-body">
                                             <div class="icon">
                                                 <a href="#"><i class="fa fa-download"></i></a>
@@ -91,7 +100,15 @@
                                                 <div class="text_style">
                                                     <p class="card-text"><span>Candidate No. </span>: <%= applicant.candidateID %></p>
                                                     <p class="card-text"><span>Skills </span>: <%= applicant.skills %></p>
-                                                    <p class="card-text"><span>Status </span>: <%= applicant.status %></p>
+                                                    <p class="card-text"><span>Status </span>: <select name="status_<%= applicant.id %>" disabled id="status_<%= applicant.id %>">
+                                                            <option value="Applied" <% if(applicant.status === "Applied") {%> selected <% } %>>Applied</option>
+                                                            <option value="Shortlisted" <% if(applicant.status === "Shortlisted") {%> selected <% } %>>Shortlisted</option>
+                                                            <option value="Rejected" <% if(applicant.status === "Rejected") {%> selected <% } %>>Rejected</option>
+                                                        </select>
+                                                        <a href="#" title="Edit Status" onclick="editStatus(event, <%= applicant.id %>);">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+                                                    </p>
                                                     <p class="card-text"><span>Applied On </span>: <%= applicant.appliedOn %></p>
                                                 </div>
                                             </div>
@@ -115,7 +132,7 @@
                         <div class="cards">
                             <% admins.forEach( admin => { %>
                                 <% if(admin.access === level.access) {%>
-                                    <div class="card">
+                                    <div class="card" id="<%= admin.name %>">
                                         <div class="card-body">
                                             <div class="icon">
                                                 <a href="#" data-bs-toggle="modal" data-bs-target="#deleteAccess" data-bs-name="<%= admin.name %>" data-bs-email="<%= admin.email %>" data-bs-access="<%= admin.access %>" id="delete1">
@@ -138,9 +155,14 @@
                     </div>
                 <% }) %>
             <% } %>
-
+            
+        </div>
+        <div class="no_results">
+            <img src="/images/no_results.png" alt="no results found" id="no_results">
         </div>
     </div>
+    
+    
 
         <%- include ("./partials/footer.ejs") %>
     
@@ -211,26 +233,6 @@
         src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
         crossorigin="anonymous"></script>
-    <script>
-        const deleteAccess = document.getElementById('deleteAccess');
-        deleteAccess.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget
-            const name = button.getAttribute('data-bs-name')
-            const email = button.getAttribute('data-bs-email')
-            const access = button.getAttribute('data-bs-access')
-            const modalBody = deleteAccess.querySelector('.modal-body p')
-            modalBody.innerHTML = `Are you sure you want to remove <span style="color: red; font-weight: 600;">${name}</span>'s access from <span style="color: red; font-weight: 600;">${access}</span> level?` 
-        })
-
-        const addAccess = document.getElementById('addAccess');
-        addAccess.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget
-            const access = button.getAttribute('data-bs-access')
-            const modalTitle = addAccess.querySelector('.modal-title')
-            const modalAccess = addAccess.querySelector('.modal-body #access')
-            modalTitle.innerHTML = `Access Control - ${access}` 
-            modalAccess.value = access
-        })
-    </script>
+    <script src="/js/admin.js"></script>
     </body>
 </html>
