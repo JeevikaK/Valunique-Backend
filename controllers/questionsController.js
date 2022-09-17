@@ -149,8 +149,8 @@ postQuestions = async (req, res) => {
             //if the user has answered all the questions, Save the answers to the database and redirect to the status page
             else{
                 // Creating a candidate record in the database
-                await sequelize.query("DROP TABLE IF EXISTS `"+candidateId+"`;");
-                var response = queryInterface.createTable(candidateId, {
+                await sequelize.query("DROP TABLE IF EXISTS `"+candidateId+"_"+jobId+"`;");
+                var response = queryInterface.createTable(candidateId+"_"+jobId, {
                     serialNumber:{
                         type: DataTypes.INTEGER,
                         primaryKey: true,
@@ -198,7 +198,7 @@ postQuestions = async (req, res) => {
                           
                         
                         // Inserting the answer for the question 'i' to the database
-                        var insertResult = await sequelize.query('INSERT INTO `' + candidateId + '` VALUES ( $serialNumber, $question, $answer, $filename, $filedata )', 
+                        var insertResult = await sequelize.query('INSERT INTO `' + candidateId+"_"+jobId + '` VALUES ( $serialNumber, $question, $answer, $filename, $filedata )', 
                             {
                                 bind: {
                                     serialNumber: i,
@@ -212,17 +212,6 @@ postQuestions = async (req, res) => {
                             }
                         );
                     }
-
-                    // verification to check if the file data has been rightfully inserted into the database
-                    // temp folder in the public/resources folder contains the confirmation files from the database
-                    var fileQuestions = await sequelize.query("SELECT * FROM `"+candidateId+"` WHERE `filename` IS NOT NULL", { type: QueryTypes.SELECT });
-                    fileQuestions.forEach(async (file) => {
-                        if (!fs.existsSync(process.cwd() +'/public/resources/temp/'+req.session.job_id)) {
-                            fs.mkdirSync(process.cwd() +'/public/resources/temp/'+req.session.job_id);
-                        }
-                        fs.writeFileSync(process.cwd()+`/public/resources/temp/${req.session.job_id}/CONFIRMED${file.filename}`, file.filedata)
-                    });
-                    console.log("Data inserted");
 
                     // change the status of the candidate to 'Applied'
                     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });

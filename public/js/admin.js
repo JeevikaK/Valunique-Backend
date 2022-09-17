@@ -19,6 +19,14 @@ addAccess.addEventListener('show.bs.modal', event => {
     modalAccess.value = access
 })
 
+//no results
+const positions = document.querySelectorAll('.positions')[0]
+console.log(positions.children)
+if(positions.children.length === 0){
+    const no_applications = document.querySelector('.no_applications');
+    no_applications.style.display = 'flex';
+}
+
 //search input
 var type
 if($('.applicant a').hasClass('selected')){
@@ -26,8 +34,6 @@ if($('.applicant a').hasClass('selected')){
 } else if($('.access a').hasClass('selected')){
     type = 'access';
 }
-
-console.log(type)
 
 $('#search').on('keyup', function(){
     const search = $(this).val().toString().toLowerCase();
@@ -52,6 +58,7 @@ $('#search').on('keyup', function(){
     const positions = document.querySelectorAll('.positions')[0];
     if(Array.from(positions.children).every(position=>position.style.display === 'none')){
         console.log(document.querySelector('.no_results'))
+        document.querySelector('.no_applications').style.display = 'none';
         document.querySelector('.no_results').style.display = 'flex';
     } 
     else {
@@ -90,3 +97,21 @@ function saveStatus(e, id){
     e.target.parentElement.innerHTML = `<i class="fa fa-pencil"></i>`
     console.log(id)
 }
+
+//download applications
+$('.download-application').on('click', function(e){
+    e.preventDefault();
+    const applicant_id = $(this).data('applicant');
+    console.log(applicant_id)
+    $.ajax({
+        url: '/admin/download/'+applicant_id,
+        type: 'GET',
+        success: function(data){
+            console.log(data)
+            window.location = data.download_link;
+        },
+        error: function(err){
+            console.log(err)
+        }
+    })
+})

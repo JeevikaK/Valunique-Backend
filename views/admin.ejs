@@ -93,7 +93,7 @@
                                     <div class="card" id="<%= applicant.candidateID %>">
                                         <div class="card-body">
                                             <div class="icon">
-                                                <a href="#"><i class="fa fa-download"></i></a>
+                                                <a href="#" class="download-application" data-applicant=<%= applicant.id %>><i class="fa fa-download"></i></a>
                                                 <img src="/images/applicant.png" alt="User-icon">
                                             </div>
                                             <div class="text">
@@ -156,6 +156,9 @@
                 <% }) %>
             <% } %>
             
+        </div>
+        <div class="no_applications">
+            <img src="/images/no_applications.png" alt="no_applications">
         </div>
         <div class="no_results">
             <img src="/images/no_results.png" alt="no results found" id="no_results">

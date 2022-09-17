@@ -600,7 +600,11 @@ nav .btn:focus, nav .btn:hover{
 .no_results{
     display: none;
     justify-content: center;
+}
 
+.no_applications{
+    display: none;
+    justify-content: center;
 }
 
 /* -----------Admin Page Responsive----------- */

@@ -10,11 +10,15 @@ const questionsController = require('./controllers/questionsController.js');
 const logoutController = require('./controllers/logoutController.js');
 const getStatus = require('./controllers/statusController.js');
 const Sequelize = require("sequelize");
+const { QueryTypes } = require('sequelize');
 const app = express();
 
 const Admin = require('./models/admin.js');
 const Applicant = require('./models/applicants.js');
 const ValidCandidateID = require('./models/candidate_id.js');
+const zip = require("express-zip");
+const fs = require('fs')
+
 
 
 app.set('view engine', 'ejs');
@@ -138,7 +142,51 @@ app.get('/admin/access', async (req, res) => {
     res.render('admin', context);
 });
 
+app.get('/admin/download/:applicant_id', async (req, res) => {
+    const applicant_id = req.params.applicant_id;
+    console.log(applicant_id)
+    const applicant = await Applicant.findByPk(applicant_id);
+    var fileQuestions = await sequelize.query("SELECT * FROM `"+applicant.candidateID+"_"+applicant.jobID+"` WHERE `filename` IS NOT NULL", { type: QueryTypes.SELECT });
+    var files=[];
+    try{
+        fileQuestions.forEach(async (file) => {
+            if (!fs.existsSync(process.cwd() +'/public/resources/downloads/'+applicant.jobID)) {
+                fs.mkdirSync(process.cwd() +'/public/resources/downloads/'+applicant.jobID);
+            }
+            fs.writeFileSync(process.cwd()+`/public/resources/downloads/${applicant.jobID}/${file.filename}`, file.filedata)
+            files.push({path: process.cwd()+`/public/resources/downloads/${applicant.jobID}/${file.filename}`, name: file.filename})
+        });
+    }
+    catch(err){
+        console.log(err)
+    }
+    req.session.downloadFiles = files;
+    res.json({
+        download_link: `/download/${applicant.candidateID}_${applicant.jobID}`,
+    });
+})
+
+
 // /admin/1?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
+
+app.get('/download/:filename', (req, res) => {
+    const files = req.session.downloadFiles;
+    res.zip(files, `${req.params.filename}.zip` , (err) => {
+        if(err){
+            console.log(err)
+        } else{
+            const dir = fs.opendirSync('./public/resources/downloads/'+ req.params.filename.split('_')[1]);
+            let dirent
+            while ((dirent = dir.readSync()) !== null) {
+                if(dirent.name.startsWith(`${req.params.filename.split('_')[0]}`))
+                    fs.unlinkSync(`./public/resources/downloads/${req.params.filename.split('_')[1]}/${dirent.name}`)
+            }
+            dir.closeSync()
+            console.log("Downloaded")
+        }
+    })
+    
+})
 
 app.get('/logout', logoutController);
 
