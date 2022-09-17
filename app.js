@@ -160,33 +160,28 @@ app.get('/admin/download/:applicant_id', async (req, res) => {
     catch(err){
         console.log(err)
     }
-    req.session.downloadFiles = files;
-    res.json({
-        download_link: `/download/${applicant.candidateID}_${applicant.jobID}`,
-    });
-})
-
-
-// /admin/1?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
-
-app.get('/download/:filename', (req, res) => {
-    const files = req.session.downloadFiles;
-    res.zip(files, `${req.params.filename}.zip` , (err) => {
+    // const files = req.session.downloadFiles;
+    res.zip(files, `${applicant.candidateID}_${applicant.jobID}.zip` , (err) => {
         if(err){
             console.log(err)
         } else{
-            const dir = fs.opendirSync('./public/resources/downloads/'+ req.params.filename.split('_')[1]);
+            const dir = fs.opendirSync('./public/resources/downloads/'+ applicant.jobID);
             let dirent
             while ((dirent = dir.readSync()) !== null) {
-                if(dirent.name.startsWith(`${req.params.filename.split('_')[0]}`))
-                    fs.unlinkSync(`./public/resources/downloads/${req.params.filename.split('_')[1]}/${dirent.name}`)
+                if(dirent.name.startsWith(`${applicant.candidateID}_`))
+                    fs.unlinkSync(`./public/resources/downloads/${applicant.jobID}/${dirent.name}`)
             }
             dir.closeSync()
             console.log("Downloaded")
         }
-    })
-    
+    }) 
+    // req.session.downloadFiles = files;
+    // res.json({
+    //     download_link: `/download/${applicant.candidateID}_${applicant.jobID}`,
+    // });
 })
+
+// /admin/1?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
 app.get('/logout', logoutController);
 

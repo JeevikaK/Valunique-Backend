@@ -102,16 +102,16 @@ function saveStatus(e, id){
 $('.download-application').on('click', function(e){
     e.preventDefault();
     const applicant_id = $(this).data('applicant');
-    console.log(applicant_id)
-    $.ajax({
-        url: '/admin/download/'+applicant_id,
-        type: 'GET',
-        success: function(data){
-            console.log(data)
-            window.location = data.download_link;
-        },
-        error: function(err){
-            console.log(err)
-        }
-    })
+    window.location = '/admin/download/'+applicant_id;
+    // $.ajax({
+    //     url: '/admin/download/'+applicant_id,
+    //     type: 'GET',
+    //     success: function(data){
+    //         console.log(data)
+    //         window.location = '/admin/download/'+applicant_id;
+    //     },
+    //     error: function(err){
+    //         console.log(err)
+    //     }
+    // })
 })

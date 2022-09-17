@@ -86,7 +86,7 @@
                 <% jobs.forEach( job => { %>
                     <div class="position_1 position">
                         <p class="position_heading" id="<%= job.jobID %>"> <%= `${job.jobName} - ${job.jobID}` %> </p>
-                        <button class="btn btn-info download-all">Download Applicantions</button>
+                        <button class="btn btn-info download-all">Download Applications</button>
                         <div class="cards">
                             <% applicants.forEach( applicant => { %>
                                 <% if(applicant.jobID === job.jobID) {%>
