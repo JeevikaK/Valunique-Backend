@@ -70,7 +70,7 @@ $('#search').on('keyup', function(){
 function editStatus(e, id){
     e.preventDefault();
     const status = document.getElementById(`status_${id}`);
-    console.log(status)
+    //console.log(status)
     status.style.backgroundColor = 'white';
     status.style.borderColor = 'black';
     status.style.borderWidth = '1px';
@@ -79,23 +79,43 @@ function editStatus(e, id){
     status.focus();
     e.target.parentElement.setAttribute('onclick',`saveStatus(event, ${id})`)
     e.target.parentElement.innerHTML = `<button class="btn btn-primary saveStatus">Save</button>`
-    console.log(id)
+    //console.log(id)
 }
 
 function saveStatus(e, id){
     e.preventDefault();
-    //ajax request
-    //....
-    //....
     const status = document.getElementById(`status_${id}`);
-    status.style.backgroundColor = 'transparent';
-    status.style.borderColor = 'transparent';
-    status.style.borderWidth = '0px';
-    status.style.borderStyle = 'none';
-    status.setAttribute('disabled', 'true');
-    e.target.parentElement.setAttribute('onclick',`editStatus(event, ${id})`)
-    e.target.parentElement.innerHTML = `<i class="fa fa-pencil"></i>`
-    console.log(id)
+    const adminname = $('#admin_profile').data('adminname')
+    const adminemail = $('#admin_profile').data('adminemail')
+    console.log(adminname, adminemail)
+    var status_value = status.options[status.selectedIndex].text;
+    console.log(status_value)
+    //ajax request
+    $.ajax({
+        url: `/admin?adminEmail=${adminemail}&adminName=${adminname}`,
+        type: 'POST',
+        data: {
+            status: status_value,
+            applicant_id: id
+        },
+        success: function(response){
+            const status = document.getElementById(`status_${id}`);
+            status_value = response.status
+            status.style.backgroundColor = 'transparent';
+            status.style.borderColor = 'transparent';
+            status.style.borderWidth = '0px';
+            status.style.borderStyle = 'none';
+            status.setAttribute('disabled', 'true');
+            e.target.parentElement.setAttribute('onclick',`editStatus(event, ${id})`)
+            e.target.parentElement.innerHTML = `<i class="fa fa-pencil"></i>`
+            console.log(id)
+        },
+        error: function(error) {
+            console.log(error);
+            $('#answer_error').html('<i class="fa fa-exclamation-circle"></i> Error in saving status');
+        }
+    });
+
 }
 
 //download applications
@@ -108,7 +128,7 @@ $('.download-application').on('click', function(e){
     //     type: 'GET',
     //     success: function(data){
     //         console.log(data)
-    //         window.location = '/admin/download/'+applicant_id;
+    //         window.location = '/admin/download/'+applicant_id;C
     //     },
     //     error: function(err){
     //         console.log(err)

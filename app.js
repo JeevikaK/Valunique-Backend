@@ -113,6 +113,21 @@ app.get('/admin', async (req, res) => {
     res.render('admin', context);
 });
 
+app.post('/admin', async (req, res) => {
+    const {status, applicant_id} = req.body
+    console.log(status, applicant_id)
+    var applicant = await Applicant.findByPk(applicant_id);
+    console.log(applicant)
+    const update_status = await applicant.update({status: status})
+    .catch(err => {
+        console.log(err, 123);
+        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+        return;
+    });
+    res.json({status})
+    return;
+});
+
 app.get('/admin/access', async (req, res) => {
     if(req.session.admin === undefined){
         res.redirect('/');
