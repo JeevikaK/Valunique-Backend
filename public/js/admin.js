@@ -21,7 +21,6 @@ addAccess.addEventListener('show.bs.modal', event => {
 
 //no results
 const positions = document.querySelectorAll('.positions')[0]
-console.log(positions.children)
 if(positions.children.length === 0){
     const no_applications = document.querySelector('.no_applications');
     no_applications.style.display = 'flex';
@@ -103,15 +102,18 @@ $('.download-application').on('click', function(e){
     e.preventDefault();
     const applicant_id = $(this).data('applicant');
     window.location = '/admin/download/'+applicant_id;
-    // $.ajax({
-    //     url: '/admin/download/'+applicant_id,
-    //     type: 'GET',
-    //     success: function(data){
-    //         console.log(data)
-    //         window.location = '/admin/download/'+applicant_id;
-    //     },
-    //     error: function(err){
-    //         console.log(err)
-    //     }
-    // })
+})
+
+//donwaload all applications
+$('.download-all').on('click', function(e){
+    e.preventDefault();
+    const jobID = $(this).attr('data-jobID');
+    console.log(jobID)
+    var applicant_ids = [];
+    $(`.${jobID}`).find('.download-application').each(function(){
+        const applicant_id = $(this).data('applicant');
+        applicant_ids.push(applicant_id);
+    })
+    console.log(applicant_ids)
+    window.location = '/admin/downloadAll/'+ jobID +'/'+applicant_ids;
 })

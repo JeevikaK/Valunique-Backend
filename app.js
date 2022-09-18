@@ -9,6 +9,7 @@ const detailsController = require('./controllers/detailsController.js');
 const questionsController = require('./controllers/questionsController.js');
 const logoutController = require('./controllers/logoutController.js');
 const getStatus = require('./controllers/statusController.js');
+const { Op } = require("sequelize");
 const Sequelize = require("sequelize");
 const { QueryTypes } = require('sequelize');
 const app = express();
@@ -16,8 +17,10 @@ const app = express();
 const Admin = require('./models/admin.js');
 const Applicant = require('./models/applicants.js');
 const ValidCandidateID = require('./models/candidate_id.js');
-const zip = require("express-zip");
 const fs = require('fs')
+const { createPDF, createFolder, deleteFolder } = require('./controllers/FileController.js');
+const AdmZip = require('adm-zip');
+
 
 
 
@@ -56,6 +59,7 @@ sequelize.authenticate().then(() => {
             { candidateID: "12345679" },
             { candidateID: "12345677" },
             { candidateID: "12345676" },
+            { candidateID: "12345675" },
         ]).then(() => console.log("Candidate ID data has been saved"));
     });
 
@@ -83,13 +87,11 @@ app.get('/status', getStatus);
 // admin routes
 app.get('/admin', async (req, res) => {
     const {adminEmail, adminName} = req.query; 
-    console.log(adminEmail, adminName)
-    const admin = await Admin.findOne({where: {email: adminEmail}});
+    const admin = await Admin.findOne({where: {email: adminEmail, name: adminName}});
     if(admin === null){
         res.redirect('/');
         return
     }
-    console.log(admin)
     req.session.admin = admin;
     const jobs = await Applicant.findAll({
         attributes: [
@@ -98,9 +100,13 @@ app.get('/admin', async (req, res) => {
         ],
         order: [['jobID', 'ASC']]
     });
-    console.log(jobs)
-    const applicants = await Applicant.findAll({where: {status: "Applied"}, order: [['jobID', 'ASC']]});
-    console.log(applicants)
+    const applicants = await Applicant.findAll({where: {
+        status: {
+            [Op.not]:"Applying"
+        }
+    }, 
+        order: [['jobID', 'ASC']]
+    });
     const context = {
         title: 'Admin', 
         applicants, 
@@ -120,16 +126,13 @@ app.get('/admin/access', async (req, res) => {
     }
     const adminEmail = req.session.admin.email;
     const adminName = req.session.admin.name;
-    console.log(adminEmail, adminName)
     const access_levels = await Admin.findAll({
         attributes: [
             [Sequelize.fn('DISTINCT', Sequelize.col('access')), 'access'], 
         ],
         order: [['access', 'ASC']]
     });
-    console.log(access_levels)
     const admins = await Admin.findAll({order: [['access', 'ASC']]});
-    console.log(admins)
     const context = {
         title: 'Admin', 
         admins, 
@@ -141,6 +144,25 @@ app.get('/admin/access', async (req, res) => {
     }
     res.render('admin', context);
 });
+
+app.post('/admin/access', async (req, res) => {
+    if(req.session.admin === undefined){
+        res.redirect('/');
+        return
+    }
+    const {name, email, access} = req.body;
+    console.log(name, email, access)
+    if(name === "" || email === "" || access === ""){
+        res.send("Please fill all the fields");
+    }
+    await Admin.create({name, email, access})
+    .catch(err => {
+        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+        console.log(err)
+    });
+    res.redirect('/admin/access');
+})
+
 
 app.get('/admin/download/:applicant_id', async (req, res) => {
     const applicant_id = req.params.applicant_id;
@@ -159,8 +181,11 @@ app.get('/admin/download/:applicant_id', async (req, res) => {
     }
     catch(err){
         console.log(err)
+        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
     }
-    // const files = req.session.downloadFiles;
+    await createPDF(applicant);
+    files.push({path: process.cwd() +`/public/resources/downloads/${applicant.jobID}/${applicant.candidateID}/${applicant.candidateID}_${applicant.jobID}.pdf`, name: `${applicant.candidateID}_${applicant.jobID}.pdf`})
+
     res.zip(files, `${applicant.candidateID}_${applicant.jobID}.zip` , (err) => {
         if(err){
             console.log(err)
@@ -170,18 +195,68 @@ app.get('/admin/download/:applicant_id', async (req, res) => {
             while ((dirent = dir.readSync()) !== null) {
                 if(dirent.name.startsWith(`${applicant.candidateID}_`))
                     fs.unlinkSync(`./public/resources/downloads/${applicant.jobID}/${dirent.name}`)
+                else if(dirent.name.startsWith(`${applicant.candidateID}`)){
+                    deleteFolder(`./public/resources/downloads/${applicant.jobID}/${dirent.name}`)
+                }
             }
             dir.closeSync()
             console.log("Downloaded")
         }
     }) 
-    // req.session.downloadFiles = files;
-    // res.json({
-    //     download_link: `/download/${applicant.candidateID}_${applicant.jobID}`,
-    // });
 })
 
-// /admin/1?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
+app.get('/admin/downloadAll/:jobID/:ids', async (req, res) => {
+    const zip = new AdmZip();
+    const ids = req.params.ids.split(',');
+    const jobID = req.params.jobID;
+    const applicants = await Applicant.findAll({
+        where: {
+          id: { [Op.in]: ids },
+        },
+    });
+    try{
+        if (!fs.existsSync(process.cwd() +'/public/resources/downloads/'+jobID)) {
+            fs.mkdirSync(process.cwd() +'/public/resources/downloads/'+jobID);
+        }
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+    }
+    const getFolders = async () => {
+        for(var i=0; i<applicants.length; i++){
+            await createFolder(applicants[i]);
+            console.log("created folder for "+applicants[i].candidateID)
+            if(i === applicants.length-1){
+                return true;
+            }
+        }
+        return true;
+    }
+    getFolders().then((result) => {
+        if(result){
+            setTimeout(() => {
+                zip.addLocalFolder("./public/resources/downloads/"+jobID )
+                zip.writeZip("./public/resources/downloadAll/"+jobID+".zip");
+                res.download("./public/resources/downloadAll/"+jobID+".zip", jobID+".zip", (err) => {
+                    if(err){
+                        console.log(err)
+                        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+                    } else{
+                        deleteFolder( process.cwd() + `/public/resources/downloads/${jobID}`);
+                        fs.unlinkSync(process.cwd() + `/public/resources/downloadAll/${jobID}.zip`);
+                        console.log("Downloaded")
+                    }
+                })
+            }, 200)
+        }
+        else{
+            console.log("Error")
+        }
+    })
+})
+
+// /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
 app.get('/logout', logoutController);
 

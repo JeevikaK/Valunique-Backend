@@ -84,16 +84,16 @@
             <!-- -------- Applications ---------->
             <% if(type==="applicants") {%>
                 <% jobs.forEach( job => { %>
-                    <div class="position_1 position">
+                    <div class="position_1 position <%= job.jobID %>">
                         <p class="position_heading" id="<%= job.jobID %>"> <%= `${job.jobName} - ${job.jobID}` %> </p>
-                        <button class="btn btn-info download-all">Download Applications</button>
+                        <button class="btn btn-info download-all" data-jobID="<%= job.jobID %>">Download Applications</button>
                         <div class="cards">
                             <% applicants.forEach( applicant => { %>
                                 <% if(applicant.jobID === job.jobID) {%>
                                     <div class="card" id="<%= applicant.candidateID %>">
                                         <div class="card-body">
                                             <div class="icon">
-                                                <a href="#" class="download-application" data-applicant=<%= applicant.id %>><i class="fa fa-download"></i></a>
+                                                <a href="#" class="download-application" title="Download candidate's application" data-applicant=<%= applicant.id %>><i class="fa fa-download"></i></a>
                                                 <img src="/images/applicant.png" alt="User-icon">
                                             </div>
                                             <div class="text">
@@ -197,19 +197,19 @@
                     <h5 class="modal-title" id="addAccessLabel">Access Control</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form>
+                <form method="post">
                     <div class="modal-body">                  
                         <div class="mb-3">
                             <label for="name" class="col-form-label">Name:&nbsp;&nbsp; </label>
-                            <input type="text" class="form-control" id="name">
+                            <input type="text" name="name" required class="form-control" id="name">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="col-form-label">Email:&nbsp;&nbsp; </label>
-                            <input type="email" class="form-control" id="email">
+                            <input type="email" name="email" required class="form-control" id="email">
                         </div>
                         <div class="mb-3">
                             <label for="access" class="col-form-label">Access:&nbsp;&nbsp; </label>
-                            <input type="text" readonly class="form-control" id="access">
+                            <input type="text" name="access" readonly class="form-control" id="access">
                         </div>
                         <!-- <div class="mb-3">
                             <label for="access" class="col-form-label">Access:&nbsp;&nbsp; </label>
