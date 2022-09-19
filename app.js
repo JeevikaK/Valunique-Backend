@@ -14,6 +14,7 @@ const Sequelize = require("sequelize");
 const { QueryTypes } = require('sequelize');
 const app = express();
 
+const zip = require('express-zip')
 const Admin = require('./models/admin.js');
 const Applicant = require('./models/applicants.js');
 const ValidCandidateID = require('./models/candidate_id.js');
@@ -178,6 +179,22 @@ app.post('/admin/access', async (req, res) => {
     res.redirect('/admin/access');
 })
 
+app.delete('/admin/access/revokeAccess', async (req, res) =>{
+    const {name, email, access} = req.body
+    const admin = await Admin.findOne({where: {name: name, email: email, access: access}})
+    await admin.destroy()
+    .catch((err) => {
+        console.log(err)
+        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+    })
+    var same_user = false
+    if(admin.adminID===req.session.admin.adminID){
+        console.log('true')
+        req.session.destroy()
+        same_user = true
+    }
+    res.json({message: 'Success', same_user})
+})
 
 app.get('/admin/download/:applicant_id', async (req, res) => {
     const applicant_id = req.params.applicant_id;
