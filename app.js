@@ -288,6 +288,10 @@ app.get('/admin/downloadAll/:jobID/:ids', async (req, res) => {
     })
 })
 
+app.get('/admin/job_questions', async (req, res) => {
+    res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin})
+})
+
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
 app.get('/logout', logoutController);
