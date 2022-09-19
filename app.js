@@ -14,6 +14,7 @@ const Sequelize = require("sequelize");
 const { QueryTypes } = require('sequelize');
 const app = express();
 
+const zip = require('express-zip');
 const Admin = require('./models/admin.js');
 const Applicant = require('./models/applicants.js');
 const ValidCandidateID = require('./models/candidate_id.js');
