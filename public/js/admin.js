@@ -6,7 +6,30 @@ deleteAccess.addEventListener('show.bs.modal', event => {
     const email = button.getAttribute('data-bs-email')
     const access = button.getAttribute('data-bs-access')
     const modalBody = deleteAccess.querySelector('.modal-body p')
-    modalBody.innerHTML = `Are you sure you want to remove <span style="color: red; font-weight: 600;">${name}</span>'s access from <span style="color: red; font-weight: 600;">${access}</span> level?` 
+    modalBody.innerHTML = `Are you sure you want to remove <span style="color: red; font-weight: 600;">${name}</span>'s access from <span style="color: red; font-weight: 600;">${access}</span> level?`
+    
+    const confirm_delete_access = document.getElementById('confirm_delete_access');
+    confirm_delete_access.addEventListener('click', () => {
+        $.ajax({
+            url: `access/revokeAccess`,
+            type: 'DELETE',
+            data: {
+                name,
+                email,
+                access
+            },
+            success: function(response){
+                console.log(response)
+                if(response.same_user)
+                    window.location = '/'
+                else
+                    location.reload()
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+    })
 })
 
 const addAccess = document.getElementById('addAccess');
