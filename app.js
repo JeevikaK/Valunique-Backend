@@ -306,6 +306,12 @@ app.get('/admin/job_questions', async (req, res) => {
     res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobs})
 })
 
+app.post('/admin/job_questions', async (req, res) => {
+    const {jobID, jobName, questionNo, skillNo, addRecruiter, recruiterNo } = req.body
+
+    res.render('new_question', {title: 'New Questions', admin:req.session.admin})
+})
+
 app.get('/admin/new_questions', async (req, res) => {
     if(req.session.admin === undefined){
         res.redirect('/');

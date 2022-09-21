@@ -22,6 +22,15 @@ addQuest.addEventListener('show.bs.modal', event => {
     const jobID = button.getAttribute('data-bs-jobID')
     const modaljobID = addQuest.querySelector('.modal-body jobID')
 })
+// addQuest.click()
+// document.getElementsByTagName('body')[0].onload(() => {
+//     console.log('loaded')
+// })
+
+// addEventListener('load', (event) => {
+//     console.log('loaded')
+//     $("#addQuestionaire").trigger('click');
+// });
 
 function showRecruiterNum(event){
     console.log(event.target.value)
