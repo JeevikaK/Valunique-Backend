@@ -1,3 +1,140 @@
+.add_opening {
+    background: #FFFFFF;
+    box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.25);
+    border-radius: 50px;
+    display: flex;
+    width: fit-content;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1em;
+    padding-right: 0;
+    margin-top: 5em;
+}
+
+.add_opening img{
+    width: 35px;
+}
+
+.add_opening h6{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 1em;
+    margin: 0;
+}
+
+.job_openings{
+    margin: 3em auto;
+}
+
+.job_question{
+    background: #FFFFFF;
+    box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.25);
+    border-radius: 17px;
+    display: flex;
+    width: 80%;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 1em;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.job_questions img{
+    width: 35px;
+}
+
+.job_heading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 66%;
+    padding: 0.8em;
+}
+
+.job_heading h6{
+    margin-bottom: 0;
+    justify-self: center;
+}
+
+.index{
+    width: 7%;
+    padding: 0.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.index h5{
+    margin-bottom: 0;
+}
+
+.fileQ{
+    width: 7%;
+    margin: 0.5em;
+}
+
+.fileQ img{
+    width: 35px;
+}
+
+.updateQ{
+    width:20%;
+    display: flex;
+}
+
+.editQ, .deleteQ{
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    font-size: 1.5em;
+    padding: 0.24em 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.25); 
+}
+
+.updateQ a{
+    color: #000!important;
+}
+
+
+@media only screen and (max-width: 700px){
+
+    .editQ, .deleteQ, .index h5{
+        font-size: 1em;
+    }
+
+    .job_openings h6 {
+        font-size: 0.7em;
+    }
+}
+
+@media only screen and (max-width: 700px){
+    .add_opening h6{
+        font-size: 0.7em;
+    }
+
+    .add_opening img{
+        width: 28px;
+    }
+
+    .index{
+        width: 10%;
+    }
+
+    .job_heading{
+        width: 50%;
+    }
+
+    .fileQ{
+        width: 10%;
+    }
+
+    .updateQ{
+        width: 30%;
+    }
+}
+
 /* ------------New job questions-------- */
 
 .questions_input{
