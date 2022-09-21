@@ -57,11 +57,8 @@ sequelize.authenticate().then(() => {
     Applicant.sync({ force: false }).then(() => {
         console.log('Drop and Resync with { force: false }');
     }); 
-    Admin.sync({ force: true }).then(async () => {
-        await Admin.bulkCreate([{name: "Owais", email: "owaisiqbal2013@gmail.com", access: "HR"},
-                    {name: "Jeevika", email: "jeevika.kiran@gmail.com", access: "Hiring Manager"},
-                    {name: "Ayaan", email: "ayaan.ali@6362185244@gmail.com", access: "Recruiter"}
-        ]).then(() => console.log('Drop and Resync with { force: true }'));
+    Admin.sync({ force: false }).then(async () => {
+        console.log('Drop and Resync with { force: false }');
     })
     ValidCandidateID.sync({ force: true }).then(async () => {
         await ValidCandidateID.bulkCreate([
