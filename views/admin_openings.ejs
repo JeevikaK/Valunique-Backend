@@ -40,7 +40,74 @@
             </div>
         </div>
         <div>
-            <!-- code here -->
+            <div class="add_opening">
+                <h6>ADD OPENING &nbsp; => &nbsp;&nbsp; </h6><a href="#" title="Add Questionaire" data-bs-toggle="modal" data-bs-target="#addQuestionaire" data-bs-jobID="1B2A5678"><img src="/images/add.png" alt="Add Opening"></a>
+            </div>
+            <div class="job_openings">
+                <div class="job_question">
+                    <div class="index"><h5>1</h5></div>
+                    <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                    <div class="job_heading"><h6>Senior Siebel Developer - 1B2A5678</h6></div>
+                    <div class="updateQ">
+                        <div class="deleteQ"><a href="#" data-bs-toggle="modal" data-bs-target="#deleteQuestionaire" data-bs-jobID="1B2A5678"  id="delete1"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                        <div class="editQ"><a href="#"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
+                    </div>     
+                </div>
+                <div class="job_question">
+                    <div class="index"><h5>1</h5></div>
+                    <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                    <div class="job_heading"><h6>Senior Siebel Developer - 1B2A5678</h6></div>
+                    <div class="updateQ">
+                        <div class="deleteQ"><a href="#"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                        <div class="editQ"><a href="#"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
+                    </div>     
+                </div>
+                <div class="job_question">
+                    <div class="index"><h5>1</h5></div>
+                    <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                    <div class="job_heading"><h6>Senior Siebel Developer - 1B2A5678</h6></div>
+                    <div class="updateQ">
+                        <div class="deleteQ"><a href="#"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                        <div class="editQ"><a href="#"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
+                    </div>     
+                </div>
+                <div class="job_question">
+                    <div class="index"><h5>1</h5></div>
+                    <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                    <div class="job_heading"><h6>Senior Siebel Developer - 1B2A5678</h6></div>
+                    <div class="updateQ">
+                        <div class="deleteQ"><a href="#"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                        <div class="editQ"><a href="#"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
+                    </div>     
+                </div>
+                <div class="job_question">
+                    <div class="index"><h5>1</h5></div>
+                    <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                    <div class="job_heading"><h6>Senior Siebel Developer - 1B2A5678</h6></div>
+                    <div class="updateQ">
+                        <div class="deleteQ"><a href="#"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                        <div class="editQ"><a href="#"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
+                    </div>     
+                </div>
+                <div class="job_question">
+                    <div class="index"><h5>1</h5></div>
+                    <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                    <div class="job_heading"><h6>Senior Siebel Developer - 1B2A5678</h6></div>
+                    <div class="updateQ">
+                        <div class="deleteQ"><a href="#"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                        <div class="editQ"><a href="#"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
+                    </div>     
+                </div>
+                <div class="job_question">
+                    <div class="index"><h5>1</h5></div>
+                    <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                    <div class="job_heading"><h6>Senior Siebel Developer - 1B2A5678</h6></div>
+                    <div class="updateQ">
+                        <div class="deleteQ"><a href="#" data-bs-toggle="modal" data-bs-target="#deleteQuestionaire" data-bs-jobID="1B2A5678"  id="delete1"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                        <div class="editQ"><a href="#"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
+                    </div>     
+                </div>
+            </div>
         </div>
         
         <div class="no_applications">
@@ -51,6 +118,80 @@
         </div>
     </div>
 
+    <!--Delete Modal -->
+    <div class="modal fade" id="deleteQuestionaire" tabindex="-1" aria-labelledby="deleteQuestionaireLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteQuestionaireLabel">Confirm Delete Questionaire</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="confirm_delete_access">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- add questionaire modal -->
+    <div class="modal fade" id="addQuestionaire" tabindex="-1" aria-labelledby="addQuestionaireLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQuestionaireLabel">Questionaire Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post">
+                    <div class="modal-body"> 
+                        <div class="mb-3">
+                            <label for="name" class="col-form-label jobID">Job ID &nbsp;&nbsp; </label>
+                            <input type="text" name="name" required class="form-control" id="questionNo">
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="col-form-label">Job Name &nbsp;&nbsp; </label>
+                            <input type="text" name="name" required class="form-control" id="questionNo">
+                        </div>                 
+                        <div class="mb-3">
+                            <label for="name" class="col-form-label">Number of Questions &nbsp;&nbsp; </label>
+                            <input type="number" name="name" required class="form-control" id="questionNo">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="col-form-label">Number of types of Skills Required &nbsp;&nbsp; </label>
+                            <input type="number" name="email" required class="form-control" id="skillNo">
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label">Add Recruiter Access &nbsp;&nbsp; </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="yes" onchange="showRecruiterNum(event);">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                  Yes
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" values="no" onchange="showRecruiterNum(event);" checked>
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                  No
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="access" class="col-form-label">Number of Recruiters?&nbsp;&nbsp; </label>
+                            <input type="number" name="recruiterAcess" class="form-control recruiterNum" id="recuiter" disabled value=0>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="Add Questionaire">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
         <%- include ("./partials/footer.ejs") %>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
@@ -58,5 +199,6 @@
         src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
         crossorigin="anonymous"></script>
+    <script src="/js/jobOpening.js"></script>
     </body>
 </html>

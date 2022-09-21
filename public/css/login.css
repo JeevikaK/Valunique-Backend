@@ -364,6 +364,7 @@ footer a{
 .content_admin{
     font-family: 'Montserrat';
     padding-left: 3.4vw;
+    min-height: 45em;
 }
 
 
@@ -637,7 +638,8 @@ nav .btn:focus, nav .btn:hover{
         width: 6em;
     }
 
-    .search label, .applicant a, .access_level a, .job_questions a, .dropdown a  {
+    .search label, .applicant a, .access a, .job_questions a, .dropdown a  {
+        text-align: center;
         font-size: 0.8em;
     }
 

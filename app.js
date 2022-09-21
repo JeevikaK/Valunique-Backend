@@ -289,6 +289,10 @@ app.get('/admin/downloadAll/:jobID/:ids', async (req, res) => {
 })
 
 app.get('/admin/job_questions', async (req, res) => {
+    if(req.session.admin === undefined){
+        res.redirect('/');
+        return
+    }
     res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin})
 })
 
