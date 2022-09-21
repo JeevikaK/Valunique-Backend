@@ -52,6 +52,13 @@
     padding: 0.8em;
 }
 
+.posted_by{
+    font-size: 0.7em;
+    color: rgba(0, 0, 0, 0.5);
+    margin: 0 2em;
+    font-weight: 500;
+}
+
 .job_heading h6{
     margin-bottom: 0;
     justify-self: center;
@@ -124,6 +131,13 @@
 
     .job_heading{
         width: 50%;
+        flex-direction: column;
+        align-items: baseline;
+    }
+
+    .posted_by{
+        margin: 0;
+        font-size: 0.5em;
     }
 
     .fileQ{
