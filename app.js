@@ -305,7 +305,8 @@ app.get('/admin/job_questions', async (req, res) => {
         res.redirect('/');
         return
     }
-    res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin})
+    const jobs = await JobOpening.findAll();
+    res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobs})
 })
 
 app.get('/admin/new_questions', async (req, res) => {
