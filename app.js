@@ -16,6 +16,7 @@ const app = express();
 
 const zip = require('express-zip');
 const Admin = require('./models/admin.js');
+const JobOpening = require('./models/jobOpening.js');
 const Applicant = require('./models/applicants.js');
 const ValidCandidateID = require('./models/candidate_id.js');
 const fs = require('fs')
@@ -46,14 +47,22 @@ app.use(session({
 //listening to port 3000 only if db is connected
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
+
+    Admin.hasMany(JobOpening);
+    JobOpening.belongsTo(Admin, {foreignKey: 'adminID'}, {onDelete: 'No Action'});
+    
+    JobOpening.belongsToMany(Admin, {through: 'RecruiterJobOpening'});
+    Admin.belongsToMany(JobOpening, {through: 'RecruiterJobOpening'});
+
     Applicant.sync({ force: false }).then(() => {
-        console.log('Drop and Resync with { force: true }');
+        console.log('Drop and Resync with { force: false }');
     }); 
     Admin.sync({ force: true }).then(async () => {
         await Admin.bulkCreate([{name: "Owais", email: "owaisiqbal2013@gmail.com", access: "HR"},
                     {name: "Jeevika", email: "jeevika.kiran@gmail.com", access: "Hiring Manager"},
-                    {name: "Ayaan", email: "ayaan.ali@6362185244@gmail.com", access: "Recruiter"}])
-    });
+                    {name: "Ayaan", email: "ayaan.ali@6362185244@gmail.com", access: "Recruiter"}
+        ]).then(() => console.log('Drop and Resync with { force: true }'));
+    })
     ValidCandidateID.sync({ force: true }).then(async () => {
         await ValidCandidateID.bulkCreate([
             { candidateID: "12345678" },
@@ -63,6 +72,9 @@ sequelize.authenticate().then(() => {
             { candidateID: "12345675" },
         ]).then(() => console.log("Candidate ID data has been saved"));
     });
+    JobOpening.sync({ force: false }).then(async () => {
+        console.log('Drop and Resync with { force: false }');        
+    })
 
     server = app.listen(3000, () => {
         const host = server.address().address;
@@ -297,6 +309,10 @@ app.get('/admin/job_questions', async (req, res) => {
 })
 
 app.get('/admin/new_questions', async (req, res) => {
+    if(req.session.admin === undefined){
+        res.redirect('/');
+        return
+    }
     res.render('new_question', {title: 'New Questions', admin:req.session.admin})
 })
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
