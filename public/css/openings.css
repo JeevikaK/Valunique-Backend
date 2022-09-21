@@ -1,3 +1,66 @@
-body{
+/* ------------New job questions-------- */
 
+.questions_input{
+    width: 75%;
+}
+
+.input-group{
+    margin: 1em;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.input-group-text{
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 0.8em;
+}
+
+.heading{
+    font-size: 1.1em;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 1em;
+    margin-top: 2.5em;
+}
+
+.skills_text{
+    font-size: 1em;
+    color: rgba(0, 0, 0, 0.6);
+    margin: 1em;
+}
+
+.alert-success{
+    width: 80%;
+    background: rgba(18, 152, 181, 0.29);
+    --bs-alert-color: #1298B5;
+    margin-left: 1em;
+    margin-bottom: 2em;
+}
+
+.alert-success p{
+    font-size: 0.8em;
+}
+
+.skills_input{
+    width: 60%;
+}
+
+.submit{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    margin-bottom: 2em;
+}
+
+.new_questions_submit{
+    padding: 0.3em;
+    margin-top: 2em;
+    width: 8em;
+    border: none;
+    background: rgba(18, 152, 181, 0.3);
+    border-radius: 7px;
+    color: rgba(83, 86, 90, 0.9);
+    font-family: 'Montserrat', sans-serif;
 }

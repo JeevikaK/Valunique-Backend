@@ -292,6 +292,9 @@ app.get('/admin/job_questions', async (req, res) => {
     res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin})
 })
 
+app.get('/admin/new_questions', async (req, res) => {
+    res.render('new_question', {title: 'New Questions', admin:req.session.admin})
+})
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
 app.get('/logout', logoutController);
