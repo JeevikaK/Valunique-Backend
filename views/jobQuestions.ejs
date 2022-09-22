@@ -39,52 +39,55 @@
                 </div>
             </div>
         </div>
-        <p class="heading">QUESTIONS</p>
-        <div class="questions">
-            <div class="input-group flex-nowrap questions_input">
-                <span class="input-group-text" id="addon-wrapping">1</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        <form action="/admin/jobQuestions" method="POST" id="jobQuestionsForm">
+            <p class="heading">QUESTIONS</p>
+            <div class="questions">
+                <% for(var i=1; i <= opening.questionNo; i++) { %>
+                    <div class="input-group flex-nowrap questions_input">
+                        <span class="input-group-text" id="addon-wrapping"><%= i %></span>
+                        <input type="text" class="form-control" name="question<%= i %>" aria-label="Username" aria-describedby="addon-wrapping">
+                    </div>
+                <% } %>
             </div>
-            <div class="input-group flex-nowrap questions_input">
-                <span class="input-group-text">2</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+            <div class="skills_needed">
+                <p class="skills heading">SKILLS</p>
+                <!-- <p class="skills_text">Enter the optins for:</p> -->
+                <div class="alert alert-success" role="alert">
+                    <p>Please enter the options for each type seperated by a ‘,’ .</p>
+                    <hr>
+                    <p class="mb-0">Eg: <br>
+                        Type 1: Python,Java,Node <br>
+                        Type 2: MySQL,Oracle,PostgreSQL <br>
+                    </p>
+                </div>
             </div>
-            <div class="input-group flex-nowrap questions_input">
-                <span class="input-group-text">3</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+            <div class="skills_options">
+                <% for(var i=1; i <= opening.skillNo; i++) { %>
+                    <div class="input-group flex-nowrap skills_input">
+                        <span class="input-group-text">Type <%= i %></span>
+                        <input type="text" class="form-control" name="skillType<%= i %>" aria-label="Username" aria-describedby="addon-wrapping">
+                    </div>
+                <% } %>
             </div>
-            <div class="input-group flex-nowrap questions_input">
-                <span class="input-group-text">4</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+            <% if(opening.addRecruiter=='yes' && recruiters.length!=0) { %>
+                <div class="add_recruiter">
+                    <p class="recruiter heading">ADD RECRUITER</p>
+                    <div class="select_recruiter">
+                    <% for(var i=1; i <= opening.recruiterNo; i++) { %>
+                        <select class="form-select" name="recruiter<%= i %>" aria-label="Default select example">
+                            <option selected>Add Recruiter <%= i %></option>
+                            <% for(var i=0; i < recruiters.length; i++) { %>
+                                <option value="<%= recruiters[i] %>"><%= recruiters[i] %> (<%= recruiters[i] %>)</option>
+                            <% } %>
+                        </select>
+                    <% } %>
+                    </div>
+                </div>
+            <% } %>
+            <div class="submit">
+                <input type="submit" name="Submit" value="Submit" id="" class="new_questions_submit">
             </div>
-        </div>
-
-        <div class="skills_needed">
-            <p class="skills heading">SKILLS</p>
-            <!-- <p class="skills_text">Enter the options for:</p> -->
-            <div class="alert alert-success" role="alert">
-                <p>Please enter the options for each type seperated by a ‘,’ .</p>
-                <hr>
-                <p class="mb-0">Eg: <br>
-                    Type 1: Python,Java,Node <br>
-                    Type 2: MySQL,Oracle,PostgreSQL <br>
-                </p>
-              </div>
-        </div>
-        <div class="skills_options">
-            <div class="input-group flex-nowrap skills_input">
-                <span class="input-group-text">Type 1</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
-            </div>
-            <div class="input-group flex-nowrap skills_input">
-                <span class="input-group-text">Type 2</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
-            </div>
-        </div>
-        <div class="submit">
-            <input type="submit" name="Submit" value="Submit" id="" class="new_questions_submit">
-        </div>
-        
+        </form>
         <div class="no_applications">
             <img src="/images/no_applications.png" alt="no_applications">
         </div>

@@ -308,8 +308,15 @@ app.get('/admin/jobOpenings', async (req, res) => {
 
 app.post('/admin/jobOpenings', async (req, res) => {
     req.session.opening = req.body; 
-    console.log(req.body)
-    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, opening: req.session.opening})
+    console.log(req.session.opening)
+    const recruiters = await Admin.findAll({
+        where: {
+            access: 'Recruiter'
+        },  raw: true
+        
+    })
+    console.log(recruiters)
+    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, opening: req.session.opening, recruiters})
 })
 
 app.get('/admin/new_questions', async (req, res) => {
@@ -319,6 +326,12 @@ app.get('/admin/new_questions', async (req, res) => {
     }
     res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin})
 })
+
+app.post('/admin/jobQuestions', async (req, res) => {
+    console.log(req.body)
+    res.redirect('/admin/jobOpenings')
+})
+
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
 app.get('/logout', logoutController);
