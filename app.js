@@ -308,7 +308,7 @@ app.get('/admin/job_questions', async (req, res) => {
 
 app.post('/admin/job_questions', async (req, res) => {
     const {jobID, jobName, questionNo, skillNo, addRecruiter, recruiterNo } = req.body
-
+    console.log(req.body)
     res.render('new_question', {title: 'New Questions', admin:req.session.admin})
 })
 

@@ -22,16 +22,8 @@ addQuest.addEventListener('show.bs.modal', event => {
     const jobID = button.getAttribute('data-bs-jobID')
     const modaljobID = addQuest.querySelector('.modal-body jobID')
 })
-// addQuest.click()
-// document.getElementsByTagName('body')[0].onload(() => {
-//     console.log('loaded')
-// })
 
-// addEventListener('load', (event) => {
-//     console.log('loaded')
-//     $("#addQuestionaire").trigger('click');
-// });
-
+//adding no of recruits
 function showRecruiterNum(event){
     console.log(event.target.value)
     if(String(event.target.value) === 'yes'){
@@ -43,3 +35,45 @@ function showRecruiterNum(event){
         document.querySelector('.recruiterNum').value = 0;
     }
 }
+
+//form validation
+const form = document.querySelector('form')
+const jobID = document.getElementById('jobID')
+const jobID_error = document.querySelector('.jobID_error')
+console.log(jobID_error)
+
+const job_questions = document.querySelectorAll('.job_questions')
+
+function checkExists(){
+    job_questions.forEach(question => {
+        if(question.id === jobID.value){
+            return true;
+        }
+    })
+    return false;
+}
+
+
+function showError(event){
+    const format_jobID = /^[A-Z0-9]+$/;
+    if(format_jobID.test(jobID.value) === false || jobID.value.length != 8){
+        if(event)
+            event.preventDefault();
+        jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Invalid format. Job ID should be alphanumeric and have 8 characters.'
+    }
+    else if(checkExists()){
+        jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Job Opening already exists.'
+    }
+    else{
+        jobID_error.innerHTML = ''
+    }
+}
+
+form.addEventListener('submit', event => {
+    showError(event); 
+    jobID.addEventListener('input', event => {
+        showError(false);
+    })
+})
+
+
