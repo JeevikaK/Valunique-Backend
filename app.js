@@ -329,6 +329,36 @@ app.get('/admin/new_questions', async (req, res) => {
 
 app.post('/admin/jobQuestions', async (req, res) => {
     console.log(req.body)
+    var questions = ""
+    var skills = ""
+    var recruiters = []
+    //creating questions list
+    Object.keys(req.body).forEach((key) => {
+        if(key.startsWith("question")){
+            if(req.body[key] != "")
+                questions += req.body[key]+","
+        }
+    })
+    //creating skills list
+    Object.keys(req.body).forEach((key) => {
+        req.body[key] = req.body[key].split(" ").join("")
+        if(key.startsWith("skillType")){
+            if(req.body[key] != "")
+                skills += req.body[key]+";"
+        }
+    })
+    //creating recruiters list
+    Object.keys(req.body).forEach((key) => {
+        if(key.startsWith("recruiter")){
+            if(req.body[key] != "")
+                if(!recruiters.includes(req.body[key]))
+                    recruiters.push(req.body[key])
+        }
+    })
+    
+    console.log(questions)
+    console.log(skills)
+    console.log(recruiters)
     res.redirect('/admin/jobOpenings')
 })
 

@@ -159,6 +159,10 @@
     width: 75%;
 }
 
+.has-validation{
+    width: 100%;
+}
+
 .input-group{
     margin: 1em;
     background: rgba(255, 255, 255, 0.5);
