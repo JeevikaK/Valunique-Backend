@@ -71,8 +71,8 @@
                 <% } %>
                 <span class="error" id="skillError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
             </div>
-
-            <% if(opening.recruiterNo!=0 && recruiters.length!=0) { %>
+            <h2><%= opening.recruiterNo %></h2>
+            <% if(opening.recruiterNo!=0 && recruiters.length!=0 && opening.addRecruiter==="yes") { %>
                 <div class="add_recruiter">
                     <p class="recruiter heading">ADD RECRUITER</p>
                     <div class="select_recruiter">
