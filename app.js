@@ -297,7 +297,7 @@ app.get('/admin/downloadAll/:jobID/:ids', async (req, res) => {
     })
 })
 
-app.get('/admin/job_questions', async (req, res) => {
+app.get('/admin/jobOpenings', async (req, res) => {
     if(req.session.admin === undefined){
         res.redirect('/');
         return
@@ -306,10 +306,10 @@ app.get('/admin/job_questions', async (req, res) => {
     res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobs})
 })
 
-app.post('/admin/job_questions', async (req, res) => {
-    const {jobID, jobName, questionNo, skillNo, addRecruiter, recruiterNo } = req.body
+app.post('/admin/jobOpenings', async (req, res) => {
+    req.session.opening = req.body; 
     console.log(req.body)
-    res.render('new_question', {title: 'New Questions', admin:req.session.admin})
+    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, opening: req.session.opening})
 })
 
 app.get('/admin/new_questions', async (req, res) => {
@@ -317,7 +317,7 @@ app.get('/admin/new_questions', async (req, res) => {
         res.redirect('/');
         return
     }
-    res.render('new_question', {title: 'New Questions', admin:req.session.admin})
+    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin})
 })
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
