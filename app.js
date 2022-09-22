@@ -329,6 +329,8 @@ app.get('/admin/new_questions', async (req, res) => {
 
 app.post('/admin/jobQuestions', async (req, res) => {
     console.log(req.body)
+    console.log(req.session.opening.jobID)
+    console.log(req.session.opening.jobName)
     var questions = ""
     var skills = ""
     var recruiters = []
@@ -356,6 +358,19 @@ app.post('/admin/jobQuestions', async (req, res) => {
         }
     })
     
+    var jobOpening = await JobOpening.create({
+        jobID: req.session.opening.jobID,
+        jobName: req.session.opening.jobName,
+        questions: questions.slice(0,-1),
+        skills: skills.slice(0, -1),
+        adminID: req.session.admin.adminID,
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+        return;
+    });
+
     console.log(questions)
     console.log(skills)
     console.log(recruiters)
