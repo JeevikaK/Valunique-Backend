@@ -39,13 +39,17 @@
                 </div>
             </div>
         </div>
-        <form action="/admin/jobQuestions" method="POST" id="jobQuestionsForm" novalidate>
+        <form action="/admin/jobQuestions/<%= opening.jobID%>" method="POST" id="jobQuestionsForm" novalidate>
             <p class="heading">QUESTIONS</p>
             <div class="questions">
-                <% for(var i=1; i <= opening.questionNo; i++) { %>
+                <% for(var i=0; i < opening.questionNo; i++) { %>
                     <div class="input-group flex-nowrap questions_input">
-                        <span class="input-group-text" id="addon-wrapping"><%= i %></span>
-                        <input type="text" class="form-control questionInput" name="question<%= i %>" required  aria-describedby="addon-wrapping">
+                        <span class="input-group-text" id="addon-wrapping"><%= i+1 %></span>
+                        <input type="text" class="form-control questionInput" 
+                        <% if(opening.questions){ %>
+                            value="<%= opening.questions[i] %>"
+                        <% } %>
+                        name="question<%= i %>" required  aria-describedby="addon-wrapping">
                     </div> 
                 <% } %>
                 <span class="error" id="questionError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
@@ -62,10 +66,14 @@
                 </div>
             </div>
             <div class="skills_options">
-                <% for(var i=1; i <= opening.skillNo; i++) { %>
+                <% for(var i=0; i < opening.skillNo; i++) { %>
                     <div class="input-group flex-nowrap skills_input">
-                        <span class="input-group-text">Type <%= i %></span>
-                        <input type="text" class="form-control skillsInput" name="skillType<%= i %>" required aria-describedby="addon-wrapping">
+                        <span class="input-group-text">Type <%= i+1 %></span>
+                        <input type="text" class="form-control skillsInput" 
+                        <% if(opening.questions){ %>
+                            value="<%= opening.skills[i] %>"
+                        <% } %>
+                        name="skillType<%= i %>" required aria-describedby="addon-wrapping">
                     </div>
                     
                 <% } %>
@@ -75,9 +83,13 @@
                 <div class="add_recruiter">
                     <p class="recruiter heading">ADD RECRUITER</p>
                     <div class="select_recruiter">
-                    <% for(var i=1; i <= opening.recruiterNo; i++) { %>
+                    <% for(var i=0; i < opening.recruiterNo; i++) { %>
                         <select class="form-select recruiterInput" name="recruiter<%= i %>" required >
-                            <option value="" selected hidden>Add Recruiter <%= i %></option>
+                            <% if(opening.recruiters){ %>
+                                <option value="<%= opening.recruiters[i].adminID %>" selected hidden><%= opening.recruiters[i].name %> (<%= opening.recruiters[i].email %>)</option>
+                            <% } else { %>
+                                <option value="" selected hidden>Add Recruiter <%= i+1 %></option>
+                            <% } %>
                             <% for(var j=0; j < recruiters.length; j++) { %>
                                 <option value="<%= recruiters[j].adminID %>"><%= recruiters[j].name %> (<%= recruiters[j].email %>)</option>
                             <% } %>

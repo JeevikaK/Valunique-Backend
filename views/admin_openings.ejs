@@ -53,7 +53,7 @@
                             <p class="posted_by">Posted By : <%= job.Admin.name %></p>
                         </div>
                         <div class="updateQ">
-                            <div class="deleteQ"><a href="#" data-bs-toggle="modal" data-bs-target="#deleteQuestionaire" data-bs-jobID="1B2A5678"  id="delete1"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
+                            <div class="deleteQ"><a href="#" data-bs-toggle="modal" data-bs-target="#deleteQuestionaire" data-bs-jobID="<%= job.jobID %>"  id="delete1"><i class="fa fa-trash" title="Delete Questionaire"></i></a></div> 
                             <div class="editQ"><a href="/admin/jobOpenings/<%= job.jobID %>/edit"><i class="fa fa-pencil" title="Edit Questionaire"></i></a></div>
                         </div>     
                     </div>

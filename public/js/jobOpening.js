@@ -13,6 +13,21 @@ deleteAccess.addEventListener('show.bs.modal', event => {
     const jobID = button.getAttribute('data-bs-jobID')
     const modalBody = deleteAccess.querySelector('.modal-body p')
     modalBody.innerHTML = `Are you sure you want to remove the questionaire for <span style="color: red; font-weight: 600;">${jobID}</span> Job?`;
+
+    const confirmDelete = document.getElementById('confirm_delete_access')
+    confirmDelete.addEventListener('click', () => {
+        $.ajax({
+            url: `/admin/jobOpenings/${jobID}/delete`,
+            type: 'DELETE',
+            success: function(response){
+                console.log(response)
+                location.reload()
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+    })
 })
 
 //ADD MODAL
@@ -42,14 +57,16 @@ const jobID = document.getElementById('jobID')
 const jobID_error = document.querySelector('.jobID_error')
 console.log(jobID_error)
 
-const job_questions = document.querySelectorAll('.job_questions')
+const job_questions = document.querySelectorAll('.job_question')
 
-function checkExists(){
+function checkExists(event){
     job_questions.forEach(question => {
         if(question.id === jobID.value){
+            console.log('true')
             return true;
         }
     })
+    event.preventDefault()
     return false;
 }
 
@@ -61,7 +78,9 @@ function showError(event){
             event.preventDefault();
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Invalid format. Job ID should be alphanumeric and have 8 characters.'
     }
-    else if(checkExists()){
+    else if(checkExists(event)){
+        console.log('hi')
+        event.preventDefault()
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Job Opening already exists.'
     }
     else{
