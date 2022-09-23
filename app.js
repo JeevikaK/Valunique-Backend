@@ -327,8 +327,16 @@ app.get('/admin/jobOpenings/:jobID/edit', async (req, res) => {
         res.redirect('/');
         return
     }
+
+    const recruiters = await Admin.findAll({
+        where: {
+            access: 'Recruiter'
+        }, 
+        raw: true 
+    })
+
     console.log(req.params.jobID)
-    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin})
+    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, recruiters})
 })
 
 app.post('/admin/jobOpenings', async (req, res) => {
