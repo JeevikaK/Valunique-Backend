@@ -34,7 +34,7 @@
                         <a href="/admin/access">Access Level</a>
                     </div>
                     <div class="job_questions">
-                        <a href="/admin/job_questions" class="selected">Job Questions</a>
+                        <a href="/admin/jobOpenings" class="selected">Job Questions</a>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,6 @@
                 <% } %>
                 <span class="error" id="skillError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
             </div>
-            <h2><%= opening.recruiterNo %></h2>
             <% if(opening.recruiterNo!=0 && recruiters.length!=0 && opening.addRecruiter==="yes") { %>
                 <div class="add_recruiter">
                     <p class="recruiter heading">ADD RECRUITER</p>

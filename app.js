@@ -19,6 +19,7 @@ const Admin = require('./models/admin.js');
 const JobOpening = require('./models/jobOpening.js');
 const Applicant = require('./models/applicants.js');
 const ValidCandidateID = require('./models/candidate_id.js');
+const RecruiterJobOpening = require('./models/RecruiterJobOpening.js');
 const fs = require('fs')
 const { createPDF, createFolder, deleteFolder } = require('./controllers/FileController.js');
 const AdmZip = require('adm-zip');
@@ -49,11 +50,11 @@ sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
 
     Admin.hasMany(JobOpening);
-    JobOpening.belongsTo(Admin, {foreignKey: 'adminID'}, {onDelete: 'No Action'});
+    JobOpening.belongsTo(Admin, {onDelete: 'No Action'});
     
-    JobOpening.belongsToMany(Admin, {through: 'RecruiterJobOpening'});
-    Admin.belongsToMany(JobOpening, {through: 'RecruiterJobOpening'});
-
+    JobOpening.belongsToMany(Admin, {as: 'recruiters', through: RecruiterJobOpening});
+    Admin.belongsToMany(JobOpening, {as: 'jobs', through: RecruiterJobOpening});
+ 
     Applicant.sync({ force: false }).then(() => {
         console.log('Drop and Resync with { force: false }');
     }); 
@@ -72,6 +73,10 @@ sequelize.authenticate().then(() => {
     JobOpening.sync({ force: false }).then(async () => {
         console.log('Drop and Resync with { force: false }');        
     })
+
+    RecruiterJobOpening.sync({ force: false }).then(async () => {
+        console.log('Drop and Resync with { force: false }');
+    });
 
     server = app.listen(3000, () => {
         const host = server.address().address;
@@ -302,8 +307,28 @@ app.get('/admin/jobOpenings', async (req, res) => {
         res.redirect('/');
         return
     }
-    const jobs = await JobOpening.findAll();
-    res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobs})
+    const jobs = await JobOpening.findAll({
+        include: Admin,
+    });
+
+    console.log(jobs)
+
+    // const job = await JobOpening.findByPk('1B2A5678', {include: 'recruiters'})
+    // console.log(await job.getRecruiters())
+    // const admin = await Admin.findByPk(7, {include: 'jobs'})
+    // console.log(await admin.getJobs())
+    // const admin2 = await Admin.findByPk(1, {include: JobOpening})
+    // console.log(await admin2.getJobOpenings())
+    res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs})
+})
+
+app.get('/admin/jobOpenings/:jobID/edit', async (req, res) => {
+    if(req.session.admin === undefined){
+        res.redirect('/');
+        return
+    }
+    console.log(req.params.jobID)
+    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin})
 })
 
 app.post('/admin/jobOpenings', async (req, res) => {
@@ -312,19 +337,11 @@ app.post('/admin/jobOpenings', async (req, res) => {
     const recruiters = await Admin.findAll({
         where: {
             access: 'Recruiter'
-        },  raw: true
-        
+        }, 
+        raw: true 
     })
-    console.log(recruiters)
-    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, opening: req.session.opening, recruiters})
-})
 
-app.get('/admin/new_questions', async (req, res) => {
-    if(req.session.admin === undefined){
-        res.redirect('/');
-        return
-    }
-    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin})
+    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, opening: req.session.opening, recruiters})
 })
 
 app.post('/admin/jobQuestions', async (req, res) => {
@@ -333,7 +350,7 @@ app.post('/admin/jobQuestions', async (req, res) => {
     console.log(req.session.opening.jobName)
     var questions = ""
     var skills = ""
-    var recruiters = []
+    var recruiterIds = []
     //creating questions list
     Object.keys(req.body).forEach((key) => {
         if(key.startsWith("question")){
@@ -353,29 +370,55 @@ app.post('/admin/jobQuestions', async (req, res) => {
     Object.keys(req.body).forEach((key) => {
         if(key.startsWith("recruiter")){
             if(req.body[key] != "")
-                if(!recruiters.includes(req.body[key]))
-                    recruiters.push(req.body[key])
+                if(!recruiterIds.includes(Number(req.body[key])))
+                    recruiterIds.push(Number(req.body[key]))
         }
     })
-    
-    var jobOpening = await JobOpening.create({
-        jobID: req.session.opening.jobID,
-        jobName: req.session.opening.jobName,
-        questions: questions.slice(0,-1),
-        skills: skills.slice(0, -1),
-        adminID: req.session.admin.adminID,
-    })
-    .catch(err => {
+
+    const t = await sequelize.transaction();
+
+    try{
+        const recruiters = await Admin.findAll({
+            where: {
+                adminID: { [Op.in]: recruiterIds },
+            },
+        })
+
+        var jobOpening = await JobOpening.findByPk(req.session.opening.jobID)
+        if(jobOpening != null) {
+            await jobOpening.update({
+                questions: questions.slice(0,-1),
+                skills: skills.slice(0,-1),
+            }, {transaction: t})
+
+            await jobOpening.setRecruiters(recruiters, {transaction: t})
+        }
+        else{
+            jobOpening = await JobOpening.create({
+                jobID: req.session.opening.jobID,
+                jobName: req.session.opening.jobName,
+                questions: questions.slice(0,-1),
+                skills: skills.slice(0, -1),
+                AdminAdminID: req.session.admin.adminID,
+            }, {transaction: t})
+
+            await jobOpening.addRecruiters(recruiters, {transaction: t})
+        }
+        
+        await t.commit();
+
+    } catch(err) {
+        await t.rollback();
         console.log(err);
         res.status(500).render('error', {title: '500', message: "Internal Server Error"});
         return;
-    });
+    }
 
-    console.log(questions)
-    console.log(skills)
-    console.log(recruiters)
     res.redirect('/admin/jobOpenings')
 })
+
+   
+
 
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 
