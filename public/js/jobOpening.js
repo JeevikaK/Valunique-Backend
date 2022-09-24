@@ -42,7 +42,6 @@ addQuest.addEventListener('show.bs.modal', event => {
 function showRecruiterNum(event){
     console.log(event.target.value)
     if(String(event.target.value) === 'yes'){
-        console.log('entered')
         console.log(document.querySelector('.recruiterNum').value)
         document.querySelector('.recruiterNum').disabled=false;
     } else {
@@ -55,19 +54,17 @@ function showRecruiterNum(event){
 const form = document.querySelector('form')
 const jobID = document.getElementById('jobID')
 const jobID_error = document.querySelector('.jobID_error')
-console.log(jobID_error)
 
 const job_questions = document.querySelectorAll('.job_question')
 
-function checkExists(event){
+function checkExists(){
+    var exists = false;
     job_questions.forEach(question => {
         if(question.id === jobID.value){
-            console.log('true')
-            return true;
+            exists = true;
         }
     })
-    event.preventDefault()
-    return false;
+    return exists;
 }
 
 
@@ -78,9 +75,9 @@ function showError(event){
             event.preventDefault();
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Invalid format. Job ID should be alphanumeric and have 8 characters.'
     }
-    else if(checkExists(event)){
-        console.log('hi')
-        event.preventDefault()
+    else if(checkExists()){
+        if(event)
+            event.preventDefault()
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Job Opening already exists.'
     }
     else{

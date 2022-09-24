@@ -311,12 +311,6 @@ app.get('/admin/jobOpenings', async (req, res) => {
         include: Admin,
     });
 
-    // const job = await JobOpening.findByPk('1B2A5678', {include: 'recruiters'})
-    // console.log(await job.getRecruiters())
-    // const admin = await Admin.findByPk(7, {include: 'jobs'})
-    // console.log(await admin.getJobs())
-    // const admin2 = await Admin.findByPk(1, {include: JobOpening})
-    // console.log(await admin2.getJobOpenings())
     res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs})
 })
 
