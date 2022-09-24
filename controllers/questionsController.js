@@ -148,7 +148,7 @@ postQuestions = async (req, res) => {
 
             //if the user has answered all the questions, Save the answers to the database and redirect to the status page
             else{
-                // Creating a candidate record in the database
+                // Creating a candidate table in the database
                 await sequelize.query("DROP TABLE IF EXISTS `"+candidateId+"_"+jobId+"`;");
                 var response = queryInterface.createTable(candidateId+"_"+jobId, {
                     serialNumber:{
