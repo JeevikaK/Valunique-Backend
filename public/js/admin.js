@@ -189,3 +189,67 @@ $('.download-all').on('click', function(e){
     console.log(applicant_ids)
     window.location = '/admin/downloadAll/'+ jobID +'/'+applicant_ids;
 })
+
+//selecting cards based on status
+
+var checkboxes = document.querySelectorAll("input[type=radio]");
+const checkbox_values = document.querySelectorAll('.positions select')
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            console.log(checkbox.value + " is checked");
+            checkbox_values.forEach(check_status => {
+                console.log(check_status.value)
+                const parent = check_status.parentElement.parentElement.parentElement.parentElement.parentElement;
+                console.log(parent)
+                if(checkbox.value == "All"){
+                    checkbox_values.forEach(check_status => {
+                        console.log(check_status.value)
+                        const parent = check_status.parentElement.parentElement.parentElement.parentElement.parentElement;
+                        console.log(parent)
+                        parent.style.display = "flex"
+                        
+                    })
+                }
+                if(check_status.value == checkbox.value)
+                    parent.style.display = "flex"
+                else
+                    parent.style.display = "none"
+            })
+        } else {
+            console.log(checkbox.value + " is not checked");
+            checkbox_values.forEach(check_status => {
+                console.log(check_status.value)
+                const parent = check_status.parentElement.parentElement.parentElement.parentElement.parentElement;
+                console.log(parent)
+                parent.style.display = "flex"
+                
+            })
+        }
+
+        const allCards = document.querySelectorAll('.cards');
+        allCards.forEach(cards=>{
+            if(Array.from(cards.children).every(card=>card.style.display === 'none')){
+                cards.parentElement.style.display = 'none';
+            } else {
+                cards.parentElement.style.display = 'block';
+            }
+        })
+
+        const positions = document.querySelectorAll('.positions')[0];
+        if(Array.from(positions.children).every(position=>position.style.display === 'none')){
+            console.log(document.querySelector('.no_results'))
+            document.querySelector('.no_applications').style.display = 'none';
+            document.querySelector('.no_results').style.display = 'flex';
+        } 
+        else {
+            document.querySelector('.no_results').style.display = 'none';
+        }
+
+    });
+})
+        
+
+
+
+

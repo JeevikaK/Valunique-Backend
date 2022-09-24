@@ -367,7 +367,6 @@ footer a{
     min-height: 45em;
 }
 
-
 nav .btn:focus, nav .btn:hover{
     background: rgba(18, 152, 181, 0.29);
 }
@@ -460,9 +459,9 @@ nav .btn:focus, nav .btn:hover{
     color: #53565A;
 }
 
-.positions{
+/* .positions{
     padding-top: 3em;
-}
+} */
 
 .position{
     margin-top: 2em;
@@ -720,8 +719,6 @@ nav .btn:focus, nav .btn:hover{
     margin-left: 0.5em;
 }
 
-
-
 .stepper-wrapper {
     margin-top: auto;
     display: flex;
@@ -805,4 +802,13 @@ nav .btn:focus, nav .btn:hover{
     font-size: 1em;
     margin-top: 1em;
     font-weight: 600;
+}
+
+.view_options{
+    margin-top: 3em;
+}
+
+.view_options label{
+    margin-right: 1em;
+    font-size: 0.9em;
 }
