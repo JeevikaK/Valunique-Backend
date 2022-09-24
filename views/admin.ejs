@@ -80,7 +80,13 @@
                 </div>
             </div>
         </div>
-        
+
+        <% if(type==="access") {%>
+            <div class="add_opening">
+                <h6>ADD ACCESS &nbsp; => &nbsp;&nbsp; </h6><a href="#" title="Add Access" data-bs-toggle="modal" data-bs-target="#addAccess" ><img src="/images/add.png" alt="Add Opening"></a>
+            </div>
+        <% } %>
+
         <div class="positions">
 
             <!-- -------- Applications ---------->
@@ -180,7 +186,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p></p>
+                    <p class="confirm_text"></p>
+                    <form class="transferOwner" action="">
+                        <% if(type==="access") {%>
+                        <select name="newOwner" id="newOwner">
+                            <option hidden value="">Select New Owner</option>  
+                            <% admins.forEach( admin => { %>           
+                                <option value="<%= admin.adminID %>" data-id="<%= admin.adminID %>" ><%= admin.name %> - <%= admin.access %></option>
+                            <% }) %>
+                        </select>
+                        <% } %>
+                    </form>
+                    <span id="ownership_error" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -199,7 +216,7 @@
                     <h5 class="modal-title" id="addAccessLabel">Access Control</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post">
+                <form id="addAccessForm" method="post">
                     <div class="modal-body">                  
                         <div class="mb-3">
                             <label for="name" class="col-form-label">Name:&nbsp;&nbsp; </label>
@@ -210,8 +227,16 @@
                             <input type="email" name="email" required class="form-control" id="email">
                         </div>
                         <div class="mb-3">
-                            <label for="access" class="col-form-label">Access:&nbsp;&nbsp; </label>
-                            <input type="text" name="access" readonly class="form-control" id="access">
+                            <% if(type==="access") {%>
+                                <label for="access" class="col-form-label">Access:&nbsp;&nbsp; </label>
+                                <!-- <input type="text" name="access" readonly class="form-control" id="access"> -->
+                                <select name="access" id="access">
+                                    <option hidden value="">Select Access Level</option>
+                                    <option value="HR">HR</option>
+                                    <option value="Hiring Manager">Hiring Manager</option>
+                                    <option value="Recruiter">Recruiter</option>
+                                </select>
+                            <% } %>
                         </div>
                         <span id="adminAddError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
                     </div>

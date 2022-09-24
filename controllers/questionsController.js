@@ -44,12 +44,12 @@ getQuestions = async (req, res) => {
             console.error(err);
         }
         
-        const xlData = req.session.xlData; //retrieve the Excel data from the session
+        const jobDescription = req.session.jobDescription; //retrieve the Excel data from the session
         const context = {
                 title: 'Questions',  
                 id : req.params.id, 
-                question: xlData['questions'][req.params.id-1], 
-                questionLength: xlData['questions'].length, 
+                question: jobDescription['questions'][req.params.id-1], 
+                questionLength: jobDescription['questions'].length, 
                 candidate_id: candidateId, 
                 jobId, 
                 jobName ,
@@ -72,7 +72,7 @@ postQuestions = async (req, res) => {
     if(req.session.candidate_id==undefined)
         res.redirect('/');
         
-    req.session.questions[`question${req.params.id}`] = req.session.xlData['questions'][req.params.id-1];
+    req.session.questions[`question${req.params.id}`] = req.session.jobDescription['questions'][req.params.id-1];
     req.session.answers[`answer${req.params.id}`] = answer;
 
     let filename
@@ -107,8 +107,8 @@ postQuestions = async (req, res) => {
         const context = {
             title: 'Questions',  
             id : req.params.id, 
-            question: req.session.xlData['questions'][req.params.id-1], 
-            questionLength: req.session.xlData['questions'].length, 
+            question: req.session.jobDescription['questions'][req.params.id-1], 
+            questionLength: req.session.jobDescription['questions'].length, 
             candidate_id: candidateId, 
             jobId, 
             jobName ,
@@ -119,7 +119,7 @@ postQuestions = async (req, res) => {
         res.render('questions', context);
     }
     else{
-        if(Number(req.params.id) === Number(req.session.xlData['questions'].length)){ //if the user is on the last question
+        if(Number(req.params.id) === Number(req.session.jobDescription['questions'].length)){ //if the user is on the last question
             var flag = 0;
 
             //check if the user has answered all the questions
@@ -134,8 +134,8 @@ postQuestions = async (req, res) => {
                 const context = {
                     title: 'Questions',  
                     id : req.params.id, 
-                    question: req.session.xlData['questions'][req.params.id-1], 
-                    questionLength: req.session.xlData['questions'].length, 
+                    question: req.session.jobDescription['questions'][req.params.id-1], 
+                    questionLength: req.session.jobDescription['questions'].length, 
                     candidate_id: candidateId, 
                     jobId, 
                     jobName ,
@@ -172,7 +172,7 @@ postQuestions = async (req, res) => {
                 });
                 response.then(async () => {
                     // Inserting the answers to the Candidate database
-                    for(var i=1; i<=req.session.xlData['questions'].length; i++){
+                    for(var i=1; i<=req.session.jobDescription['questions'].length; i++){
 
                         // retrieve the file data for the question 'i' IF IT EXISTS and belongs to the current candidate
                         let data = null

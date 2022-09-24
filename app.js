@@ -102,7 +102,12 @@ app.get('/status', getStatus);
 // admin routes
 app.get('/admin', async (req, res) => {
     const {adminEmail, adminName} = req.query; 
-    const admin = await Admin.findOne({where: {email: adminEmail, name: adminName}});
+    const admin = await Admin.findOne({
+        where: {
+            email: adminEmail, name: adminName
+        },
+        order: [['access', 'ASC']]
+    });
     if(admin === null){
         res.redirect('/');
         return
@@ -209,17 +214,26 @@ app.post('/admin/access', async (req, res) => {
 })
 
 app.delete('/admin/access/revokeAccess', async (req, res) =>{
-    const {adminID} = req.body
+    const {adminID, newOwnerID} = req.body
     if(req.session.admin.access !== "HR"){
         res.redirect(`/admin?adminEmail=${req.session.admin.email}&adminName=${req.session.admin.name}`);
         return
     }
     const admin = await Admin.findByPk(adminID);
-    await admin.destroy()
-    .catch((err) => {
+    try{
+        if(newOwnerID){
+            const jobsOwned = await admin.getJobOpenings()
+            for(var i = 0; i < jobsOwned.length; i++){
+                await jobsOwned[i].update({AdminAdminID: newOwnerID})
+            }
+        }
+        await admin.destroy()
+    }
+    catch(err){
         console.log(err)
         res.status(500).render('error', {title: '500', message: "Internal Server Error"});
-    })
+    }
+    
     var same_user = false
     if(admin.adminID===req.session.admin.adminID){
         console.log('true')
@@ -227,6 +241,24 @@ app.delete('/admin/access/revokeAccess', async (req, res) =>{
         same_user = true
     }
     res.json({message: 'Success', same_user})
+})
+
+app.get('/admin/access/getjobs/:adminID', async (req, res) => {
+    const admin = await Admin.findByPk(req.params.adminID);
+    if(admin === null){
+        res.redirect('/');
+        return
+    }
+    const jobsOwned = await admin.getJobOpenings()
+    console.log(jobsOwned)
+    if(jobsOwned.length === 0){
+        res.json({jobsOwned: false})
+        return
+    }
+    else{
+        res.json({jobsOwned: true})
+        return
+    }
 })
 
 app.get('/admin/download/:applicant_id', async (req, res) => {
@@ -326,9 +358,13 @@ app.get('/admin/jobOpenings', async (req, res) => {
         res.redirect('/');
         return
     }
-    // const jobOpenings = await JobOpening.findAll({
-    //     include: Admin,
-    // });
+    if(req.session.admin.access === 'HR'){
+        const jobOpenings = await JobOpening.findAll({
+            include: Admin,
+        });
+        res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobOpenings})
+        return
+    }   
 
     const admins = await Admin.findAll({
         where: {
@@ -374,7 +410,6 @@ app.get('/admin/jobOpenings', async (req, res) => {
         }
         return newJobs
     }
-
 
     res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobOpenings})
 })

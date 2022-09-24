@@ -59,6 +59,7 @@ function showError(question){
         else if(question.id == 'q2')
             document.getElementById('error_aboutVolvo').innerHTML = '<i class="fa fa-exclamation-circle"></i> Answer should have a maximum of 400 characters'
     }
+    relocateCheck()
 }
 
 function indexQs(question){
@@ -95,6 +96,7 @@ relocate.forEach(option => {
 
 function relocateCheck(){
     if(!relocate[0].checked && !relocate[1].checked){
+        console.log('checked')
         document.getElementById('error_relocate').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please select an option.'
         event.preventDefault();
     }

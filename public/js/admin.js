@@ -1,21 +1,43 @@
 //modals
 const deleteAccess = document.getElementById('deleteAccess');
 deleteAccess.addEventListener('show.bs.modal', event => {
+    var form = document.querySelector('form')
+    form.style.display = 'none';
+    const options = document.querySelectorAll('form > select option')
+    const newOwner = document.querySelector('form select')
+    document.getElementById('ownership_error').innerHTML = ''
+
     const button = event.relatedTarget
     const name = button.getAttribute('data-bs-name')
     const access = button.getAttribute('data-bs-access')
     const adminID = button.getAttribute('data-bs-adminid')
-    const modalBody = deleteAccess.querySelector('.modal-body p')
+    const modalBody = deleteAccess.querySelector('.modal-body .confirm_text')
     modalBody.innerHTML = `Are you sure you want to remove <span style="color: red; font-weight: 600;">${name}</span>'s access from <span style="color: red; font-weight: 600;">${access}</span> level?`
     
+    options.forEach(option => {
+        option.style.display = 'block';
+        if(option.value === adminID){
+            option.style.display = 'none';
+        }
+    })
     const confirm_delete_access = document.getElementById('confirm_delete_access');
     confirm_delete_access.addEventListener('click', () => {
-        console.log(adminID)
+        console.log(newOwner.value)
+        if(form.style.display !== 'none'){
+            if(newOwner.value === ""){
+                document.getElementById('ownership_error').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please select a new owner'
+                return
+            }
+            else{
+                document.getElementById('ownership_error').innerHTML = ''
+            }
+        }
         $.ajax({
             url: `access/revokeAccess`,
             type: 'DELETE',
             data: {
                 adminID: adminID,
+                newOwnerID: newOwner.value
             },
             success: function(response){
                 console.log(response)
@@ -29,6 +51,20 @@ deleteAccess.addEventListener('show.bs.modal', event => {
             }
         })
     })
+
+    $.ajax({
+        url: `/admin/access/getjobs/${adminID}`,
+        type: 'GET',
+        success: function(response){
+            console.log(response)
+            if(response.jobsOwned){
+                form.style.display = 'block';
+            }
+        },
+        error: function(error){
+            console.log(error)
+        }
+    })
 })
 
 const addAccess = document.getElementById('addAccess');
@@ -37,11 +73,16 @@ addAccess.addEventListener('show.bs.modal', event => {
     const access = button.getAttribute('data-bs-access')
     const modalTitle = addAccess.querySelector('.modal-title')
     const modalAccess = addAccess.querySelector('.modal-body #access')
-    modalTitle.innerHTML = `Access Control - ${access}` 
-    modalAccess.value = access
+    if(access === null)
+        modalTitle.innerHTML = `Access Control`
+    else{
+        modalTitle.innerHTML = `Access Control - ${access}` 
+        modalAccess.value = access
+        modalAccess.setAttribute('disabled', true)
+    }
 })
 
-const form = document.querySelector('form')
+const form = document.querySelector('#addAccessForm')
 const name = document.getElementById('name')
 const email = document.getElementById('email')
 const access = document.getElementById('access')
@@ -73,19 +114,25 @@ form.addEventListener('submit', (e) => {
 })
 
 //no results
-const positions = document.querySelectorAll('.positions')[0]
-if(positions.children.length === 0){
-    const no_applications = document.querySelector('.no_applications');
-    no_applications.style.display = 'flex';
-}
 
-//search input
 var type
 if($('.applicant a').hasClass('selected')){
     type = 'applicants';
 } else if($('.access a').hasClass('selected')){
     type = 'access';
 }
+
+if(type === 'applicants'){
+    const positions = document.querySelectorAll('.positions')[0]
+    if(positions.children.length === 0){
+        const no_applications = document.querySelector('.no_applications');
+        no_applications.style.display = 'flex';
+    }
+}
+
+console.log(type)
+
+//search input
 
 $('#search').on('keyup', function(){
     const search = $(this).val().toString().toLowerCase();

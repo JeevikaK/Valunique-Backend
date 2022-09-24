@@ -18,7 +18,7 @@ const getDetails = async (req, res) => {
         var skills_mandatory = req.session.answers['Skills']
         var add_skill_list = req.session.answers['add_skills']
 
-        const xlData = req.session.xlData;
+        const jobDescription = req.session.jobDescription;
         if(q1===undefined || q2===undefined || location===undefined || relocate===undefined || skills_mandatory==undefined || add_skill_list==undefined){
             q1 = q2 = relocate = '';
             location = 'Select'
@@ -28,7 +28,7 @@ const getDetails = async (req, res) => {
         console.log(add_skill_list)
         var context = {
             title: 'Details',
-            mandatorySkills: xlData['mandatorySkills'],
+            mandatorySkills: jobDescription['mandatorySkills'],
             jobName,
             candidate_id: candidateId,
             message: "",
@@ -61,11 +61,11 @@ const postDetails = async (req, res) => {
     })
 
     var applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' }});
-    const xlData = req.session.xlData;
+    const jobDescription = req.session.jobDescription;
     if(q1=='' || q2=='' || location=='' || relocate==''|| skills=='' ){
         var context = {
             title: 'Details',
-            mandatorySkills: xlData['mandatorySkills'],
+            mandatorySkills: jobDescription['mandatorySkills'],
             jobName,
             candidate_id: candidateId,
             whyVolvo: q1,
@@ -100,7 +100,7 @@ const postDetails = async (req, res) => {
             return;
         });
         console.log("Applicant updated");
-        res.redirect(`/questions/1?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${xlData['jobName']}`);
+        res.redirect(`/questions/1?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${jobDescription['jobName']}`);
     }
 }
 
