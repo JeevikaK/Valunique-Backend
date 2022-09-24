@@ -87,6 +87,20 @@
             </div>
         <% } %>
 
+        <% if(type==="applicants") {%>
+            <div class="view_options">
+                <input type="radio" id="All" name="status_check" value="All" checked>
+                <label for="All"> All</label>
+                <input type="radio" id="Applied" name="status_check" value="Applied">
+                <label for="Applied"> Applied</label>
+                <input type="radio" id="Shortlisted" name="status_check" value="Shortlisted">
+                <label for="Shortlisted"> Shortlisted</label>
+                <input type="radio" id="Rejected" name="status_check" value="Rejected">
+                <label for="Rejected"> Rejected</label>
+            </div>
+        <% } %>
+        
+        
         <div class="positions">
 
             <!-- -------- Applications ---------->
