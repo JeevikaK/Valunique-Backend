@@ -40,13 +40,15 @@
                             <% } %>     
                         > Applications</a>
                     </div>
-                    <div class="access">
-                        <a href="/admin/access"
-                            <% if(type=="access"){ %>
-                                class= "<%= "selected" %>"
-                            <% } %>
-                        >Access Level</a>
-                    </div>
+                    <% if (adminAccess == "HR") {%>
+                        <div class="access">
+                            <a href="/admin/access"
+                                <% if(type=="access"){ %>
+                                    class= "<%= "selected" %>"
+                                <% } %>
+                            >Access Level</a>
+                        </div>
+                    <% } %>
                     <div class="job_questions">
                         <a href="/admin/jobOpenings">Job Questions</a>
                     </div>
@@ -135,7 +137,7 @@
                                     <div class="card" id="<%= admin.name %>">
                                         <div class="card-body">
                                             <div class="icon">
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#deleteAccess" data-bs-name="<%= admin.name %>" data-bs-email="<%= admin.email %>" data-bs-access="<%= admin.access %>" id="delete1">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#deleteAccess" data-bs-name="<%= admin.name %>" data-bs-adminid="<%= admin.adminID %>" data-bs-email="<%= admin.email %>" data-bs-access="<%= admin.access %>" id="delete1">
                                                     <i class="fa fa-trash" title="Revoke Access"></i>
                                                 </a>
                                                 <img src="/images/applicant.png" alt="User-icon">
@@ -211,19 +213,11 @@
                             <label for="access" class="col-form-label">Access:&nbsp;&nbsp; </label>
                             <input type="text" name="access" readonly class="form-control" id="access">
                         </div>
-                        <!-- <div class="mb-3">
-                            <label for="access" class="col-form-label">Access:&nbsp;&nbsp; </label>
-                            <select class="form-select" aria-label="Default select example" id="access">
-                                <option selected value="">Select Access Type</option>
-                                <option value="HR">HR</option>
-                                <option value="Hiring Manager">Hiring Manager</option>
-                                <option value="Recruiter">Recruiter</option>
-                            </select>
-                        </div> -->
+                        <span id="adminAddError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-primary" value="Allow Access">
+                        <input type="submit" class="btn btn-primary" id="allowAccess" value="Allow Access">
                     </div>
                 </form>
             </div>

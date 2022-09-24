@@ -24,15 +24,17 @@
             <div class="admin_choices">
                 <div class="search">
                     <label for="search">Search:</label>
-                    <input type="text" name="search" id="search" placeholder=" By JOBID">
+                    <input type="text" name="search" id="search" placeholder=" By JOBNAME">
                 </div>
                 <div class="nav_admin">
                     <div class="applicant">
                         <a href="<%= `/admin?adminEmail=${admin.email}&adminName=${admin.name}` %>"> Applicant</a>
                     </div>
-                    <div class="access">
-                        <a href="/admin/access">Access Level</a>
-                    </div>
+                    <% if (admin.access == "HR") {%>
+                        <div class="access">
+                            <a href="/admin/access"> Access Level</a>
+                        </div>
+                    <% } %>
                     <div class="job_questions">
                         <a href="/admin/jobOpenings" class="selected">Job Questions</a>
                     </div>
@@ -49,7 +51,7 @@
                     <div class="job_question" id="<%= job.jobID%>">
                         <div class="index"><h5><%= ++count %></h5></div>
                         <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
-                        <div class="job_heading"><h6><%= job.jobName %> - <%= job.jobID %></h6>
+                        <div class="job_heading"><h6 class="<%= job.jobName %>"><%= job.jobName %> - <%= job.jobID %></h6>
                             <p class="posted_by">Posted By : <%= job.Admin.name %></p>
                         </div>
                         <div class="updateQ">

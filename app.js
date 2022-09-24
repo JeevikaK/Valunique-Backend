@@ -49,8 +49,9 @@ app.use(session({
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
 
-    Admin.hasMany(JobOpening);
+    
     JobOpening.belongsTo(Admin, {onDelete: 'No Action'});
+    Admin.hasMany(JobOpening, {onDelete: 'No Action'} );
     
     JobOpening.belongsToMany(Admin, {as: 'recruiters', through: RecruiterJobOpening});
     Admin.belongsToMany(JobOpening, {as: 'jobs', through: RecruiterJobOpening});
@@ -71,12 +72,11 @@ sequelize.authenticate().then(() => {
         ]).then(() => console.log("Candidate ID data has been saved"));
     });
     JobOpening.sync({ force: false }).then(async () => {
-        console.log('Drop and Resync with { force: false }');        
+        console.log('Drop and Resync with { force: false }');    
+        RecruiterJobOpening.sync({ force: false }).then(async () => {
+            console.log('Drop and Resync with { force: false }');
+        });    
     })
-
-    RecruiterJobOpening.sync({ force: false }).then(async () => {
-        console.log('Drop and Resync with { force: false }');
-    });
 
     server = app.listen(3000, () => {
         const host = server.address().address;
@@ -153,6 +153,9 @@ app.get('/admin/access', async (req, res) => {
     if(req.session.admin === undefined){
         res.redirect('/');
         return
+    }else if(req.session.admin.access !== "HR"){
+        res.redirect(`/admin?adminEmail=${req.session.admin.email}&adminName=${req.session.admin.name}`);
+        return
     }
     const adminEmail = req.session.admin.email;
     const adminName = req.session.admin.name;
@@ -180,22 +183,38 @@ app.post('/admin/access', async (req, res) => {
         res.redirect('/');
         return
     }
-    const {name, email, access} = req.body;
-    console.log(name, email, access)
-    if(name === "" || email === "" || access === ""){
-        res.send("Please fill all the fields");
+    else if(req.session.admin.access !== "HR"){
+        res.redirect(`/admin?adminEmail=${req.session.admin.email}&adminName=${req.session.admin.name}`);
+        return
     }
-    await Admin.create({name, email, access})
-    .catch(err => {
-        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
-        console.log(err)
-    });
-    res.redirect('/admin/access');
+    const {name, email, access} = req.body;
+    if(name === "" || email === "" || access === ""){
+        res.json({error: "Please fill in all fields"})
+        return
+    }
+    const admin = await Admin.findOne({where: {email: email, access: access}});
+    if(admin !== null){
+        res.json({error: "Admin already exists with this email and access level"})
+        return
+    }
+    else{
+        await Admin.create({name, email, access})
+        .catch(err => {
+            res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+            console.log(err)
+            return;
+        });
+    }
+    res.json({error: false})
 })
 
 app.delete('/admin/access/revokeAccess', async (req, res) =>{
-    const {name, email, access} = req.body
-    const admin = await Admin.findOne({where: {name: name, email: email, access: access}})
+    const {adminID} = req.body
+    if(req.session.admin.access !== "HR"){
+        res.redirect(`/admin?adminEmail=${req.session.admin.email}&adminName=${req.session.admin.name}`);
+        return
+    }
+    const admin = await Admin.findByPk(adminID);
     await admin.destroy()
     .catch((err) => {
         console.log(err)
@@ -307,11 +326,57 @@ app.get('/admin/jobOpenings', async (req, res) => {
         res.redirect('/');
         return
     }
-    const jobs = await JobOpening.findAll({
-        include: Admin,
-    });
+    // const jobOpenings = await JobOpening.findAll({
+    //     include: Admin,
+    // });
 
-    res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs})
+    const admins = await Admin.findAll({
+        where: {
+            name: req.session.admin.name,
+            email: req.session.admin.email,
+            [Op.not]: [{access: 'Recruiter'}]
+        },
+        include: {
+            model: JobOpening,
+            include: Admin
+        }
+    })
+    const recruiter = await Admin.findOne({
+        where: {
+            access: 'Recruiter',
+            name: req.session.admin.name,
+            email: req.session.admin.email
+        },
+        include: {
+            model: JobOpening,
+            as: 'jobs',
+            include: Admin
+        }
+    })
+    var allJobs = [] 
+    if(recruiter)
+        allJobs.push(recruiter.jobs)
+    admins.forEach((admin) => {
+        allJobs.push(admin.JobOpenings)
+    })
+ 
+    var jobIDs = []
+    const jobOpenings = allJobs.reduce(combineJobs, [])
+    
+    function combineJobs(newJobs, jobs){
+        if(jobs.length>0){
+            jobs.forEach((job) => {
+                if(!jobIDs.includes(job.jobID)){
+                    newJobs.push(job)
+                    jobIDs.push(job.jobID)
+                }
+            })
+        }
+        return newJobs
+    }
+
+
+    res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobOpenings})
 })
 
 app.get('/admin/jobOpenings/:jobID/edit', async (req, res) => {
@@ -322,7 +387,8 @@ app.get('/admin/jobOpenings/:jobID/edit', async (req, res) => {
     try{
         const recruiters = await Admin.findAll({
             where: {
-                access: 'Recruiter'
+                access: 'Recruiter',
+                [Op.not]: [{adminID: req.session.admin.adminID}]
             }, 
             raw: true 
         })
@@ -335,24 +401,24 @@ app.get('/admin/jobOpenings/:jobID/edit', async (req, res) => {
         const questions = job.questions.split(",")
         const skills = job.skills.split(";")
         const jobRecruiters = await job.getRecruiters()
+
+        var opening = {}
+        opening['questionNo'] = questions.length
+        opening['questions'] = questions
+        opening['skillNo'] = skills.length
+        opening['skills'] = skills
+        opening['recruiterNo'] = jobRecruiters.length
+        opening['recruiters'] = jobRecruiters
+        if(jobRecruiters.length>0)
+            opening['addRecruiter'] = 'yes'
+        opening['jobID'] = req.params.jobID
+
+        res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, recruiters, opening})
     }
     catch(err){
         console.log(err)
         res.status(500).render('error', {title: '500', message: "Internal Server Error"});
     }
-
-    var opening = {}
-    opening['questionNo'] = questions.length
-    opening['questions'] = questions
-    opening['skillNo'] = skills.length
-    opening['skills'] = skills
-    opening['recruiterNo'] = jobRecruiters.length
-    opening['recruiters'] = jobRecruiters
-    if(jobRecruiters.length>0)
-        opening['addRecruiter'] = 'yes'
-    opening['jobID'] = req.params.jobID
-
-    res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, recruiters, opening})
 })
 
 app.post('/admin/jobOpenings', async (req, res) => {
@@ -365,6 +431,16 @@ app.post('/admin/jobOpenings', async (req, res) => {
     })
 
     res.render('jobQuestions', {title: 'Add Job Questions', admin:req.session.admin, opening: req.session.opening, recruiters})
+})
+
+app.get(`/admin/jobOpenings/:jobID/checkExists`, async(req, res) => {
+    const job = await JobOpening.findByPk(req.params.jobID)
+    if(job==null){
+        res.json({found: false})
+    }
+    else{
+        res.json({found: true})
+    }
 })
 
 app.post('/admin/jobQuestions/:jobID', async (req, res) => {

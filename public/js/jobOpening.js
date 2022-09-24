@@ -57,11 +57,18 @@ const jobID_error = document.querySelector('.jobID_error')
 
 const job_questions = document.querySelectorAll('.job_question')
 
-function checkExists(){
+function checkExists(jobID, callback){
     var exists = false;
-    job_questions.forEach(question => {
-        if(question.id === jobID.value){
-            exists = true;
+    $.ajax({
+        url: `/admin/jobOpenings/${jobID}/checkExists`,
+        type: 'GET',
+        async: false,
+        success: function(response){
+            console.log(response)
+            exists = response.found;
+        },
+        error: function(error){
+            console.log(error)
         }
     })
     return exists;
@@ -75,7 +82,8 @@ function showError(event){
             event.preventDefault();
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Invalid format. Job ID should be alphanumeric and have 8 characters.'
     }
-    else if(checkExists()){
+    else if(checkExists(jobID.value)){
+        console.log('exists')
         if(event)
             event.preventDefault()
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Job Opening already exists.'
@@ -90,6 +98,27 @@ form.addEventListener('submit', event => {
     jobID.addEventListener('input', event => {
         showError(false);
     })
+})
+
+//search
+$('#search').on('keyup', function(){
+    const search = $(this).val().toString().toLowerCase();
+    $('.job_question').each(function(){
+        const jobOpening = $(this).find('.job_heading h6').attr('class').toString().toLowerCase();
+        if(jobOpening.includes(search)){
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    })
+
+    //show no results
+    if($('.job_question:visible').length === 0){
+        $('.no_results').css({'display': 'flex'});
+    } else {
+        $('.no_results').hide();
+    }
+
 })
 
 

@@ -3,20 +3,19 @@ const deleteAccess = document.getElementById('deleteAccess');
 deleteAccess.addEventListener('show.bs.modal', event => {
     const button = event.relatedTarget
     const name = button.getAttribute('data-bs-name')
-    const email = button.getAttribute('data-bs-email')
     const access = button.getAttribute('data-bs-access')
+    const adminID = button.getAttribute('data-bs-adminid')
     const modalBody = deleteAccess.querySelector('.modal-body p')
     modalBody.innerHTML = `Are you sure you want to remove <span style="color: red; font-weight: 600;">${name}</span>'s access from <span style="color: red; font-weight: 600;">${access}</span> level?`
     
     const confirm_delete_access = document.getElementById('confirm_delete_access');
     confirm_delete_access.addEventListener('click', () => {
+        console.log(adminID)
         $.ajax({
             url: `access/revokeAccess`,
             type: 'DELETE',
             data: {
-                name,
-                email,
-                access
+                adminID: adminID,
             },
             success: function(response){
                 console.log(response)
@@ -40,6 +39,37 @@ addAccess.addEventListener('show.bs.modal', event => {
     const modalAccess = addAccess.querySelector('.modal-body #access')
     modalTitle.innerHTML = `Access Control - ${access}` 
     modalAccess.value = access
+})
+
+const form = document.querySelector('form')
+const name = document.getElementById('name')
+const email = document.getElementById('email')
+const access = document.getElementById('access')
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    $.ajax({
+        url: '/admin/access',
+        type: 'POST',
+        data: {
+            name: name.value,
+            email: email.value,
+            access: access.value
+        },
+        success: function(response){
+            console.log(response.error)
+            if(response.error){
+                document.getElementById('adminAddError').innerHTML = '<i class="fa fa-exclamation-circle"></i>' + response.error
+            }
+            else{
+                location.reload()
+                document.getElementById('adminAddError').innerHTML = ''
+            }
+        },
+        error: function(error){
+            console.log(error)
+        }
+    })
 })
 
 //no results
@@ -151,8 +181,10 @@ $('.download-all').on('click', function(e){
     console.log(jobID)
     var applicant_ids = [];
     $(`.${jobID}`).find('.download-application').each(function(){
-        const applicant_id = $(this).data('applicant');
-        applicant_ids.push(applicant_id);
+        if($(this).parent().parent().parent().css('display')!= 'none'){
+            const applicant_id = $(this).data('applicant');
+            applicant_ids.push(applicant_id);
+        }
     })
     console.log(applicant_ids)
     window.location = '/admin/downloadAll/'+ jobID +'/'+applicant_ids;
