@@ -1,4 +1,4 @@
-const JobOpening = require('../models/jobOpening.js');
+const JobOpening = require('../../models/jobOpening.js');
 
 
 async function getJobDetails(job_id){

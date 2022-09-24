@@ -1,5 +1,5 @@
-const Applicant = require('../models/applicants.js');
-const ValidCandidateID = require('../models/candidate_id.js')
+const Applicant = require('../../models/applicants.js');
+const ValidCandidateID = require('../../models/candidate_id.js')
 const { Op } = require("sequelize");
 const getJobDetails = require('./jobDetailsController.js');
 

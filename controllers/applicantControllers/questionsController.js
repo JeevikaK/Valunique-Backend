@@ -1,5 +1,5 @@
-const sequelize = require('../db/db.init.js');
-const Applicant = require('../models/applicants.js');
+const sequelize = require('../../db/db.init.js');
+const Applicant = require('../../models/applicants.js');
 const { Op, DataTypes } = require("sequelize");
 const { QueryTypes } = require('sequelize');
 const fs = require('fs')

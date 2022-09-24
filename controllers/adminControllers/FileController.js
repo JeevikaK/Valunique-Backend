@@ -1,6 +1,6 @@
 const fs = require('fs')
 const PDFDocument = require('pdfkit');;
-const sequelize = require('../db/db.init.js');
+const sequelize = require('../../db/db.init.js');
 const { QueryTypes } = require('sequelize');
 
 const createPDF = async (applicant) => {

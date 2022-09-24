@@ -1,4 +1,4 @@
-const Applicant = require('../models/applicants.js');
+const Applicant = require('../../models/applicants.js');
 
 const getDetails = async (req, res) => {
     const { candidateId, jobId, jobName } = req.query;

@@ -1,4 +1,4 @@
-const Applicant = require('../models/applicants.js');
+const Applicant = require('../../models/applicants.js');
 
 const logout = async (req,res) => {
     // remove applicant details from database and destroy session and redirect to login page

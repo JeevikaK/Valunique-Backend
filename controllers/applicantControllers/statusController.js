@@ -1,4 +1,4 @@
-const Applicant = require('../models/applicants.js');
+const Applicant = require('../../models/applicants.js');
 const { Op } = require("sequelize");
 
 const getStatus = async (req, res) => {
