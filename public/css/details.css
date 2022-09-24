@@ -135,14 +135,18 @@ nav .user img{
     width: 90%;
 }
 
-form > div{
+.details_form{
     display: flex;
+    flex-direction: column;
     margin-bottom: 1vh;
     justify-content: space-between;
+    align-items: center;
 }
 
-.index-questions{
-    width: 50%;
+.top_half, .bottom_half{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .question{
@@ -158,11 +162,14 @@ form > div{
 
 
 .question textarea{
-    background-color: transparent;
+    background: rgba(255, 255, 255, 0.7);
     border: none;
-    border-bottom: 1px solid rgba(83, 86, 90, 0.56);
-    width: 70%;
+    box-shadow: 6px 7px 19px -6px rgba(0, 0, 0, 0.25);
+    border-radius: 7px;
+    width: 30vw;
+    min-height: 10em;
     line-height: 1.5;
+    padding: 1em;
 }
 
 .question textarea:focus{
@@ -175,7 +182,7 @@ form > div{
 
 .question select{
     width: 14em;
-    margin: 0.5em 2em;
+    margin: 0.5em 1em;
     padding: 0.4em;
     font-size: 0.8em;
     color: rgba(83, 86, 90);
@@ -187,10 +194,15 @@ form > div{
     outline: none;
 }
 
-.question .skills{
+.skill_container, .location_container{
+    width: 50%;
     display: flex;
     flex-direction: column;
-    margin-bottom: 3vh;
+}
+
+.question .skills{
+    display: flex;
+    margin-bottom: -0.5em;
 }
 
 select option{
@@ -235,22 +247,26 @@ select option{
     cursor: pointer;
 }
 
-.imagery{
-    justify-content: center;
+.skill_error{
     display: flex;
-    width: 50%;
 }
 
-.imagery img{
-    width: 33vw;
+.partition{
+    min-width: 1em;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.location_container{
+    margin-left: 2em;
 }
 
 #locate{
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 #relocate p{
-    margin-top: 0;
+    margin-top: 0.8em;
+    margin-bottom: 0%;
 }
 
 #relocate input{
@@ -280,7 +296,8 @@ select option{
     padding: 0.4em;
     font-size: 0.8em;
     color: rgba(83, 86, 90, 0.9);
-    margin-bottom: 1em
+    margin-bottom: 1em;
+    width: 6em
 }
 
 .error, .file-upload-message{
@@ -335,6 +352,12 @@ select option{
     }
 }
 
+@media (max-width: 950px) {
+    .skills{
+        flex-direction: column;
+    }
+}
+
 @media only screen and (max-width: 768px){
 
     .content{
@@ -349,13 +372,6 @@ select option{
         position: relative;
         left: -1em;
         text-align: center;
-    }
-
-    .index-questions{
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
     }
 
     .question textarea{
@@ -382,16 +398,16 @@ select option{
         margin: 0;
     }
 
-    .imagery{
-        width: auto;
-    }
-
-    #locate{
-        margin-top: 2em;
-    }
-
     .question select{
         margin: 0.5em auto;
+    }
+
+    .bottom_half{
+        align-items: center;
+    }
+
+    .location_container{
+        margin-left: 0;
     }
 }
 
@@ -429,12 +445,9 @@ select option{
         margin-top: 7vh;
     }
 
-    /* .question{
-        font-size: 1em;
-    } */
-
     .question textarea{
         font-size: 0.9em;
+        height: 10em;
     }
 
     .delete_skill{

@@ -7,6 +7,9 @@ const getDetails = async (req, res) => {
         req.session.destroy()
         res.redirect('/');
     }
+    else if(req.session.candidate_id==undefined){
+        res.redirect('/');
+    }
     else{
         var q1 = req.session.answers['question1']
         var q2 = req.session.answers['question2']
@@ -22,7 +25,7 @@ const getDetails = async (req, res) => {
             skills_mandatory = []
             add_skill_list = []
         }
-
+        console.log(add_skill_list)
         var context = {
             title: 'Details',
             mandatorySkills: xlData['mandatorySkills'],
