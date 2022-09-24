@@ -199,14 +199,10 @@ checkboxes.forEach(checkbox => {
         if (this.checked) {
             console.log(checkbox.value + " is checked");
             checkbox_values.forEach(check_status => {
-                console.log(check_status.value)
                 const parent = check_status.parentElement.parentElement.parentElement.parentElement.parentElement;
-                console.log(parent)
                 if(checkbox.value == "All"){
                     checkbox_values.forEach(check_status => {
-                        console.log(check_status.value)
                         const parent = check_status.parentElement.parentElement.parentElement.parentElement.parentElement;
-                        console.log(parent)
                         parent.style.display = "flex"
                         
                     })
@@ -219,9 +215,7 @@ checkboxes.forEach(checkbox => {
         } else {
             console.log(checkbox.value + " is not checked");
             checkbox_values.forEach(check_status => {
-                console.log(check_status.value)
                 const parent = check_status.parentElement.parentElement.parentElement.parentElement.parentElement;
-                console.log(parent)
                 parent.style.display = "flex"
                 
             })
