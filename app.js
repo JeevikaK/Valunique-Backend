@@ -108,6 +108,7 @@ app.post('/admin/jobQuestions/:jobID', jobOpeningController.addJobQuestions)
 app.delete('/admin/jobOpenings/:jobID/delete', jobOpeningController.deleteJobOpening)
 
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
+// http://localhost:3000/admin?adminEmail=ayaan.ali.63621@gmail.com&adminName=Ayaan
 
 // logout route
 app.get('/logout', logoutController);

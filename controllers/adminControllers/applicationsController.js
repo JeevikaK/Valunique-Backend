@@ -1,5 +1,6 @@
 const Admin = require('../../models/admin.js');
 const Applicant = require('../../models/applicants.js');
+const JobOpening = require('../../models/jobOpening.js');
 const fs = require('fs')
 const { createPDF, createFolder, deleteFolder } = require('./FileController.js');
 const AdmZip = require('adm-zip');
@@ -22,6 +23,74 @@ const getApplications = async (req, res) => {
         return
     }
     req.session.admin = admin;
+
+    var applicants
+    if(admin.access === 'HR'){
+        applicants = await Applicant.findAll({where: {
+            status: {
+                [Op.not]:"Applying"
+            }
+        }, 
+            order: [['jobID', 'ASC']]
+        });
+    }
+    else{
+        const hiringManager = await Admin.findOne({
+            where: {
+                name: req.session.admin.name,
+                email: req.session.admin.email,
+                access: 'Hiring Manager'
+            },
+            include: {
+                model: JobOpening,
+                include: Admin
+            }
+        })
+        const recruiter = await Admin.findOne({
+            where: {
+                access: 'Recruiter',
+                name: req.session.admin.name,
+                email: req.session.admin.email
+            },
+            include: {
+                model: JobOpening,
+                as: 'jobs',
+                include: Admin
+            }
+        })
+        var allJobs = [] 
+        if(recruiter)
+            allJobs.push(recruiter.jobs)
+        if(hiringManager)
+            allJobs.push(hiringManager.JobOpenings)
+     
+        const jobIDs = allJobs.reduce(combineJobs, [])
+        
+        function combineJobs(jobIDs, jobs){
+            if(jobs.length>0){
+                jobs.forEach((job) => {
+                    if(!jobIDs.includes(job.jobID)){
+                        jobIDs.push(job.jobID)
+                    }
+                })
+            }
+            return jobIDs
+        }
+        console.log(jobIDs)
+
+        applicants = await Applicant.findAll({
+            where: {
+                jobID: {
+                    [Op.in]: jobIDs
+                },
+                status: {
+                    [Op.not]:"Applying"
+                }
+            },
+            order: [['jobID', 'ASC']]
+        })
+    }
+
     const jobs = await Applicant.findAll({
         attributes: [
             [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'], 
@@ -29,13 +98,7 @@ const getApplications = async (req, res) => {
         ],
         order: [['jobID', 'ASC']]
     });
-    const applicants = await Applicant.findAll({where: {
-        status: {
-            [Op.not]:"Applying"
-        }
-    }, 
-        order: [['jobID', 'ASC']]
-    });
+
     const context = {
         title: 'Admin', 
         applicants, 
