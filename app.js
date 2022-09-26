@@ -107,6 +107,10 @@ app.get(`/admin/jobOpenings/:jobID/checkExists`, jobOpeningController.checkJobEx
 app.post('/admin/jobQuestions/:jobID', jobOpeningController.addJobQuestions)
 app.delete('/admin/jobOpenings/:jobID/delete', jobOpeningController.deleteJobOpening)
 
+app.get('/admin/login', (req, res) => {
+    res.render('adminLogin', {title: "Aadmin Login", message: ""})
+})
+
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
 // http://localhost:3000/admin?adminEmail=ayaan.ali.63621@gmail.com&adminName=Ayaan
 
