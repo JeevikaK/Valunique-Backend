@@ -112,6 +112,7 @@ app.get('/admin/login', (req, res) => {
 })
 
 // /admin?adminEmail=owaisiqbal2013@gmail.com&adminName=Owais
+// http://localhost:3000/admin?adminEmail=ayaan.ali.63621@gmail.com&adminName=Ayaan
 
 // logout route
 app.get('/logout', logoutController);

@@ -291,6 +291,12 @@ checkboxes.forEach(checkbox => {
 })
         
 
+$('.cards').each(function(){
+    if($(this).children().length == 0){
+        $(this).parent().hide()
+    }
+})
+
 
 
 

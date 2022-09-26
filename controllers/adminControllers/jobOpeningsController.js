@@ -17,11 +17,11 @@ const getJobOpenings = async (req, res) => {
         return
     }   
 
-    const admins = await Admin.findAll({
+    const hiringManager = await Admin.findOne({
         where: {
             name: req.session.admin.name,
             email: req.session.admin.email,
-            [Op.not]: [{access: 'Recruiter'}]
+            access: 'Hiring Manager'
         },
         include: {
             model: JobOpening,
@@ -43,9 +43,8 @@ const getJobOpenings = async (req, res) => {
     var allJobs = [] 
     if(recruiter)
         allJobs.push(recruiter.jobs)
-    admins.forEach((admin) => {
-        allJobs.push(admin.JobOpenings)
-    })
+    if(hiringManager)
+        allJobs.push(hiringManager.JobOpenings)
  
     var jobIDs = []
     const jobOpenings = allJobs.reduce(combineJobs, [])
