@@ -24,13 +24,21 @@ const getApplications = async (req, res) => {
     }
     req.session.admin = admin;
 
-    var applicants
+    var applicants, jobs
     if(admin.access === 'HR'){
         applicants = await Applicant.findAll({where: {
             status: {
                 [Op.not]:"Applying"
             }
         }, 
+            order: [['jobID', 'ASC']]
+        });
+
+        jobs = await JobOpening.findAll({
+            attributes: [
+                [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'], 
+                'jobName'
+            ],
             order: [['jobID', 'ASC']]
         });
     }
@@ -58,6 +66,7 @@ const getApplications = async (req, res) => {
                 include: Admin
             }
         })
+        console.log(recruiter.jobs)
         var allJobs = [] 
         if(recruiter)
             allJobs.push(recruiter.jobs)
@@ -89,15 +98,20 @@ const getApplications = async (req, res) => {
             },
             order: [['jobID', 'ASC']]
         })
-    }
 
-    const jobs = await Applicant.findAll({
-        attributes: [
-            [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'], 
-            'jobName'
-        ],
-        order: [['jobID', 'ASC']]
-    });
+        jobs = await JobOpening.findAll({
+            where:{
+                jobID: {
+                    [Op.in]: jobIDs
+                }
+            },
+            attributes: [
+                [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'], 
+                'jobName'
+            ],
+            order: [['jobID', 'ASC']]
+        });
+    }
 
     const context = {
         title: 'Admin', 
