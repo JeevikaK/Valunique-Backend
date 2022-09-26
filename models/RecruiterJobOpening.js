@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.init');
+const {sequelize} = require('../db/db.init');
 
 const RecruiterJobOpening = sequelize.define('RecruiterJobOpening', {},
 {

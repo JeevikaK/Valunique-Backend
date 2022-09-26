@@ -86,6 +86,7 @@ const form = document.querySelector('#addAccessForm')
 const name = document.getElementById('name')
 const email = document.getElementById('email')
 const access = document.getElementById('access')
+const password = document.getElementById('pwd')
 
 form.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -95,7 +96,8 @@ form.addEventListener('submit', (e) => {
         data: {
             name: name.value,
             email: email.value,
-            access: access.value
+            access: access.value,
+            password: password.value
         },
         success: function(response){
             console.log(response.error)
@@ -201,7 +203,7 @@ function saveStatus(e, id){
     console.log(status_value)
     //ajax request
     $.ajax({
-        url: `/admin?adminEmail=${adminemail}&adminName=${adminname}`,
+        url: `/admin/applications/status`,
         type: 'POST',
         data: {
             status: status_value,

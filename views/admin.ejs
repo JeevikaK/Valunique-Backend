@@ -249,6 +249,12 @@
                             <input type="email" name="email" required class="form-control" id="email">
                         </div>
                         <div class="mb-3">
+                            <label for="pwd" class="col-form-label">Set Password:&nbsp;&nbsp; </label>
+                            <input type="password" id="pwd" name="pwd"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" required class="form-control">
+                        </div>
+                        <div class="mb-3">
                             <% if(type==="access") {%>
                                 <label for="access" class="col-form-label">Access:&nbsp;&nbsp; </label>
                                 <!-- <input type="text" name="access" readonly class="form-control" id="access"> -->

@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.init');
+const {sequelize} = require('../db/db.init');
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
 const JobOpening = sequelize.define('JobOpening', {

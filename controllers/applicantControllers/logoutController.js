@@ -6,15 +6,15 @@ const logout = async (req,res) => {
         const applicant = await Applicant.findOne({ where: { candidateID: req.session.candidate_id, jobID: req.session.job_id, status: 'Applying' } });
         if(applicant != null)
             var delete_result = await applicant.destroy();
-        req.session.destroy();     
+        req.session.destroy();   
+        res.redirect('/');  
     }
 
     //destroy admin session if admin login
     else if(req.session.admin){
         req.session.destroy();
+        res.redirect('/admin');
     }
-
-    res.redirect('/');
 }
 
 module.exports = logout;

@@ -1,13 +1,14 @@
 const Applicant = require('../../models/applicants.js');
 const Admin = require('../../models/admin.js');
 const Sequelize = require("sequelize");
+const bcrypt = require('bcryptjs');
 
 const getAccessLevels = async (req, res) => {
     if(req.session.admin === undefined){
-        res.redirect('/');
+        res.redirect('/admin');
         return
     }else if(req.session.admin.access !== "HR"){
-        res.redirect(`/admin?adminEmail=${req.session.admin.email}&adminName=${req.session.admin.name}`);
+        res.redirect(`/admin/applications`);
         return
     }
     const adminEmail = req.session.admin.email;
@@ -33,25 +34,30 @@ const getAccessLevels = async (req, res) => {
 
 const addAccessLevel = async (req, res) => {
     if(req.session.admin === undefined){
-        res.redirect('/');
+        res.redirect('/admin');
         return
     }
     else if(req.session.admin.access !== "HR"){
-        res.redirect(`/admin?adminEmail=${req.session.admin.email}&adminName=${req.session.admin.name}`);
+        res.redirect(`/admin/applications`);
         return
     }
-    const {name, email, access} = req.body;
-    if(name === "" || email === "" || access === ""){
+    const {name, email, access, password} = req.body;
+    if(name === "" || email === "" || access === "" || password === ""){
         res.json({error: "Please fill in all fields"})
         return
     }
-    const admin = await Admin.findOne({where: {email: email, access: access}});
+    else if(!email.endsWith("@volvo.com")){
+        res.json({error: "Please enter a Volvo email"})
+        return
+    }
+    const admin = await Admin.findOne({where: {email: email}});
     if(admin !== null){
-        res.json({error: "Admin already exists with this email and access level"})
+        res.json({error: "Admin already exists with this email"})
         return
     }
     else{
-        await Admin.create({name, email, access})
+        encryptedPassword = await bcrypt.hash(password, 10);
+        await Admin.create({name, email, access, password: encryptedPassword})
         .catch(err => {
             res.status(500).render('error', {title: '500', message: "Internal Server Error"});
             console.log(err)
@@ -64,7 +70,7 @@ const addAccessLevel = async (req, res) => {
 const deleteAccessLevel = async (req, res) =>{
     const {adminID, newOwnerID} = req.body
     if(req.session.admin.access !== "HR"){
-        res.redirect(`/admin?adminEmail=${req.session.admin.email}&adminName=${req.session.admin.name}`);
+        res.redirect(`/admin/applications`);
         return
     }
     const admin = await Admin.findByPk(adminID);
@@ -84,7 +90,6 @@ const deleteAccessLevel = async (req, res) =>{
     
     var same_user = false
     if(admin.adminID===req.session.admin.adminID){
-        console.log('true')
         req.session.destroy()
         same_user = true
     }
@@ -94,7 +99,7 @@ const deleteAccessLevel = async (req, res) =>{
 const checkJobOwner = async (req, res) => {
     const admin = await Admin.findByPk(req.params.adminID);
     if(admin === null){
-        res.redirect('/');
+        res.redirect('/admin/access');
         return
     }
     const jobsOwned = await admin.getJobOpenings()

@@ -1,4 +1,4 @@
-const sequelize = require('../../db/db.init.js');
+const {sequelize} = require('../../db/db.init.js');
 const Admin = require('../../models/admin.js');
 const JobOpening = require('../../models/jobOpening.js');
 const { Op } = require("sequelize");
@@ -6,67 +6,67 @@ const { Op } = require("sequelize");
 
 const getJobOpenings = async (req, res) => {
     if(req.session.admin === undefined){
-        res.redirect('/');
+        res.redirect('/admin');
         return
     }
+    var jobOpenings
     if(req.session.admin.access === 'HR'){
-        const jobOpenings = await JobOpening.findAll({
+        jobOpenings = await JobOpening.findAll({
             include: Admin,
         });
-        res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobOpenings})
-        return
     }   
-
-    const hiringManager = await Admin.findOne({
-        where: {
-            name: req.session.admin.name,
-            email: req.session.admin.email,
-            access: 'Hiring Manager'
-        },
-        include: {
-            model: JobOpening,
-            include: Admin
-        }
-    })
-    const recruiter = await Admin.findOne({
-        where: {
-            access: 'Recruiter',
-            name: req.session.admin.name,
-            email: req.session.admin.email
-        },
-        include: {
-            model: JobOpening,
-            as: 'jobs',
-            include: Admin
-        }
-    })
-    var allJobs = [] 
-    if(recruiter)
-        allJobs.push(recruiter.jobs)
-    if(hiringManager)
-        allJobs.push(hiringManager.JobOpenings)
- 
-    var jobIDs = []
-    const jobOpenings = allJobs.reduce(combineJobs, [])
-    
-    function combineJobs(newJobs, jobs){
-        if(jobs.length>0){
-            jobs.forEach((job) => {
-                if(!jobIDs.includes(job.jobID)){
-                    newJobs.push(job)
-                    jobIDs.push(job.jobID)
-                }
-            })
-        }
-        return newJobs
+    else if(req.session.admin.access === `Hiring Manager`){
+        jobOpenings = await JobOpening.findAll({
+            where:{
+                AdminAdminID: req.session.admin.adminID
+            },
+            include: Admin,
+        });
     }
-
+    else if(req.session.admin.access === `Recruiter`){
+        const jobsOwned = await JobOpening.findAll({
+            where:{
+                AdminAdminID: req.session.admin.adminID
+            },
+            include: Admin,
+        }); 
+        const jobsRecruited = await JobOpening.findAll({
+            include: Admin,
+            include: {
+                model: Admin,
+                as: 'recruiters',
+                where: {
+                    adminID: req.session.admin.adminID
+                }
+            }
+        })
+        const jobOpeningsID = []
+        console.log(jobOpeningsID)
+        jobsOwned.forEach((job) => {
+            if(jobOpeningsID.indexOf(job.jobID) === -1){
+                jobOpeningsID.push(job.jobID)
+            }
+        })
+        jobsRecruited.forEach((job) => {
+            if(jobOpeningsID.indexOf(job.jobID) === -1){
+                jobOpeningsID.push(job.jobID)
+            }
+        })
+        jobOpenings = await JobOpening.findAll({
+            where: {
+                jobID: {
+                    [Op.in]: jobOpeningsID
+                }
+            },
+            include: Admin,
+        }) 
+    }
     res.render('admin_openings', {title: 'Job Openings', admin: req.session.admin, jobs: jobOpenings})
 }
 
 const editJobOpening = async (req, res) => {
     if(req.session.admin === undefined){
-        res.redirect('/');
+        res.redirect('/admin');
         return
     }
     try{
@@ -110,7 +110,8 @@ const addJobOpening = async (req, res) => {
     req.session.opening = req.body; 
     const recruiters = await Admin.findAll({
         where: {
-            access: 'Recruiter'
+            access: 'Recruiter',
+            [Op.not]: [{adminID: req.session.admin.adminID}]
         }, 
         raw: true 
     })

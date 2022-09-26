@@ -2,13 +2,15 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
-const sequelize = require('./db/db.init.js');
+const MySQLStore = require('connect-mysql')(session);
+const {sequelize, options} = require('./db/db.init.js');
 const upload = require('./middleware/upload-middleware.js');
 const loginController = require('./controllers/applicantControllers/loginController.js');
 const detailsController = require('./controllers/applicantControllers/detailsController.js');
 const questionsController = require('./controllers/applicantControllers/questionsController.js');
 const logoutController = require('./controllers/applicantControllers/logoutController.js');
 const getStatus = require('./controllers/applicantControllers/statusController.js');
+const adminLoginController = require('./controllers/adminControllers/loginController.js');
 const applicationsController = require('./controllers/adminControllers/applicationsController.js');
 const accessController = require('./controllers/adminControllers/accessController.js');
 const jobOpeningController = require('./controllers/adminControllers/jobOpeningsController.js');
@@ -33,7 +35,8 @@ app.use(session({
     secret: '0dc529ba-5051-4cd6-8b67-c9a901bb8bdf',
     resave: false,
     saveUninitialized:true,
-    cookie: { maxAge: oneDay }, 
+    cookie: { maxAge: oneDay, httpOnly: false, }, 
+    // store: new MySQLStore(options)
 }));
 
 
@@ -92,8 +95,10 @@ app.get('/status', getStatus);
 
 
 // admin routes
-app.get('/admin', applicationsController.getApplications);
-app.post('/admin', applicationsController.updateStatus);
+app.get('/admin', adminLoginController.getLogin)
+app.post('/admin', adminLoginController.postLogin)
+app.get('/admin/applications', applicationsController.getApplications);
+app.post('/admin/applications/status', applicationsController.updateStatus);
 app.get('/admin/access', accessController.getAccessLevels);
 app.post('/admin/access', accessController.addAccessLevel)
 app.delete('/admin/access/revokeAccess', accessController.deleteAccessLevel)

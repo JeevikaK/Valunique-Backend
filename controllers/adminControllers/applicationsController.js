@@ -8,10 +8,12 @@ const zip = require('express-zip');
 const { QueryTypes } = require('sequelize');
 const { Op } = require("sequelize");
 const Sequelize = require("sequelize");
-const sequelize = require('../../db/db.init.js');
+const {sequelize} = require('../../db/db.init.js')
+
 
 const getApplications = async (req, res) => {
-    const {adminEmail, adminName} = req.query; 
+    const adminEmail = req.session.admin.email
+    const adminName = req.session.admin.name
     const admin = await Admin.findOne({
         where: {
             email: adminEmail, name: adminName
@@ -19,78 +21,84 @@ const getApplications = async (req, res) => {
         order: [['access', 'ASC']]
     });
     if(admin === null){
-        res.redirect('/');
+        res.redirect('/admin');
         return
     }
-    req.session.admin = admin;
 
+    var allJobIDs = []
     var applicants, jobs
     if(admin.access === 'HR'){
         applicants = await Applicant.findAll({where: {
             status: {
                 [Op.not]:"Applying"
             }
-        }, 
+        },
             order: [['jobID', 'ASC']]
         });
 
         jobs = await JobOpening.findAll({
             attributes: [
-                [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'], 
+                [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'],
                 'jobName'
             ],
             order: [['jobID', 'ASC']]
         });
     }
-    else{
-        const hiringManager = await Admin.findOne({
-            where: {
-                name: req.session.admin.name,
-                email: req.session.admin.email,
-                access: 'Hiring Manager'
-            },
-            include: {
-                model: JobOpening,
-                include: Admin
-            }
-        })
-        const recruiter = await Admin.findOne({
-            where: {
-                access: 'Recruiter',
-                name: req.session.admin.name,
-                email: req.session.admin.email
-            },
-            include: {
-                model: JobOpening,
-                as: 'jobs',
-                include: Admin
-            }
-        })
-        console.log(recruiter.jobs)
-        var allJobs = [] 
-        if(recruiter)
-            allJobs.push(recruiter.jobs)
-        if(hiringManager)
-            allJobs.push(hiringManager.JobOpenings)
-     
-        const jobIDs = allJobs.reduce(combineJobs, [])
-        
-        function combineJobs(jobIDs, jobs){
-            if(jobs.length>0){
-                jobs.forEach((job) => {
-                    if(!jobIDs.includes(job.jobID)){
-                        jobIDs.push(job.jobID)
+
+    else if(admin.access === 'Hiring Manager' || admin.access === 'Recruiter'){
+        if(admin.access === 'Hiring Manager'){
+            jobs = await JobOpening.findAll({
+                where: {
+                    AdminAdminID : admin.adminID
+                },
+                attributes: [
+                    [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'],
+                    'jobName'
+                ],
+                order: [['jobID', 'ASC']]
+            })
+            jobs.forEach((job) => {
+                allJobIDs.push(job.jobID)
+            })
+            applicants = await Applicant.findAll({
+                where: {
+                    jobID: {
+                        [Op.in]: allJobIDs
+                    },
+                    status: {
+                        [Op.not]:"Applying"
                     }
-                })
-            }
-            return jobIDs
+                },
+                order: [['jobID', 'ASC']]
+            })
         }
-        console.log(jobIDs)
+        else if(admin.access === 'Recruiter'){
+            const recruiterJobs = await admin.getJobs()
+            const ownedJobs = await admin.getJobOpenings()
+            const allJobs = recruiterJobs.concat(ownedJobs)
+            allJobs.forEach((job) => {
+                if(!allJobIDs.includes(job.jobID)){
+                    allJobIDs.push(job.jobID)
+                }
+            })
+            jobs = await JobOpening.findAll({
+                where:{
+                    jobID: {
+                        [Op.in]: allJobIDs
+                    }
+                },
+                attributes: [
+                    [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'],
+                    'jobName'
+                ],
+                order: [['jobID', 'ASC']]
+            });
+        }
 
         applicants = await Applicant.findAll({
             where: {
                 jobID: {
-                    [Op.in]: jobIDs
+                    [Op.in]: allJobIDs
                 },
                 status: {
                     [Op.not]:"Applying"
@@ -98,28 +106,14 @@ const getApplications = async (req, res) => {
             },
             order: [['jobID', 'ASC']]
         })
-
-        jobs = await JobOpening.findAll({
-            where:{
-                jobID: {
-                    [Op.in]: jobIDs
-                }
-            },
-            attributes: [
-                [Sequelize.fn('DISTINCT', Sequelize.col('jobID')), 'jobID'], 
-                'jobName'
-            ],
-            order: [['jobID', 'ASC']]
-        });
     }
-
     const context = {
-        title: 'Admin', 
-        applicants, 
+        title: 'Admin',
+        applicants,
         jobs,
-        adminName: admin.name, 
-        adminEmail: admin.email, 
-        adminAccess: admin.access, 
+        adminName: admin.name,
+        adminEmail: admin.email,
+        adminAccess: admin.access,
         type: "applicants"
     }
     res.render('admin', context);
@@ -127,12 +121,10 @@ const getApplications = async (req, res) => {
 
 const updateStatus = async (req, res) => {
     const {status, applicant_id} = req.body
-    console.log(status, applicant_id)
     var applicant = await Applicant.findByPk(applicant_id);
-    console.log(applicant)
     const update_status = await applicant.update({status: status})
     .catch(err => {
-        console.log(err, 123);
+        console.log(err);
         res.status(500).render('error', {title: '500', message: "Internal Server Error"});
         return;
     });
@@ -142,7 +134,6 @@ const updateStatus = async (req, res) => {
 
 const downloadSingleApplication = async (req, res) => {
     const applicant_id = req.params.applicant_id;
-    console.log(applicant_id)
     const applicant = await Applicant.findByPk(applicant_id);
     var fileQuestions = await sequelize.query("SELECT * FROM `"+applicant.candidateID+"_"+applicant.jobID+"` WHERE `filename` IS NOT NULL", { type: QueryTypes.SELECT });
     var files=[];
@@ -178,7 +169,7 @@ const downloadSingleApplication = async (req, res) => {
             dir.closeSync()
             console.log("Downloaded")
         }
-    }) 
+    })
 }
 
 const downloadAllApplications = async (req, res) => {
@@ -236,5 +227,5 @@ module.exports = {
     getApplications,
     updateStatus,
     downloadSingleApplication,
-    downloadAllApplications
+    downloadAllApplications,
 }

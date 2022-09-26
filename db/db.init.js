@@ -15,4 +15,15 @@ const sequelize = new Sequelize(NAME_DB, USER_DB, PASSWORD_DB, {
      }
 });
 
-module.exports = sequelize;
+options = {
+   config: {
+      host: 'valunique-server.mysql.database.azure.com',
+      port: 3306,
+      ssl: true,
+      user: USER_DB, 
+      password: PASSWORD_DB,
+      database: NAME_DB 
+   }
+}
+
+module.exports = {sequelize, options};

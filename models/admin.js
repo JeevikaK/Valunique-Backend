@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.init');
+const {sequelize} = require('../db/db.init');
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
 const Admin = sequelize.define('Admin', {
@@ -11,6 +11,7 @@ const Admin = sequelize.define('Admin', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true
     },
     name: {
         type: DataTypes.STRING,
@@ -20,6 +21,10 @@ const Admin = sequelize.define('Admin', {
         type: DataTypes.ENUM,
         values: ['HR', 'Hiring Manager', 'Recruiter'],
     },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
 },
 {
     timestamps: false,

@@ -11,8 +11,16 @@ function addDays(date, days) {
 
 const getLogin = (req, res) => { 
     // if candidate is already logged in, redirect to details page
-    if(req.session.candidate_id)
-        res.redirect(`/details?candidateId=${req.session.candidate_id}&jobId=${req.session.job_id}&jobName=${req.session.jobDescription['jobName']}`);
+    if(req.session.candidate_id){
+        const applicant = Applicant.findOne({ where: {candidateID: req.session.candidate_id, jobID: req.session.job_id}});
+        if(applicant.status === 'Applying'){
+            res.redirect(`/details?candidateId=${req.session.candidate_id}&jobId=${req.session.job_id}&jobName=${req.session.jobDescription['jobName']}`);
+        }
+        else{
+            res.redirect('/status')
+        }
+    }
+        
     
     else
         res.render('login', {title: 'Login', message: ""});

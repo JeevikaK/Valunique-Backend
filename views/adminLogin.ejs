@@ -9,13 +9,13 @@
             <div class="login_logo">
                 <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="login_logo">
             </div>
-            <p class="login_heading">Welcome to Volvo</p>
-            <form action="/" class="login_form" method="POST">
-                <label class="login_details" for="admin_email">Volvo Email ID</label>
-                <input type="text" name="admin_email" id="admin_email" placeholder="Eg: abc@volvo.com">
+            <p class="login_heading">Admin Login</p>
+            <form action="/admin" class="login_form" method="POST">
+                <label class="login_details" for="admin_email">Email ID</label>
+                <input type="text" name="adminEmail" id="admin_email" placeholder="Eg: abc@volvo.com">
                 <br>
                 <label class="login_details" for="admin_password">Password</label>
-                <input type="text" name="admin_password" id="admin_password" placeholder="Eg: xyx">
+                <input type="password" name="adminPassword" id="admin_password" placeholder="Eg: xyx">
                 <span class="error_message" aria-live="polite"> <%- message %> </span>
                 <input type="submit" class="login_submit" value="Login">
             </form>
