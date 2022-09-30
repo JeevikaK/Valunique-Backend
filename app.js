@@ -2,8 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
-const MySQLStore = require('connect-mysql')(session);
-const {sequelize, options} = require('./db/db.init.js');
+// const SessionStore = require('express-session-sequelize')(session.Store);
+const {sequelize} = require('./db/db.init.js');
 const upload = require('./middleware/upload-middleware.js');
 const loginController = require('./controllers/applicantControllers/loginController.js');
 const detailsController = require('./controllers/applicantControllers/detailsController.js');
@@ -36,7 +36,9 @@ app.use(session({
     resave: false,
     saveUninitialized:true,
     cookie: { maxAge: oneDay, httpOnly: false, }, 
-    // store: new MySQLStore(options)
+    // store: new SessionStore({
+    //     db: sequelize,
+    // }),
 }));
 
 
