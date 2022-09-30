@@ -102,20 +102,20 @@
                     <div class="modal-body"> 
                         <div class="mb-3">
                             <label for="jobID" class="col-form-label jobID">Job ID &nbsp;&nbsp; </label>
-                            <input type="text" name="jobID" required class="form-control" id="jobID">
+                            <input type="text" name="jobID" required class="form-control" id="jobID" placeholder="Eg. 1B2A5678">
                             <span class="jobID_error" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
                         </div>
                         <div class="mb-3">
                             <label for="jobName" class="col-form-label">Job Name &nbsp;&nbsp; </label>
-                            <input type="text" name="jobName" required class="form-control" id="jobName">
+                            <input type="text" name="jobName" required class="form-control" id="jobName" placeholder="Eg. xyz">
                         </div>                 
                         <div class="mb-3">
                             <label for="questionNo" class="col-form-label">Number of Questions &nbsp;&nbsp; </label>
-                            <input type="number" name="questionNo" required class="form-control" id="questionNo" min="1">
+                            <input type="number" name="questionNo" required class="form-control" id="questionNo" min="4" value="4">
                         </div>
                         <div class="mb-3">
                             <label for="skillNo" class="col-form-label">Number of types of Skills Required &nbsp;&nbsp; </label>
-                            <input type="number" name="skillNo" required class="form-control" id="skillNo" min="0">
+                            <input type="number" name="skillNo" required class="form-control" id="skillNo" min="2" value="2">
                         </div>
                         <div class="mb-3">
                             <label class="col-form-label">Add Recruiter Access &nbsp;&nbsp; </label>
@@ -134,7 +134,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="recruiterNo" class="col-form-label">Number of Recruiters?&nbsp;&nbsp; </label>
-                            <input type="number" name="recruiterNo" class="form-control recruiterNum" id="recruiterNo" disabled value=0>
+                            <input type="number" name="recruiterNo" class="form-control recruiterNum" id="recruiterNo" disabled value="0">
                         </div>
                     </div>
                     <div class="modal-footer">

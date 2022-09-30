@@ -40,7 +40,7 @@ app.use(session({
 }));
 
 
-//listening to port 3000 only if db is connected
+//listening to port 3000 only if db is connectedf
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
 
@@ -73,7 +73,7 @@ sequelize.authenticate().then(() => {
         });    
     })
 
-    server = app.listen(3000, () => {
+    server = app.listen(process.env.PORT || 3000, () => {
         const host = server.address().address;
         const port = server.address().port;
         console.log(`Server is listening at port ${port}`);

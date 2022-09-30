@@ -57,7 +57,7 @@
                     <% if(type==="applicants") {%>
                         <div class="dropdown">
                             <a class="btn btn-transparent dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Applicants
+                                Jobs
                             </a>
                             <ul class="dropdown-menu">
                                 <% jobs.forEach(job => { %>
@@ -242,17 +242,17 @@
                     <div class="modal-body">                  
                         <div class="mb-3">
                             <label for="name" class="col-form-label">Name:&nbsp;&nbsp; </label>
-                            <input type="text" name="name" required class="form-control" id="name">
+                            <input type="text" name="name" required class="form-control" id="name" placeholder="Eg. John Doe">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="col-form-label">Email:&nbsp;&nbsp; </label>
-                            <input type="email" name="email" required class="form-control" id="email">
+                            <input type="email" name="email" required class="form-control" id="email" placeholder="Eg. abc@volvo.com">
                         </div>
                         <div class="mb-3">
                             <label for="pwd" class="col-form-label">Set Password:&nbsp;&nbsp; </label>
                             <input type="password" id="pwd" name="pwd"
                             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" required class="form-control">
+                            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" required class="form-control" placeholder="Eg. xyz">
                         </div>
                         <div class="mb-3">
                             <% if(type==="access") {%>
