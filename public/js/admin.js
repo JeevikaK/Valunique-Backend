@@ -22,11 +22,6 @@ deleteAccess.addEventListener('show.bs.modal', event => {
     })
     const confirm_delete_access = document.getElementById('confirm_delete_access');
     confirm_delete_access.disabled = true;
-    // const drop_down = document.getElementById('newOwner')
-    // console.log(drop_down)
-    // drop_down.addEventListener("load", () => {
-    //     confirm_delete_access.disabled = false;
-    // })
     confirm_delete_access.addEventListener('click', () => {
         console.log(newOwner.value)
         if(form.style.display !== 'none'){
@@ -46,7 +41,6 @@ deleteAccess.addEventListener('show.bs.modal', event => {
                 newOwnerID: newOwner.value
             },
             success: function(response){
-                confirm_delete_access.disabled = false;
                 console.log(response)
                 if(response.same_user)
                     window.location = '/'
