@@ -402,7 +402,7 @@ nav .btn:focus, nav .btn:hover{
     font-style: normal;
     font-weight: 400;
     font-size: 0.8em;
-    width: 10em;
+    width: 15em;
 }
 
 .admin_choices input::placeholder{

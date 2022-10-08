@@ -30,9 +30,11 @@
                     <div class="applicant">
                         <a href="<%= `/admin?adminEmail=${admin.email}&adminName=${admin.name}` %>"> Applicant</a>
                     </div>
-                    <div class="access">
-                        <a href="/admin/access">Access Level</a>
-                    </div>
+                    <% if (admin.access == "HR") {%>
+                        <div class="access">
+                            <a href="/admin/access"> Access Level</a>
+                        </div>
+                    <% } %>
                     <div class="job_questions">
                         <a href="/admin/jobOpenings" class="selected">Job Questions</a>
                     </div>
