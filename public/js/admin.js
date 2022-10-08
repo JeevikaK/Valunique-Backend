@@ -22,11 +22,11 @@ deleteAccess.addEventListener('show.bs.modal', event => {
     })
     const confirm_delete_access = document.getElementById('confirm_delete_access');
     confirm_delete_access.disabled = true;
-    const drop_down = document.getElementById('newOwner')
-    console.log(drop_down)
-    drop_down.addEventListener("load", () => {
-        confirm_delete_access.disabled = false;
-    })
+    // const drop_down = document.getElementById('newOwner')
+    // console.log(drop_down)
+    // drop_down.addEventListener("load", () => {
+    //     confirm_delete_access.disabled = false;
+    // })
     confirm_delete_access.addEventListener('click', () => {
         console.log(newOwner.value)
         if(form.style.display !== 'none'){
@@ -67,6 +67,7 @@ deleteAccess.addEventListener('show.bs.modal', event => {
             if(response.jobsOwned){
                 form.style.display = 'block';
             }
+            confirm_delete_access.disabled = false;
         },
         error: function(error){
             console.log(error)
@@ -342,7 +343,6 @@ function displayNoApplicationsMsg(){
 }
 
 displayNoApplicationsMsg()
-
 
 
 

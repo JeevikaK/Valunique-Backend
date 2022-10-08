@@ -118,23 +118,8 @@
                             <input type="number" name="skillNo" required class="form-control" id="skillNo" min="2" value="2">
                         </div>
                         <div class="mb-3">
-                            <label class="col-form-label">Add Recruiter Access &nbsp;&nbsp; </label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="addRecruiter" id="flexRadioDefault1" value="yes" onchange="showRecruiterNum(event);">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                  Yes
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="addRecruiter" id="flexRadioDefault2" value="no" onchange="showRecruiterNum(event);" checked>
-                                <label class="form-check-label" for="flexRadioDefault2">
-                                  No
-                                </label>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="recruiterNo" class="col-form-label">Number of Recruiters?&nbsp;&nbsp; </label>
-                            <input type="number" name="recruiterNo" class="form-control recruiterNum" id="recruiterNo" disabled value="0">
+                            <label class="col-form-label">Add Number of Recruiters &nbsp;&nbsp; </label>
+                            <input type="number" name="recruiterNo" class="form-control recruiterNum" id="recruiterNo" min="1" value="1">
                         </div>
                     </div>
                     <div class="modal-footer">
