@@ -243,6 +243,7 @@ postQuestions = async (req, res) => {
     }   
 }
 
+
 deleteQuestionFiles = (req, res) => {
     // save answer to the session
     req.session.answers[`answer${req.params.id}`] = req.body.answer;
