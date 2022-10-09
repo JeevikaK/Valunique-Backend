@@ -9,15 +9,14 @@ function addDays(date, days) {
     return result;
 }
 
-const getLogin = (req, res) => { 
+const getLogin = async (req, res) => { 
     // if candidate is already logged in, redirect to details page
-    console.log(req.session.candidate_id);
     if(req.session.candidate_id){
-        const applicant = Applicant.findOne({ where: {candidateID: req.session.candidate_id, jobID: req.session.job_id}});
+        const applicant = await Applicant.findOne({ where: {candidateID: req.session.candidate_id, jobID: req.session.job_id}});
         if(applicant.status === 'Applying' || applicant.status === undefined){
             res.redirect(`/details?candidateId=${req.session.candidate_id}&jobId=${req.session.job_id}&jobName=${req.session.jobDescription['jobName']}`);
         }
-        else{
+        else if(applicant.status === 'Applied' || applicant.status === 'Shortlisted' || applicant.status === 'Rejected'){
             res.redirect('/status')
         }
     }
@@ -57,44 +56,45 @@ const postLogin = async (req, res) => {
             req.session.candidate_id = candidate_id
             req.session.job_id = job_id
             
-            const appliedCandidate = await Applicant.findOne({ 
+            var applicant = await Applicant.findOne({ 
                 where: {
                     candidateID: candidate_id, 
                     jobID: job_id,
-                    [Op.not]: {
-                        status: 'Applying'
-                    }
                 }
             });
-            
-            // if candidate has already applied for the job, redirect to details page
-            if(appliedCandidate != null){
-                res.redirect('/status', );
-                return
-            }
 
             // entering candidate details in the database if not already present
-            var applicant = await Applicant.create({
-            candidateID: Number(candidate_id),
-            jobID: job_id,
-            jobName: jobDescription['jobName'],
-            status: 'Applying',
-            whyVolvo: '',
-            aboutVolvo: '',
-            skills: '',
-            additionalSkills: '',
-            location: '',
-            relocate:'',
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).render('error', {title: '500', message: "Internal Server Error"});
-                return;
-            });
+            if(applicant == null){
+                applicant = await Applicant.create({
+                    candidateID: Number(candidate_id),
+                    jobID: job_id,
+                    jobName: jobDescription['jobName'],
+                    status: 'Applying',
+                    whyVolvo: '',
+                    aboutVolvo: '',
+                    skills: '',
+                    additionalSkills: '',
+                    location: '',
+                    relocate:'',
+                    appliedOn: new Date(),
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+                    return;
+                });
+            }
             console.log("Applicant created");
             req.session.questions = {}
             req.session.answers = {}
             req.session.jobDescription = jobDescription
+
+            // if candidate has already applied for the job, redirect to details page
+            if(applicant.status != 'Applying'){
+                res.redirect('/status', );
+                return
+            }
+
             res.redirect(`/details?candidateId=${applicant.candidateID}&jobId=${applicant.jobID}&jobName=${jobDescription['jobName']}`);   
             
         }
