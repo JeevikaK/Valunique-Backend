@@ -23,16 +23,8 @@
             </div>
             <div class="admin_choices">
                 <div class="nav_admin">
-                    <div class="applicant">
-                        <a href="<%= `/admin?adminEmail=${admin.email}&adminName=${admin.name}` %>"> Applicant</a>
-                    </div>
-                    <% if (admin.access == "HR") {%>
-                        <div class="access">
-                            <a href="/admin/access"> Access Level</a>
-                        </div>
-                    <% } %>
                     <div class="job_questions">
-                        <a href="/admin/jobOpenings" class="selected">Job Questions</a>
+                        <a href="/admin/jobOpenings" class="selected">Go back to Job Questions</a>
                     </div>
                 </div>
             </div>
