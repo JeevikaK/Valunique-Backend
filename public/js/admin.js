@@ -26,6 +26,7 @@ deleteAccess.addEventListener('show.bs.modal', event => {
         confirm_delete_access.disabled = true;
         if(form.style.display !== 'none'){
             if(newOwner.value === ""){
+                confirm_delete_access.disabled = false;
                 document.getElementById('ownership_error').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please select a new owner'
                 return
             }
