@@ -42,13 +42,8 @@ addQuest.addEventListener('show.bs.modal', event => {
 //adding no of recruits
 function showRecruiterNum(event){
     console.log(event.target.value)
-    if(String(event.target.value) === 'yes'){
-        console.log(document.querySelector('.recruiterNum').value)
-        document.querySelector('.recruiterNum').disabled=false;
-    } else {
-        document.querySelector('.recruiterNum').disabled=true;
-        document.querySelector('.recruiterNum').value = 0;
-    }
+    console.log(document.querySelector('.recruiterNum').value)
+
 }
 
 //form validation

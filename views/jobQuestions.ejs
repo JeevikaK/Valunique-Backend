@@ -81,26 +81,24 @@
                 <% } %>
                 <span class="error" id="skillError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
             </div>
-            <% if(opening.recruiterNo!=0 && recruiters.length!=0 && opening.addRecruiter==="yes") { %>
-                <div class="add_recruiter">
-                    <p class="recruiter heading">ADD RECRUITER</p>
-                    <div class="select_recruiter">
-                    <% for(var i=0; i < opening.recruiterNo; i++) { %>
-                        <select class="form-select recruiterInput" name="recruiter<%= i %>" required >
-                            <% if(opening.recruiters){ %>
-                                <option value="<%= opening.recruiters[i].adminID %>" selected hidden><%= opening.recruiters[i].name %> (<%= opening.recruiters[i].email %>)</option>
-                            <% } else { %>
-                                <option value="" selected hidden>Add Recruiter <%= i+1 %></option>
-                            <% } %>
-                            <% for(var j=0; j < recruiters.length; j++) { %>
-                                <option value="<%= recruiters[j].adminID %>"><%= recruiters[j].name %> (<%= recruiters[j].email %>)</option>
-                            <% } %>
-                        </select>
-                    <% } %>
-                    </div>
-                    <span class="error" id="recruiterError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
+            <div class="add_recruiter">
+                <p class="recruiter heading">ADD RECRUITER</p>
+                <div class="select_recruiter">
+                <% for(var i=0; i < opening.recruiterNo; i++) { %>
+                    <select class="form-select recruiterInput" name="recruiter<%= i %>" required >
+                        <% if(opening.recruiters){ %>
+                            <option value="<%= opening.recruiters[i].adminID %>" selected hidden><%= opening.recruiters[i].name %> (<%= opening.recruiters[i].email %>)</option>
+                        <% } else { %>
+                            <option value="" selected hidden>Add Recruiter <%= i+1 %></option>
+                        <% } %>
+                        <% for(var j=0; j < recruiters.length; j++) { %>
+                            <option value="<%= recruiters[j].adminID %>"><%= recruiters[j].name %> (<%= recruiters[j].email %>)</option>
+                        <% } %>
+                    </select>
+                <% } %>
                 </div>
-            <% } %>
+                <span class="error" id="recruiterError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
+            </div>
             <div class="submit">
                 <input type="submit" name="Submit" id="" class="new_questions_submit">
             </div>

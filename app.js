@@ -36,13 +36,10 @@ app.use(session({
     resave: false,
     saveUninitialized:true,
     cookie: { maxAge: oneDay, httpOnly: false, }, 
-    // store: new SessionStore({
-    //     db: sequelize,
-    // }),
 }));
 
 
-//listening to port 3000 only if db is connectedf
+//listening to port 3000 only if db is connected
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
 
