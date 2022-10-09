@@ -23,7 +23,7 @@ deleteAccess.addEventListener('show.bs.modal', event => {
     const confirm_delete_access = document.getElementById('confirm_delete_access');
     confirm_delete_access.disabled = true;
     confirm_delete_access.addEventListener('click', () => {
-        console.log(newOwner.value)
+        confirm_delete_access.disabled = true;
         if(form.style.display !== 'none'){
             if(newOwner.value === ""){
                 document.getElementById('ownership_error').innerHTML = '<i class="fa fa-exclamation-circle"></i> Please select a new owner'
@@ -84,6 +84,7 @@ addAccess.addEventListener('show.bs.modal', event => {
     }
 })
 
+const confirm_add_access = document.getElementById('allowAccess');
 const form = document.querySelector('#addAccessForm')
 const name = document.getElementById('name')
 const email = document.getElementById('email')
@@ -92,6 +93,7 @@ const password = document.getElementById('pwd')
 
 form.addEventListener('submit', (e) => {
     e.preventDefault()
+    confirm_add_access.disabled = true;
     $.ajax({
         url: '/admin/access',
         type: 'POST',
@@ -102,6 +104,7 @@ form.addEventListener('submit', (e) => {
             password: password.value
         },
         success: function(response){
+            confirm_add_access.disabled = false;
             console.log(response.error)
             if(response.error){
                 document.getElementById('adminAddError').innerHTML = '<i class="fa fa-exclamation-circle"></i>' + response.error
