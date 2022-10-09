@@ -16,18 +16,30 @@ const getStatus = async (req, res) => {
         res.redirect('/login', {title: 'Login', message: ""});
         return
     }
-
     const status = applicant.status
-    
-
-    const context = {
-        title: 'Status',
-        candidate_id: req.session.candidate_id,
-        job_id: req.session.job_id,
-        appliedOn: applicant.appliedOn,
-        status: applicant.status,
+    console.log(status)
+    if(status == 'Rejected'){
+        const context = {
+            title: 'Status',
+            candidate_id: req.session.candidate_id,
+            job_id: req.session.job_id,
+            appliedOn: applicant.appliedOn,
+            status: applicant.status,
+            message: 'Currently not being considered.'
+        }
+        res.render('status', context);
     }
-    res.render('status', context);
+    else{
+        const context = {
+            title: 'Status',
+            candidate_id: req.session.candidate_id,
+            job_id: req.session.job_id,
+            appliedOn: applicant.appliedOn,
+            status: applicant.status,
+            message: 'We will get back to you shortly!'
+        }
+        res.render('status', context);
+    }
 }
 
 module.exports = getStatus;

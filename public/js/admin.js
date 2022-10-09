@@ -21,6 +21,7 @@ deleteAccess.addEventListener('show.bs.modal', event => {
         }
     })
     const confirm_delete_access = document.getElementById('confirm_delete_access');
+    confirm_delete_access.disabled = true;
     confirm_delete_access.addEventListener('click', () => {
         console.log(newOwner.value)
         if(form.style.display !== 'none'){
@@ -60,6 +61,7 @@ deleteAccess.addEventListener('show.bs.modal', event => {
             if(response.jobsOwned){
                 form.style.display = 'block';
             }
+            confirm_delete_access.disabled = false;
         },
         error: function(error){
             console.log(error)
@@ -335,7 +337,6 @@ function displayNoApplicationsMsg(){
 }
 
 displayNoApplicationsMsg()
-
 
 
 

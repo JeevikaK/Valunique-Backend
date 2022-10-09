@@ -8,7 +8,7 @@ const getLogin = async (req, res) => {
         res.redirect('/admin/applications');
         return
     }
-    res.render('adminlogin', {title: 'Admin Login', message: ""});
+    res.render('adminLogin', {title: 'Admin Login', message: ""});
 }
 
 const postLogin = async (req, res) => {
@@ -17,11 +17,11 @@ const postLogin = async (req, res) => {
     console.log(req.body)
 
     if(adminEmail === "" || adminPassword === ""){
-        res.render('adminlogin', {title: 'Admin Login', message: `<i class="fa fa-exclamation-circle"></i> Please enter valid credentials.`});
+        res.render('adminLogin', {title: 'Admin Login', message: `<i class="fa fa-exclamation-circle"></i> Please enter valid credentials.`});
         return
     }
     else if(!adminEmail.endsWith("@volvo.com")){
-        res.render('adminlogin', {title: 'Admin Login', message: `<i class="fa fa-exclamation-circle"></i> Please enter a Volvo email.`});
+        res.render('adminLogin', {title: 'Admin Login', message: `<i class="fa fa-exclamation-circle"></i> Please enter a Volvo email.`});
         return
     }
     
@@ -41,7 +41,7 @@ const postLogin = async (req, res) => {
     
     // backdoor-------------------
     if(admin === null || !(await bcrypt.compare(adminPassword, admin.password))){
-        res.render('adminlogin', {title: 'Admin Login', message: `<i class="fa fa-exclamation-circle"></i> Incorrect email or password.`});
+        res.render('adminLogin', {title: 'Admin Login', message: `<i class="fa fa-exclamation-circle"></i> Incorrect email or password.`});
         return
     }
     console.log(admin)
