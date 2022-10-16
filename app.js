@@ -2,9 +2,11 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
-// const SessionStore = require('express-session-sequelize')(session.Store);
 const {sequelize} = require('./db/db.init.js');
 const upload = require('./middleware/upload-middleware.js');
+const app = express();
+
+//controllers
 const loginController = require('./controllers/applicantControllers/loginController.js');
 const detailsController = require('./controllers/applicantControllers/detailsController.js');
 const questionsController = require('./controllers/applicantControllers/questionsController.js');
@@ -14,7 +16,8 @@ const adminLoginController = require('./controllers/adminControllers/loginContro
 const applicationsController = require('./controllers/adminControllers/applicationsController.js');
 const accessController = require('./controllers/adminControllers/accessController.js');
 const jobOpeningController = require('./controllers/adminControllers/jobOpeningsController.js');
-const app = express();
+
+//models
 const Admin = require('./models/admin.js');
 const JobOpening = require('./models/jobOpening.js');
 const Applicant = require('./models/applicants.js');
@@ -42,19 +45,33 @@ app.use(session({
 //listening to port 3000 only if db is connected
 sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
-
     
+    //relationships
     JobOpening.belongsTo(Admin, {onDelete: 'No Action'});
     Admin.hasMany(JobOpening, {onDelete: 'No Action'} );
     
     JobOpening.belongsToMany(Admin, {as: 'recruiters', through: RecruiterJobOpening});
     Admin.belongsToMany(JobOpening, {as: 'jobs', through: RecruiterJobOpening});
  
+
+    //syncing database
     Applicant.sync({ force: false }).then(() => {
         console.log('Drop and Resync with { force: false }');
     }); 
     Admin.sync({ force: false }).then(async () => {
         console.log('Drop and Resync with { force: false }');
+        var admins = await Admin.findAll()
+        console.log(admins.length)
+        if(admins.length===0){
+            await Admin.create({
+                adminID: 1,
+                email: 'admin@volvo.com',
+                name: 'Admin',
+                access: 'HR',
+                password: 'Wildcraft8'
+            })
+        }
+
     })
     ValidCandidateID.sync({ force: true }).then(async () => {
         await ValidCandidateID.bulkCreate([
@@ -72,6 +89,7 @@ sequelize.authenticate().then(() => {
         });    
     })
 
+    //establishing port
     server = app.listen(process.env.PORT || 3000, () => {
         const host = server.address().address;
         const port = server.address().port;
