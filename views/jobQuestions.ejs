@@ -50,15 +50,15 @@
                     <p>Please enter the options for each type seperated by a ‘,’ .</p>
                     <hr>
                     <p class="mb-0">Eg: <br>
-                        Type 1: Python,Java,Node <br>
-                        Type 2: MySQL,Oracle,PostgreSQL <br>
+                        Skill 1: Python,Java,Node <br>
+                        Skill 2: MySQL,Oracle,PostgreSQL <br>
                     </p>
                 </div>
             </div>
             <div class="skills_options">
                 <% for(var i=0; i < opening.skillNo; i++) { %>
                     <div class="input-group flex-nowrap skills_input">
-                        <span class="input-group-text">Type <%= i+1 %></span>
+                        <span class="input-group-text">Skill <%= i+1 %></span>
                         <input type="text" class="form-control skillsInput" 
                         <% if(opening.questions){ %>
                             value="<%= opening.skills[i] %>"

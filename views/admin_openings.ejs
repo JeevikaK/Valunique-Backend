@@ -36,21 +36,21 @@
                         </div>
                     <% } %>
                     <div class="job_questions">
-                        <a href="/admin/jobOpenings" class="selected">Job Questions</a>
+                        <a href="/admin/jobOpenings" class="selected">Job Openings</a>
                     </div>
                 </div>
             </div>
         </div>
         <div>
             <div class="add_opening">
-                <h6>ADD JOB OPENING &nbsp; => &nbsp;&nbsp; </h6><a href="#" title="Add Questionaire" data-bs-toggle="modal" data-bs-target="#addQuestionaire" data-bs-jobID="1B2A5678"><img src="/images/add.png" alt="Add Opening"></a>
+                <h6>ADD JOB OPENING &nbsp; &nbsp;&nbsp; </h6><a href="#" title="Add Questionaire" data-bs-toggle="modal" data-bs-target="#addQuestionaire" data-bs-jobID="1B2A5678"><img src="/images/add.png" alt="Add Opening"></a>
             </div>
             <div class="job_openings">
                 <% var count = 0%>
                 <% jobs.forEach(job => { %>
                     <div class="job_question" id="<%= job.jobID%>">
                         <div class="index"><h5><%= ++count %></h5></div>
-                        <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div>
+                        <!-- <div class="fileQ"><img src="/images/fileQ.png" alt="file"></div> -->
                         <div class="job_heading"><h6 class="<%= job.jobName %>"><%= job.jobName %> - <%= job.jobID %></h6>
                             <p class="posted_by">Posted By : <%= job.Admin.name %></p>
                         </div>
@@ -101,24 +101,24 @@
                 <form method="post">
                     <div class="modal-body"> 
                         <div class="mb-3">
-                            <label for="jobID" class="col-form-label jobID">Job ID &nbsp;&nbsp; </label>
+                            <label for="jobID" class="col-form-label jobID">Job ID* (8 Character length) &nbsp;&nbsp; </label>
                             <input type="text" name="jobID" required class="form-control" id="jobID" placeholder="Eg. 1B2A5678">
                             <span class="jobID_error" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="jobName" class="col-form-label">Job Name &nbsp;&nbsp; </label>
+                            <label for="jobName" class="col-form-label">Job Name* &nbsp;&nbsp; </label>
                             <input type="text" name="jobName" required class="form-control" id="jobName" placeholder="Eg. xyz">
                         </div>                 
                         <div class="mb-3">
-                            <label for="questionNo" class="col-form-label">Number of Questions &nbsp;&nbsp; </label>
+                            <label for="questionNo" class="col-form-label">Number of Questions* (mininimum 4) &nbsp;&nbsp; </label>
                             <input type="number" name="questionNo" required class="form-control" id="questionNo" min="4" value="4">
                         </div>
                         <div class="mb-3">
-                            <label for="skillNo" class="col-form-label">Number of types of Skills Required &nbsp;&nbsp; </label>
+                            <label for="skillNo" class="col-form-label">Number of types of Skills Required* &nbsp;&nbsp; </label>
                             <input type="number" name="skillNo" required class="form-control" id="skillNo" min="2" value="2">
                         </div>
                         <div class="mb-3">
-                            <label class="col-form-label">Add Number of Recruiters &nbsp;&nbsp; </label>
+                            <label class="col-form-label">Add Number of Recruiters* &nbsp;&nbsp; </label>
                             <input type="number" name="recruiterNo" class="form-control recruiterNum" id="recruiterNo" min="1" value="1">
                         </div>
                     </div>

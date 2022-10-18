@@ -213,6 +213,7 @@ select option{
 .addit_skill{
     background-color: transparent;
     border: none;
+    border-bottom: 1px solid rgba(83, 86, 90, 0.56);
     max-width: 7em;
     margin: 0.5em 2em;
     margin-right: 1em;
@@ -220,9 +221,9 @@ select option{
     color: rgba(83, 86, 90);
 }
 
-.addit_skill:hover{
-    border-bottom: 1px solid rgba(83, 86, 90, 0.56);
-}
+/* .addit_skill:hover{
+    
+} */
 
 .addit_skill:focus{
     outline: none;
