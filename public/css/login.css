@@ -689,6 +689,7 @@ nav .btn:focus, nav .btn:hover{
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: Font1
 }
 
 .status{
