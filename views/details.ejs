@@ -30,14 +30,14 @@
                     <div class="top_half">
                         <div class="question">
                             <label for="q1">
-                                Why do you want to work for us?*
+                                Why do you want to work for us? <span style="color: red;">*</span>
                             </label>
                             <textarea name="q1" rows="1" id="q1" required maxlength="400" ondrop="return false;" onpaste="return false;" oncopy="return false;"><%= whyVolvo %></textarea>
                             <span class="error" aria-live="polite" id="error_whyVolvo"></span>
                         </div>
                         <div class="question">
                             <label for="q2">
-                                What do you know about Volvo?*
+                                What do you know about Volvo? <span style="color: red;">*</span>
                             </label>
                             <textarea name="q2" rows="1"  id="q2" required maxlength="400" ondrop="return false;" onpaste="return false;" oncopy="return false;"><%= aboutVolvo %></textarea>
                             <span class="error" aria-live="polite" id="error_aboutVolvo"></span>
@@ -48,7 +48,7 @@
 
                         <div class="question skill_container" id="skill">
                             <label>
-                                Skills:*
+                                Skills <span style="color: red;">*</span>
                             </label>
                             <div class="skills" >
                                <% for(var type in mandatorySkills) { %>
@@ -89,7 +89,7 @@
                         <div class="location_container">
                             <div class="question" id="locate">
                                 <label for="location">
-                                    Country:*
+                                    Country <span style="color: red;">*</span>
                                 </label>
                                 <div class="location">
                                     <select name="location" id="location" required>
@@ -350,7 +350,7 @@
                             </div>
                             <div class="question" id="relocate">
                                 <p>
-                                    Will you be willing to relocate?*
+                                    Will you be willing to relocate? <span style="color: red;">*</span>
                                 </p>
                                 <div>
                                     <input type="radio" id="yes" name="relocate" value="yes" 
@@ -371,6 +371,7 @@
                         </div>
                         
                     </div>
+                    <div style="color: red; font-size: 0.8em; align-self: start; padding-bottom: 1em;">The fields marked with * are mandatory</div>
                     <input type="submit" value="Proceed" id="proceed">
                     <br>
                     <span class="error" aria-live="polite" id="error_proceed"><%- message %></span>
