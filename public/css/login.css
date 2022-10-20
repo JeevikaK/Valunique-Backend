@@ -112,7 +112,7 @@ footer a{
 
 .content_login{
     background: rgba(255, 255, 255, 0.7);
-    width: 30em;
+    width: 32em;
     padding: 2em;
     border-radius: 10px;
     display: flex;
@@ -429,6 +429,7 @@ nav .btn:focus, nav .btn:hover{
 .nav_admin > div{
     padding-left: 1.5em;
     padding-right: 1.5em;
+    font-size: 1.1em;
 }
 
 .nav_admin .access_level{
@@ -476,7 +477,7 @@ nav .btn:focus, nav .btn:hover{
 
 .view_options label{
     margin-right: 1em;
-    font-size: 0.9em;
+    font-size: 1em;
 }
 
 .position{
