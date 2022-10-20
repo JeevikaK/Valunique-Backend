@@ -1,8 +1,18 @@
+@font-face {
+    font-family: Font1;
+    src: url('/fonts/Volvo Novum-Light.otf');
+  }
+
+@font-face {
+    font-family: Font2;
+    src: url('/fonts/Volvo Novum-Medium.otf');
+  }
+
 /* ----------Footer-------- */
 footer{
     background-color: #FFFFFF;
     opacity: 0.85;
-    font-family: 'Montserrat';
+    font-family: Font1;
 }
 
 .footer_container{
@@ -93,7 +103,7 @@ footer a{
     background: red;
     text-align: center;
     font-size: 1.2em;
-    font-family: 'Inter';
+    font-family: Font2;
 }
 
 .login_logo{
@@ -120,7 +130,7 @@ footer a{
 .login_heading{
     text-align: center;
     color: #53565A;
-    font-family: 'Palanquin Dark', sans-serif;
+    font-family: Font2;
     font-style: normal;
     font-weight: 400;
     font-size: 1.8em;
@@ -129,7 +139,7 @@ footer a{
 .login_form{
     margin-top: 1em;
     width: 70%;
-    font-family: 'Inter';
+    font-family: Font2;
 }
 
 .login_details{
@@ -163,7 +173,7 @@ footer a{
     color: red;
     word-wrap: break-word;
     line-height: 1.5;
-    font-family: 'Montserrat', sans-serif;
+    font-family: Font1;
 }
 
 .login_submit{
@@ -174,7 +184,7 @@ footer a{
     background: rgba(18, 152, 181, 0.3);
     border-radius: 7px;
     color: rgba(83, 86, 90, 0.9);
-    font-family: 'Montserrat', sans-serif;
+    font-family: Font1;
 }
 
 /* ----------Login Page Responsive----------*/ 
@@ -201,13 +211,13 @@ footer a{
     font-weight: 350;
     margin-bottom: 1em;
     color: #53565A;
-    font-family: 'Montserrat';
+    font-family: Font1;
     font-style: normal;
     padding-right: 1em;
 }
 
 .question_num{
-    font-family: 'Inter';
+    font-family: Font2;
     font-size: 1.3em;
     font-weight: 300;
 }
@@ -218,7 +228,7 @@ footer a{
 }
 
 .question_answer label{
-    font-family: 'Inter';
+    font-family: Font2;
     font-size: 1.3em;
     font-weight: 300;
 }
@@ -246,7 +256,7 @@ footer a{
 #files, .upload-label{
     margin-bottom: 0.5em;
     font-weight: 600;
-    font-family: 'Montserrat';
+    font-family: Font1;
 }
 
 #files{
@@ -289,7 +299,7 @@ footer a{
     background: rgba(18, 152, 181, 0.3);
     border-radius: 7px;
     color: rgba(83, 86, 90, 0.9);
-    font-family: 'Montserrat', sans-serif;
+    font-family: Font1;
 }
 
 .confirm_submit{
@@ -362,7 +372,7 @@ footer a{
 
 /*------------Admin Page--------------*/
 .content_admin{
-    font-family: 'Montserrat';
+    font-family: Font1;
     padding-left: 3.4vw;
     min-height: 45em;
 }
@@ -388,7 +398,7 @@ nav .btn:focus, nav .btn:hover{
 }
 
 .admin_choices label{
-    font-family: 'Montserrat';
+    font-family: Font1;
     font-style: normal;
     font-weight: 400;
     padding-right: 0.5em;
@@ -398,7 +408,7 @@ nav .btn:focus, nav .btn:hover{
 .admin_choices input{
     padding: 0.3em;
     color: #53565A;
-    font-family: 'Montserrat';
+    font-family: Font1;
     font-style: normal;
     font-weight: 400;
     font-size: 0.8em;

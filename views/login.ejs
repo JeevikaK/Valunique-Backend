@@ -9,7 +9,7 @@
             <div class="login_logo">
                 <img src="/images/Volvo-Logo-2020.png" alt="Volvo Logo" class="login_logo">
             </div>
-            <p class="login_heading">Welcome to Volvo</p>
+            <p class="login_heading">Valunique - A Faceless Volvo IT CV</p>
             <form action="/" class="login_form" method="POST">
                 <label class="login_details" for="candidate_id">Candidate Ref. ID</label>
                 <input type="text" name="candidate_id" id="candidate_id"   maxlength="8" minlength="8" placeholder="Eg: 12345678">
@@ -19,7 +19,6 @@
                 <span class="error_message" aria-live="polite"> <%- message %> </span>
                 <input type="submit" class="login_submit" value="Login" minlength="8" maxlength="8">
             </form>
-            <a href="/admin" style="padding-top: 1em;">Admin Login</a>
         </div>
 
         <%- include ("./partials/footer.ejs") %>

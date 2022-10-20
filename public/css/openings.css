@@ -1,3 +1,13 @@
+@font-face {
+    font-family: Font1;
+    src: url('/fonts/Volvo Novum-Light.otf');
+  }
+
+@font-face {
+    font-family: Font2;
+    src: url('/fonts/Volvo Novum-Medium.otf');
+  }
+
 .add_opening {
     background: #FFFFFF;
     box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.25);
@@ -16,7 +26,7 @@
 }
 
 .add_opening h6{
-    font-family: 'Montserrat';
+    font-family: Font1;
     font-style: normal;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.5);
@@ -227,5 +237,5 @@
     background: rgba(18, 152, 181, 0.3);
     border-radius: 7px;
     color: rgba(83, 86, 90, 0.9);
-    font-family: 'Montserrat', sans-serif;
+    font-family: Font1;
 }
