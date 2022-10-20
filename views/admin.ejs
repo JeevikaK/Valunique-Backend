@@ -85,7 +85,7 @@
 
         <% if(type==="access") {%>
             <div class="add_opening">
-                <h6>ADD ACCESS &nbsp; => &nbsp;&nbsp; </h6><a href="#" title="Add Access" data-bs-toggle="modal" data-bs-target="#addAccess" ><img src="/images/add.png" alt="Add Opening"></a>
+                <h6>ADD ACCESS &nbsp; &nbsp;&nbsp; </h6><a href="#" title="Add Access" data-bs-toggle="modal" data-bs-target="#addAccess" ><img src="/images/add.png" alt="Add Opening"></a>
             </div>
         <% } %>
 
@@ -174,9 +174,9 @@
                                             </div>
                                             <div class="text">
                                                 <div class="text_style">
-                                                    <p class="card-text"><span>Name </span>: <%= admin.name %></p>
-                                                    <p class="card-text"><span>Email </span>: <%= admin.email %></p>
-                                                    <p class="card-text"><span>Access </span>: <%= admin.access %></p>
+                                                    <p class="card-text"><span>Name </span> <%= admin.name %></p>
+                                                    <p class="card-text"><span>Email </span> <%= admin.email %></p>
+                                                    <p class="card-text"><span>Access </span> <%= admin.access %></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -214,7 +214,7 @@
                     <form class="transferOwner" action="">
                         <% if(type==="access") {%>
                         <select name="newOwner" id="newOwner">
-                            <option hidden value="">Select New Owner*</option>  
+                            <option hidden value="">Select New Owner <span style="color: red;">*</span></option>  
                             <% admins.forEach( admin => { %>           
                                 <option value="<%= admin.adminID %>" data-id="<%= admin.adminID %>" ><%= admin.name %> - <%= admin.access %></option>
                             <% }) %>
@@ -243,15 +243,15 @@
                 <form id="addAccessForm" method="post">
                     <div class="modal-body">                  
                         <div class="mb-3">
-                            <label for="name" class="col-form-label">Name:*&nbsp;&nbsp; </label>
+                            <label for="name" class="col-form-label">Name <span style="color: red;">*</span>&nbsp;&nbsp; </label>
                             <input type="text" name="name" required class="form-control" id="name" placeholder="Eg. John Doe">
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="col-form-label">Email:*&nbsp;&nbsp; </label>
+                            <label for="email" class="col-form-label">Email <span style="color: red;">*</span>&nbsp;&nbsp; </label>
                             <input type="email" name="email" required class="form-control" id="email" placeholder="Eg. abc@volvo.com">
                         </div>
                         <div class="mb-3">
-                            <label for="pwd" class="col-form-label">Set Password*:&nbsp;&nbsp; </label>
+                            <label for="pwd" class="col-form-label">Set Password <span style="color: red;">*</span>&nbsp;&nbsp; </label>
                             <input type="password" id="pwd" name="pwd"
                             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                             title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" required class="form-control" placeholder="Eg. xyz">
@@ -269,6 +269,7 @@
                             <% } %>
                         </div>
                         <span id="adminAddError" style="color: red; font-weight: 400; font-size: 0.8em;"></span>
+                        <div style="color: red; font-size: 0.8em;">The fields marked with * are mandatory</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
