@@ -16,9 +16,7 @@ async function getJobDetails(job_id){
         var type = `skill${i+1}`;
         mandatorySkills[type] = allSkills[i].split(',');
     }
-    console.log(mandatorySkills);
     jobDescription['mandatorySkills'] = mandatorySkills;
-    console.log(jobDescription);
     return jobDescription;
 }
 

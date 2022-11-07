@@ -16,6 +16,7 @@ deleteAccess.addEventListener('show.bs.modal', event => {
 
     const confirmDelete = document.getElementById('confirm_delete_access')
     confirmDelete.addEventListener('click', () => {
+        confirmDelete.disabled = true;
         $.ajax({
             url: `/admin/jobOpenings/${jobID}/delete`,
             type: 'DELETE',
@@ -41,20 +42,15 @@ addQuest.addEventListener('show.bs.modal', event => {
 //adding no of recruits
 function showRecruiterNum(event){
     console.log(event.target.value)
-    if(String(event.target.value) === 'yes'){
-        console.log(document.querySelector('.recruiterNum').value)
-        document.querySelector('.recruiterNum').disabled=false;
-    } else {
-        document.querySelector('.recruiterNum').disabled=true;
-        document.querySelector('.recruiterNum').value = 0;
-    }
+    console.log(document.querySelector('.recruiterNum').value)
+
 }
 
 //form validation
 const form = document.querySelector('form')
 const jobID = document.getElementById('jobID')
 const jobID_error = document.querySelector('.jobID_error')
-
+const addQuestionaire = document.getElementById('addQuestionaire')
 const job_questions = document.querySelectorAll('.job_question')
 
 function checkExists(jobID, callback){
@@ -80,12 +76,14 @@ function showError(event){
     if(format_jobID.test(jobID.value) === false || jobID.value.length != 8){
         if(event)
             event.preventDefault();
+        addQuestionaire.disabled = false;
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Invalid format. Job ID should be alphanumeric and have 8 characters.'
     }
     else if(checkExists(jobID.value)){
         console.log('exists')
         if(event)
             event.preventDefault()
+        addQuestionaire.disabled = false;
         jobID_error.innerHTML = '<i class="fa fa-exclamation-circle"></i> Job Opening already exists.'
     }
     else{
@@ -94,6 +92,7 @@ function showError(event){
 }
 
 form.addEventListener('submit', event => {
+    addQuestionaire.disabled = true;
     showError(event); 
     jobID.addEventListener('input', event => {
         showError(false);

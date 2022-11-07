@@ -1,4 +1,5 @@
 const Applicant = require('../../models/applicants.js');
+const { Op } = require("sequelize");
 
 const getDetails = async (req, res) => {
     const { candidateId, jobId, jobName } = req.query;
@@ -47,7 +48,6 @@ const getDetails = async (req, res) => {
 const postDetails = async (req, res) => {
     const { q1, q2, location, relocate } = req.body
     const { candidateId, jobId, jobName } = req.query;
-    console.log(req.body)
     var skill_keys = Object.keys(req.body).filter(key => key.startsWith('skill'))
     var add_skill_keys = Object.keys(req.body).filter(key => key.startsWith('add_skill'))
     var skills =''
@@ -60,7 +60,13 @@ const postDetails = async (req, res) => {
             add_skills+= req.body[add_skill]+', '
     })
 
-    var applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' }});
+    var applicant = await Applicant.findOne({ where: 
+        { 
+            candidateID: candidateId, 
+            jobID: jobId, 
+            status: 'Applying'
+        }
+    });
     const jobDescription = req.session.jobDescription;
     if(q1=='' || q2=='' || location=='' || relocate==''|| skills=='' ){
         var context = {

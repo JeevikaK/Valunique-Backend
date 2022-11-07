@@ -213,6 +213,23 @@ postQuestions = async (req, res) => {
                         );
                     }
 
+                    try{
+                        // Deleting the files from the uploads folder
+                        const dir = fs.opendirSync('./public/resources/uploads/'+ req.session.job_id)
+                        let dirent
+                        while ((dirent = dir.readSync()) !== null) {
+                            if(dirent.name.startsWith(`${req.session.candidate_id}_`)){ //verifying if file belongs to the current candidate
+                                fs.unlinkSync(`./public/resources/uploads/${req.session.job_id}/${dirent.name}`)
+                            }
+                        }
+                        dir.closeSync()
+                    }
+                    catch(err){
+                        console.error(err);
+                        res.status(500).render('error', {title: '500', message: "Internal Server Error"});
+                        return;
+                    }
+
                     // change the status of the candidate to 'Applied'
                     const applicant = await Applicant.findOne({ where: { candidateID: candidateId, jobID: jobId, status: 'Applying' } });
                     var updateResult = applicant.update({
@@ -242,6 +259,7 @@ postQuestions = async (req, res) => {
             res.redirect(`/questions/${parseInt(req.params.id)+1}?candidateId=${candidateId}&jobId=${jobId}&jobName=${jobName}`);
     }   
 }
+
 
 deleteQuestionFiles = (req, res) => {
     // save answer to the session

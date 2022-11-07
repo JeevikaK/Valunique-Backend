@@ -15,6 +15,10 @@ const logout = async (req,res) => {
         req.session.destroy();
         res.redirect('/admin');
     }
+
+    else{
+        res.redirect('/');
+    }
 }
 
 module.exports = logout;
