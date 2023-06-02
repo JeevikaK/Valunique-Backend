@@ -1,7 +1,7 @@
 
 # Valunique - Faceless Recruitment
 
-A faceless CV for biasless Recruitment.
+A faceless CV for biasless Recruitment which serves as an initial screening test for applying candidates to go through a just and fair recruitment process.
 
 
 ## Installation
